@@ -25,3 +25,23 @@ extends Resource
 ## Quick Prompts available for a model are displayed in the chat window as buttons.
 ## These allow to create prompt templates, as well as read and write to the code editor.
 @export var quick_prompts: Array[AIQuickPromptResource]
+
+## Unique session ID for tracking conversation history.
+@export var session_id: String = ""
+
+func _init():
+	# Generate a session_id if none exists when the resource is initialized
+	if session_id.is_empty():
+		session_id = _generate_session_id()
+
+## Generates a unique session ID using a timestamp and random number.
+func _generate_session_id() -> String:
+	var time := str(Time.get_ticks_msec())
+	var random := str(randi() % 1000000)
+	var unique_id := time + "_" + random
+	return unique_id.sha256_text().substr(0, 32)
+
+## Resets the session ID for a new conversation.
+func start_new_conversation() -> void:
+	session_id = _generate_session_id()
+	emit_signal("property_list_changed") # Notify Godot of property change
