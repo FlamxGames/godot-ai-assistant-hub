@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://w1f4dho35qy2"]
+[gd_scene load_steps=3 format=3 uid="uid://w1f4dho35qy2"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_assistant_hub.gd" id="1_x668t"]
+[ext_resource type="Texture2D" uid="uid://cep750ky28v0s" path="res://addons/ai_assistant_hub/graphics/icons/Reload.svg" id="2_ormfk"]
 
 [node name="AIAssistantHub" type="Control"]
 custom_minimum_size = Vector2(0, 260)
@@ -43,21 +44,22 @@ metadata/_tab_index = 0
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer"]
+[node name="Assistants" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer"]
+[node name="VBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Summon
 assistant!"
 
-[node name="NoAssistantsGuide" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="NoAssistantsGuide" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -65,18 +67,25 @@ text = "You have no assistant types! Create a new AIAssistantResource in the ass
 res://addons/ai_assistant_hub/assistants"
 autowrap_mode = 2
 
-[node name="AssistantTypesContainer" type="HFlowContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="AssistantTypesContainer" type="HFlowContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="AssistantsRefreshBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer"]
+[node name="Spacer" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+
+[node name="AssistantsRefreshBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants"]
+unique_name_in_owner = true
 auto_translate_mode = 1
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-text = "↻"
+icon = ExtResource("2_ormfk")
 autowrap_mode = 2
+icon_alignment = 1
+expand_icon = true
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer"]
 layout_mode = 2
@@ -157,6 +166,7 @@ text = "Server URL"
 horizontal_alignment = 2
 
 [node name="AdvancedSettings" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
@@ -207,16 +217,27 @@ tooltip_text = "This must correspond to a script in `res://addons/ai_assistant_h
 If you create your own scripts that extend from `LLMInterface` class, provide the script name in this property to start using it instead of the Ollama API."
 placeholder_text = "ollama_api"
 
-[node name="APILoadBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
+[node name="Spacer2" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 auto_translate_mode = 1
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-tooltip_text = "Load this class."
-text = "↻"
-alignment = 2
 
-[node name="Spacer2" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
+[node name="APILoadBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.0
+tooltip_text = "Load this class."
+icon = ExtResource("2_ormfk")
+icon_alignment = 1
+expand_icon = true
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
+layout_mode = 2
+stretch_mode = 1
+
+[node name="Spacer3" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 auto_translate_mode = 1
 layout_mode = 2
 
@@ -240,9 +261,11 @@ underline = 2
 uri = "https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/support.md"
 
 [connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_completed"]
-[connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/AssistantsRefreshBtn" to="." method="_on_assistants_refresh_btn_pressed"]
+[connection signal="resized" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants" to="." method="resize_refresh_btns"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/Assistants/AssistantsRefreshBtn" to="." method="_on_assistants_refresh_btn_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/VBoxContainer/RefreshModelsBtn" to="." method="_on_refresh_models_btn_pressed"]
 [connection signal="item_selected" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/LLMProviderContainer/LLMProviderOption" to="." method="_on_llm_provider_option_item_selected"]
+[connection signal="resized" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings" to="." method="resize_refresh_btns"]
 [connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/UrlTxt" to="." method="_on_settings_changed"]
 [connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/OpenRouterKeyContainer/OpenRouterAPIKey" to="." method="_on_openrouter_api_key_text_changed"]
 [connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/ApiClassTxt" to="." method="_on_settings_changed"]
