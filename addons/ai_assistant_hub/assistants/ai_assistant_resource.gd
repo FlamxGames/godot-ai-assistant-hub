@@ -10,6 +10,9 @@ extends Resource
 ## The name of the AI model as listed in the available models section.
 @export var ai_model: String
 
+## The API to implement the selected provider
+@export var api_class: String
+
 ## Used to give the System message to the chat.
 ## This gives the overall direction on what the assistant should do.
 @export_multiline var ai_description: String = "You are a useful Godot AI assistant." 

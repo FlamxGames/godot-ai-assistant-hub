@@ -18,6 +18,10 @@ const NEW_AI_ASSISTANT_BUTTON = preload("res://addons/ai_assistant_hub/new_ai_as
 @onready var url_label: Label = %UrlLabel
 @onready var openrouter_key_container: HBoxContainer = %OpenRouterKeyContainer
 @onready var openrouter_api_key: LineEdit = %OpenRouterAPIKey
+@onready var api_load_btn: Button = %APILoadBtn
+@onready var advanced_settings: HBoxContainer = %AdvancedSettings
+@onready var assistants: HBoxContainer = %Assistants
+@onready var assistants_refresh_btn: Button = %AssistantsRefreshBtn
 
 var _plugin:EditorPlugin
 var _tab_bar:TabBar
@@ -63,7 +67,12 @@ func initialize(plugin:EditorPlugin) -> void:
 	_tab_bar = tab_container.get_tab_bar()
 	_tab_bar.tab_changed.connect(_tab_changed)
 	_tab_bar.tab_close_pressed.connect(_close_tab)
+	resize_refresh_btns()
 
+
+func resize_refresh_btns() -> void:
+	api_load_btn.custom_minimum_size.x = advanced_settings.size.y
+	assistants_refresh_btn.custom_minimum_size.x = assistants.size.y
 
 # Initialize LLM provider options
 func _initialize_llm_provider_options() -> void:

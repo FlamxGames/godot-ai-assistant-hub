@@ -148,8 +148,8 @@ func _add_project_setting(name: String, default_value, type: int, hint: int = PR
 
 ## Load the API dinamically based on the script name given in project setting: ai_assistant_hub/llm_api
 ## By default this is equivalent to: return OllamaAPI.new()
-func new_llm_provider() -> LLMInterface:
-	var script_path = "res://addons/ai_assistant_hub/llm_apis/%s.gd" % ProjectSettings.get_setting(AIHubPlugin.CONFIG_LLM_API)
+func new_llm_provider(api_class: String = ProjectSettings.get_setting(AIHubPlugin.CONFIG_LLM_API)) -> LLMInterface:
+	var script_path = "res://addons/ai_assistant_hub/llm_apis/%s.gd" % api_class
 	var script = load(script_path)
 	if script == null:
 		push_error("Failed to load LLM provider script: %s" % script_path)
