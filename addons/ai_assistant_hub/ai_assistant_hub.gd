@@ -166,6 +166,14 @@ func _on_assistants_refresh_btn_pressed() -> void:
 			new_bot_btn.initialize(_plugin, assistant)
 			new_bot_btn.chat_created.connect(_on_new_bot_btn_chat_created)
 			assistant_types_container.add_child(new_bot_btn)
+			var bot_menu: PopupMenu = PopupMenu.new()
+			bot_menu.add_item("Edit", 0)
+			bot_menu.add_item("Delete", 1)
+			new_bot_btn.add_child(bot_menu)
+			var menu_callable = Callable(self, "_on_assistant_button_menu_select").bind(assistant_file)
+			bot_menu.id_pressed.connect(menu_callable)
+			var button_callable = Callable(self, "_on_button_gui_input").bind(bot_menu)
+			new_bot_btn.gui_input.connect(button_callable)
 	
 	if not found:
 		no_assistants_guide.text = "Create an assistant type by selecting a model and clicking \"New assistant type\". Or manually create a new resource AIAssistantResource in the assistant types folder, then click the reload button.\nThe assistant types folder is at: %s" % assistants_path
@@ -176,9 +184,27 @@ func _on_assistants_refresh_btn_pressed() -> void:
 		assistant_types_container.visible = true
 
 
+func _on_button_gui_input(event, delete_menu: PopupMenu):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		var mouse_pos = get_global_mouse_position()
+		delete_menu.position = mouse_pos
+		delete_menu.show()
+
+
+func _on_assistant_button_menu_select(id: int, assistant_file: String) -> void:
+	match id:
+		0:  #  Edit
+			var res = ResourceLoader.load(assistant_file)
+			EditorInterface.edit_resource(res)
+		1:  # Delete
+			DirAccess.remove_absolute(assistant_file)
+			_on_assistants_refresh_btn_pressed()
+
+
 func _on_new_bot_btn_chat_created(chat:AIChat, assistant_type:AIAssistantResource) -> void:
 	tab_container.add_child(chat)
 	tab_container.set_tab_icon(tab_container.get_child_count() - 1, assistant_type.type_icon)
+	tab_container.current_tab = chat.get_index()
 	chat.refresh_models(_model_names)
 	models_refreshed.connect(chat.refresh_models)
 	new_api_loaded.connect(chat.load_api)
