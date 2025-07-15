@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=5 format=3 uid="uid://cww4cpbs85bid"]
+[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=7 format=3 uid="uid://cww4cpbs85bid"]
 
 [ext_resource type="Resource" uid="uid://cemsmflvcbq84" path="res://examples/quick_prompts/ai_qp_spell_check.tres" id="1_2r7fe"]
+[ext_resource type="Resource" uid="uid://c0xq2vafep0gu" path="res://addons/ai_assistant_hub/llm_providers/ollama.tres" id="1_61gss"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_erpnk"]
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/assistants/ai_assistant_resource.gd" id="2_ggkub"]
 [ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="3_320ix"]
 
@@ -13,7 +15,8 @@ script = ExtResource("2_ggkub")
 type_name = "Writer"
 type_icon = SubResource("AtlasTexture_k04jb")
 ai_model = "llama3.2:latest"
+llm_provider = ExtResource("1_61gss")
 ai_description = "You are a writing assistant embedded in the Godot engine. You are very creative and very good at writing and help with wording and style correction."
 use_custom_temperature = false
 custom_temperature = 0.5
-quick_prompts = Array[Resource("res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd")]([ExtResource("1_2r7fe")])
+quick_prompts = Array[ExtResource("2_erpnk")]([ExtResource("1_2r7fe")])

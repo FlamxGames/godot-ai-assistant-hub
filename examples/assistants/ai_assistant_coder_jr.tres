@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=7 format=3 uid="uid://bumgtni2o5kd"]
+[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=9 format=3 uid="uid://bumgtni2o5kd"]
 
+[ext_resource type="Resource" uid="uid://c0xq2vafep0gu" path="res://addons/ai_assistant_hub/llm_providers/ollama.tres" id="1_cinvd"]
 [ext_resource type="Resource" uid="uid://8ut2h386rbmi" path="res://examples/quick_prompts/ai_qp_read_code.tres" id="1_xi5kd"]
 [ext_resource type="Resource" uid="uid://bsn3twnsske1o" path="res://examples/quick_prompts/ai_qp_write_code.tres" id="2_0evc0"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_a48u8"]
 [ext_resource type="Resource" uid="uid://cpjaosxq42axt" path="res://examples/quick_prompts/ai_qp_describe_code.tres" id="3_ye8j0"]
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/assistants/ai_assistant_resource.gd" id="4_qybn4"]
 [ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="5_7vq0g"]
@@ -15,7 +17,8 @@ script = ExtResource("4_qybn4")
 type_name = "Coder Jr"
 type_icon = SubResource("AtlasTexture_j5gdl")
 ai_model = "llama3.2:latest"
+llm_provider = ExtResource("1_cinvd")
 ai_description = "You are a Godot AI assistant. You respond in a concise manner and you can write high quality GDScript code for Godot 4. You are chatting with an experienced developer and every code request you receive is for GDScript."
 use_custom_temperature = false
 custom_temperature = 0.5
-quick_prompts = Array[Resource("res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd")]([ExtResource("1_xi5kd"), ExtResource("2_0evc0"), ExtResource("3_ye8j0")])
+quick_prompts = Array[ExtResource("2_a48u8")]([ExtResource("1_xi5kd"), ExtResource("2_0evc0"), ExtResource("3_ye8j0")])

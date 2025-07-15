@@ -27,6 +27,9 @@ script = ExtResource("1_v0kvm")
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 unique_name_in_owner = true
 
+[node name="ModelsHTTPRequest" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -135,8 +138,9 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Ask something, press ENTER to send.
-(Tip: Use CTRL + ENTER or SHIFT + ENTER for adding a new line)"
+text = "Initializing..."
+placeholder_text = "Ask something, press ENTER to send. Use CTRL + ENTER or SHIFT + ENTER for adding new lines."
+editable = false
 wrap_mode = 1
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
@@ -179,6 +183,13 @@ vertical_alignment = 1
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
+[node name="APILabel" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+text = "API"
+vertical_alignment = 1
+
 [node name="Label3" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 auto_translate_mode = 1
 layout_mode = 2
@@ -199,6 +210,7 @@ unique_name_in_owner = true
 stream = ExtResource("5_mmsii")
 
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_completed"]
+[connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_request_completed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/EditHistory" to="." method="_on_edit_history_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/BotCancel" to="." method="_abandon_request"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureOverrideCheckbox" to="." method="_on_temperature_override_checkbox_toggled"]

@@ -10,8 +10,8 @@ extends Resource
 ## The name of the AI model as listed in the available models section.
 @export var ai_model: String
 
-## The class of the AI provider for that model, e.g. ollama_api, if empty it will try to use the API class in the AI Hub tab.
-@export var api_class: String
+## The class of the LLM provider resource for that model, e.g. res://addons/ai_assistant_hub/llm_providers/ollama.tres, if empty it will try to use the API selected in AI Hub tab.
+@export var llm_provider: LLMProviderResource
 
 ## Used to give the System message to the chat.
 ## This gives the overall direction on what the assistant should do.

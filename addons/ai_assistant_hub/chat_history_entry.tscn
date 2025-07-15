@@ -16,7 +16,6 @@ layout_mode = 2
 selected = 0
 item_count = 2
 popup/item_0/text = "user"
-popup/item_0/id = 0
 popup/item_1/text = "assistant"
 popup/item_1/id = 1
 

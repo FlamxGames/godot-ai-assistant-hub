@@ -2,14 +2,24 @@
 class_name OpenWebUIAPI
 extends LLMInterface
 
-var HEADERS := ["Content-Type: application/json", "Authorization: Bearer %s" % ProjectSettings.get_setting(AIHubPlugin.CONFIG_OPENWEBUI_API_KEY)]
+var _headers: PackedStringArray # set in initialize function
+
+const DEPRECATED_API_KEY_SETTING := "plugins/ai_assistant_hub/openwebui_api_key"
+
+
+func _initialize() -> void:
+	_headers = ["Content-Type: application/json", 
+				"Authorization: Bearer %s" % _api_key ]
+
 
 func send_get_models_request(http_request:HTTPRequest) -> bool:
-	var url:String = "%s/api/models" % ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)
-	#print("Calling: %s" % url)
-	var error = http_request.request(url, HEADERS, HTTPClient.METHOD_GET)
+	if _api_key.is_empty():
+		push_error("OpenWebUI API key not set. Please configure the API key in the main tab and spawn a new assistant.")
+		return false
+	
+	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Something when wrong with last AI API call: %s" % url)
+		push_error("Something when wrong with last AI API call: %s" % _models_url)
 		return false
 	return true
 
@@ -29,6 +39,10 @@ func read_models_response(body:PackedByteArray) -> Array[String]:
 
 
 func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
+	if _api_key.is_empty():
+		push_error("OpenWebUI API key not set. Please configure the API key in the main tab and spawn a new assistant.")
+		return false
+	
 	if model.is_empty():
 		push_error("ERROR: You need to set an AI model for this assistant type.")
 		return false
@@ -44,11 +58,9 @@ func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 	
 	var body := JSON.new().stringify(body_dict)
 	
-	var url = _get_chat_url()
-	#print("calling %s with body: %s" % [url, body])
-	var error = http_request.request(url, HEADERS, HTTPClient.METHOD_POST, body)
+	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		push_error("Something when wrong with last AI API call.\nURL: %s\nBody:\n%s" % [url, body])
+		push_error("Something when wrong with last AI API call.\nURL: %s\nBody:\n%s" % [_chat_url, body])
 		return false
 	return true
 
@@ -63,5 +75,7 @@ func read_response(body) -> String:
 		return LLMInterface.INVALID_RESPONSE
 
 
-func _get_chat_url() -> String:
-	return "%s/api/chat/completions" % ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)
+# ----- Deprecated section - used to read the key to migrate to user settings file -----
+
+func get_deprecated_api_key() -> String:
+	return ProjectSettings.get_setting(DEPRECATED_API_KEY_SETTING, "")

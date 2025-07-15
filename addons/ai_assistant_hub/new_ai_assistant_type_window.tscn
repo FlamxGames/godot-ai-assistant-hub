@@ -8,7 +8,7 @@ bg_color = Color(0.21, 0.24, 0.29, 1)
 [node name="NewAIAssistantTypeWindow" type="Window"]
 title = "New AI Assistant Type"
 initial_position = 2
-size = Vector2i(800, 500)
+size = Vector2i(900, 600)
 script = ExtResource("1_iekrh")
 
 [node name="Background" type="Panel" parent="."]
@@ -67,38 +67,25 @@ placeholder_text = "Give a description for the assistant. This will dictate its 
 \"You are a useful assistant for game development, expert in the Godot engine\"."
 wrap_mode = 1
 
-[node name="APILabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="ModelLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "API class
-"
+text = "AI Model"
 horizontal_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="APILineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "AI provider class, e.g. ollama_api"
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "If empty it will use the selected in the AI Hub tab."
-autowrap_mode = 3
-
-[node name="ModelLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
-layout_mode = 2
-text = "AI Model"
-horizontal_alignment = 2
-
-[node name="ModelLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="ModelLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "AI model used by this assistant type"
+
+[node name="APILabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "API"
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -112,8 +99,9 @@ alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "NOTE: This will create a resource under %s using the name below.
-- Once created, double click it to edit its configuration, including all values above.
-- You can also add an icon and other properties there.
+- You will see a new button in the AI Hub tab, click it to start a new chat with your assistant.
+- The resource file will open in the Inspector editor, there you can add an icon and other optional properties.
+- You can go back to edit the assistant type configuration by editing this resource (.tres) file.
 - You can delete the assistant type by deleting the resource file."
 autowrap_mode = 3
 

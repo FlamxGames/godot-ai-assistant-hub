@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=9 format=3 uid="uid://yb11oq0eavff"]
+[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=11 format=3 uid="uid://yb11oq0eavff"]
 
+[ext_resource type="Resource" uid="uid://c0xq2vafep0gu" path="res://addons/ai_assistant_hub/llm_providers/ollama.tres" id="1_hmbmm"]
 [ext_resource type="Resource" uid="uid://8ut2h386rbmi" path="res://examples/quick_prompts/ai_qp_read_code.tres" id="1_lxjlw"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_7cifq"]
 [ext_resource type="Resource" uid="uid://b6s6jrt6e5jah" path="res://examples/quick_prompts/ai_qp_code_review.tres" id="2_fnke8"]
 [ext_resource type="Resource" uid="uid://bsn3twnsske1o" path="res://examples/quick_prompts/ai_qp_write_code.tres" id="3_s4oa6"]
 [ext_resource type="Resource" uid="uid://cpjaosxq42axt" path="res://examples/quick_prompts/ai_qp_describe_code.tres" id="4_ky1gk"]
@@ -17,7 +19,8 @@ script = ExtResource("6_wxl07")
 type_name = "Coder Senior"
 type_icon = SubResource("AtlasTexture_cublj")
 ai_model = "deepseek-coder-v2:latest"
+llm_provider = ExtResource("1_hmbmm")
 ai_description = "You are a Godot AI assistant. You respond in a concise manner and you can write high quality GDScript code for Godot 4. You are chatting with an experienced developer and every code request you receive is for GDScript."
 use_custom_temperature = false
 custom_temperature = 0.5
-quick_prompts = Array[Resource("res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd")]([ExtResource("1_lxjlw"), ExtResource("2_fnke8"), ExtResource("3_s4oa6"), ExtResource("4_ky1gk"), ExtResource("5_x3qwg")])
+quick_prompts = Array[ExtResource("2_7cifq")]([ExtResource("1_lxjlw"), ExtResource("2_fnke8"), ExtResource("3_s4oa6"), ExtResource("4_ky1gk"), ExtResource("5_x3qwg")])

@@ -2,15 +2,11 @@
 class_name AIAssistantHub
 extends Control
 
-signal models_refreshed(models:Array[String])
-signal new_api_loaded(api_class:String)
-
 const NEW_AI_ASSISTANT_BUTTON = preload("res://addons/ai_assistant_hub/new_ai_assistant_button.tscn")
 const NEW_AI_ASSISTANT_TYPE_WINDOW = preload("res://addons/ai_assistant_hub/new_ai_assistant_type_window.tscn")
 
 @onready var models_http_request: HTTPRequest = %ModelsHTTPRequest
 @onready var url_txt: LineEdit = %UrlTxt
-@onready var api_class_txt: LineEdit = %ApiClassTxt
 @onready var models_list: ItemList = %ModelsList
 @onready var models_list_error: Label = %ModelsListError
 @onready var no_assistants_guide: Label = %NoAssistantsGuide
@@ -19,14 +15,14 @@ const NEW_AI_ASSISTANT_TYPE_WINDOW = preload("res://addons/ai_assistant_hub/new_
 @onready var new_assistant_type_button: Button = %NewAssistantTypeButton
 @onready var llm_provider_option: OptionButton = %LLMProviderOption
 @onready var url_label: Label = %UrlLabel
-@onready var openrouter_key_container: HBoxContainer = %OpenRouterKeyContainer
-@onready var openrouter_api_key: LineEdit = %OpenRouterAPIKey
+@onready var api_key_txt: LineEdit = %APIKeyTxt
+@onready var get_key_link: LinkButton = %GetKeyLink
 
-var _plugin:EditorPlugin
+var _plugin:AIHubPlugin
 var _tab_bar:TabBar
 var _model_names:Array[String] = []
 var _models_llm: LLMInterface
-var _current_provider_id: String = ""
+var _current_api_id:String
 
 
 func _tab_changed(tab_index: int) -> void:
@@ -38,30 +34,16 @@ func _tab_changed(tab_index: int) -> void:
 
 func _close_tab(tab_index: int) -> void:
 	var chat = tab_container.get_tab_control(tab_index)
-	models_refreshed.disconnect(chat.refresh_models)
 	chat.queue_free()
 
 
-func initialize(plugin:EditorPlugin) -> void:
+func initialize(plugin:AIHubPlugin) -> void:
 	_plugin = plugin
-	_models_llm = _plugin.new_llm_provider()
-	
 	await ready
-	url_txt.text = ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)
-	api_class_txt.text = ProjectSettings.get_setting(AIHubPlugin.CONFIG_LLM_API)
-	_current_provider_id = api_class_txt.text
+	_current_api_id = ProjectSettings.get_setting(AIHubPlugin.CONFIG_LLM_API)
 	
-	# Load OpenRouter API key
-	if _current_provider_id == "openrouter_api":
-		_load_openrouter_api_key()
-	elif ProjectSettings.has_setting(AIHubPlugin.CONFIG_OPENROUTER_API_KEY):
-		openrouter_api_key.text = ProjectSettings.get_setting(AIHubPlugin.CONFIG_OPENROUTER_API_KEY)
-	
-	# Initialize LLM provider dropdown
-	_initialize_llm_provider_options()
-	
-	_on_assistants_refresh_btn_pressed()
-	_on_refresh_models_btn_pressed()
+	_initialize_llm_provider_options() # Load LLM providers
+	_on_assistants_refresh_btn_pressed() # Load assistant buttons
 	
 	_tab_bar = tab_container.get_tab_bar()
 	_tab_bar.tab_changed.connect(_tab_changed)
@@ -71,57 +53,73 @@ func initialize(plugin:EditorPlugin) -> void:
 # Initialize LLM provider options
 func _initialize_llm_provider_options() -> void:
 	llm_provider_option.clear()
-	var providers = _plugin.get_available_llm_providers()
-	
-	for i in range(providers.size()):
-		var provider = providers[i]
-		llm_provider_option.add_item(provider.name)
-		llm_provider_option.set_item_metadata(i, provider.id)
-		
-		# Select currently used provider
-		if provider.id == _current_provider_id:
-			llm_provider_option.select(i)
-	
-	# Update UI state
-	_update_provider_ui()
+
+	var files := _get_all_resources("%s/llm_providers" % self.scene_file_path.get_base_dir())
+	var i := 0
+	for provider_file in files:
+		var provider = load(provider_file)
+		if provider is LLMProviderResource:
+			llm_provider_option.add_item(provider.name)
+			llm_provider_option.set_item_tooltip(i, provider.description)
+			llm_provider_option.set_item_metadata(i, provider)
+			# Select currently used provider
+			if provider.api_id == _current_api_id:
+				llm_provider_option.select(i)
+				_on_llm_provider_option_item_selected(i)
+			i += 1
 
 
 # Update UI based on current provider selection
 func _update_provider_ui() -> void:
-	var provider_id = _current_provider_id
+	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
+	if llm_provider == null:
+		push_error("No LLM provider is selected.")
+		return
 	
-	# Ollama needs URL, OpenRouter needs API key
-	if provider_id == "ollama_api":
-		url_label.text = "Server URL"
-		url_txt.placeholder_text = "Example: http://127.0.0.1:11434"
-		url_txt.tooltip_text = "URL of the host running the LLM.\n\nDefault value uses Ollama's default port."
-		url_txt.visible = true
-		openrouter_key_container.visible = false
-	elif provider_id == "openrouter_api":
-		url_label.text = "OpenRouter Settings"
-		url_txt.visible = false
-		openrouter_key_container.visible = true
+	var config = LLMConfigManager.new(llm_provider.api_id)
+	if llm_provider.fix_url.is_empty():
+		url_txt.editable = true
+		url_txt.text = config.load_url()
+	else:
+		url_txt.editable = false
+		url_txt.text = llm_provider.fix_url
+	api_key_txt.visible = llm_provider.requires_key
+	api_key_txt.text = config.load_key()
+	get_key_link.visible = not llm_provider.get_key_url.is_empty()
+	get_key_link.uri = llm_provider.get_key_url
+	
+	if url_txt.visible and api_key_txt.visible:
+		url_label.text = "Server URL / API key"
 	else:
 		url_label.text = "Server URL"
-		url_txt.visible = true
-		openrouter_key_container.visible = false
+	
+	_on_refresh_models_btn_pressed() # Load models
 
 
 func _on_settings_changed(_x) -> void:
-	ProjectSettings.set_setting(AIHubPlugin.CONFIG_BASE_URL, url_txt.text)
-	ProjectSettings.set_setting(AIHubPlugin.CONFIG_LLM_API, api_class_txt.text)
-	
-	# Save OpenRouter API key
-	if _current_provider_id == "openrouter_api":
-		ProjectSettings.set_setting(AIHubPlugin.CONFIG_OPENROUTER_API_KEY, openrouter_api_key.text)
-	ProjectSettings.save()
+	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
+	if llm_provider == null:
+		push_error("No LLM provider is selected. Settings not saved.")
+		return
+	var config = LLMConfigManager.new(llm_provider.api_id)
+	if not api_key_txt.text.is_empty():
+		config.save_key(api_key_txt.text)
+	if llm_provider.fix_url.is_empty() and not url_txt.text.is_empty():
+		config.save_url(url_txt.text)
+	_models_llm.load_llm_parameters()
 
 
 func _on_refresh_models_btn_pressed() -> void:
-	models_list.deselect_all()
-	models_list.visible = false
-	models_list_error.visible = false
-	_models_llm.send_get_models_request(models_http_request)
+	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
+	if not url_txt.text.is_empty():
+		models_list.deselect_all()
+		models_list.visible = false
+		models_list_error.visible = false
+		_models_llm.send_get_models_request(models_http_request)
+	else:
+		models_list_error.text = "Configure the Server URL below to get the list of available models."
+		models_list_error.visible = true
+		models_list.visible = false
 
 
 func _on_models_http_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -142,7 +140,6 @@ func _on_models_http_request_completed(result: int, response_code: int, headers:
 				_model_names = models_returned
 				for model in _model_names:
 					models_list.add_item(model)
-				models_refreshed.emit(_model_names) #for existing chats
 	else:
 		push_error("HTTP response: Result: %s, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
 		models_list_error.text = "Something went wrong querying for models, is the Server URL correct?"
@@ -168,7 +165,7 @@ func _on_assistants_refresh_btn_pressed() -> void:
 			assistant_types_container.add_child(new_bot_btn)
 	
 	if not found:
-		no_assistants_guide.text = "Create an assistant type by selecting a model and clicking \"New assistant type\". Or manually create a new resource AIAssistantResource in the assistant types folder, then click the reload button.\nThe assistant types folder is at: %s" % assistants_path
+		no_assistants_guide.text = "Create an assistant type by selecting a model and clicking \"New assistant type\"."
 		no_assistants_guide.visible = true
 		assistant_types_container.visible = false
 	else:
@@ -179,10 +176,7 @@ func _on_assistants_refresh_btn_pressed() -> void:
 func _on_new_bot_btn_chat_created(chat:AIChat, assistant_type:AIAssistantResource) -> void:
 	tab_container.add_child(chat)
 	tab_container.set_tab_icon(tab_container.get_child_count() - 1, assistant_type.type_icon)
-	chat.refresh_models(_model_names)
-	models_refreshed.connect(chat.refresh_models)
-	new_api_loaded.connect(chat.load_api)
-	chat.greet()
+	tab_container.current_tab = tab_container.get_child_count() - 1
 
 
 func _get_all_resources(path: String) -> Array[String]:  
@@ -198,58 +192,32 @@ func _get_all_resources(path: String) -> Array[String]:
 	return file_paths
 
 
-func _on_api_load_btn_pressed() -> void:
-	var new_llm:LLMInterface = _plugin.new_llm_provider()
-	if new_llm == null:
-		push_error("Invalid API class")
-		return
-	_models_llm = new_llm
-	new_api_loaded.emit(api_class_txt.text)
-
-
 # Called when LLM provider option changes
 func _on_llm_provider_option_item_selected(index: int) -> void:
-	var provider_id = llm_provider_option.get_item_metadata(index)
-	if _current_provider_id != provider_id:
-		_current_provider_id = provider_id
-		api_class_txt.text = provider_id
-		ProjectSettings.set_setting(AIHubPlugin.CONFIG_LLM_API, provider_id)
-		
-		# Load API key for OpenRouter if we're switching to it
-		if provider_id == "openrouter_api":
-			_load_openrouter_api_key()
-			
-		_update_provider_ui()
-		_on_api_load_btn_pressed()
-
-
-# Load OpenRouter API key from the API class
-func _load_openrouter_api_key() -> void:
-	var openrouter_api = load("res://addons/ai_assistant_hub/llm_apis/openrouter_api.gd").new()
-	var api_key = openrouter_api._get_api_key()
-	if not api_key.is_empty():
-		openrouter_api_key.text = api_key
-
-
-# Called when OpenRouter API key changes
-func _on_openrouter_api_key_text_changed(new_text: String) -> void:
-	# Save to ProjectSettings for backward compatibility
-	ProjectSettings.set_setting(AIHubPlugin.CONFIG_OPENROUTER_API_KEY, new_text)
-	
-	# Save to file using the OpenRouter API class
-	if _current_provider_id == "openrouter_api":
-		var openrouter_api = load("res://addons/ai_assistant_hub/llm_apis/openrouter_api.gd").new()
-		openrouter_api.save_api_key(new_text)
+	var llm_provider:LLMProviderResource = llm_provider_option.get_item_metadata(index)
+	_current_api_id = llm_provider.api_id
+	var new_llm:LLMInterface = _plugin.new_llm(llm_provider)
+	if new_llm == null:
+		push_error("Invalid LLM API")
+	else:
+		_models_llm = new_llm
+	ProjectSettings.set_setting(AIHubPlugin.CONFIG_LLM_API, llm_provider.api_id)
 	ProjectSettings.save()
+	_update_provider_ui()
+
+
+func get_selected_llm_resource() -> LLMProviderResource:
+	return llm_provider_option.get_selected_metadata()
 
 
 func _on_new_assistant_type_button_pressed() -> void:
 	if models_list.is_anything_selected():
 		var new_assistant_type_window:NewAIAssistantTypeWindow = NEW_AI_ASSISTANT_TYPE_WINDOW.instantiate()
-		var api_class :String = api_class_txt.text
+		var api_class :String = _current_api_id
 		var model_name :String = models_list.get_item_text(models_list.get_selected_items()[0])
 		var assistants_path = "%s/assistants" % self.scene_file_path.get_base_dir()
-		new_assistant_type_window.initialize(api_class, model_name, assistants_path)
+		var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
+		new_assistant_type_window.initialize(llm_provider, model_name, assistants_path)
 		new_assistant_type_window.assistant_type_created.connect(_on_assistants_refresh_btn_pressed)
 		add_child(new_assistant_type_window)
 		new_assistant_type_window.popup()

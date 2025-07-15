@@ -21,7 +21,7 @@ func initialize(converstaion:AIConversation) -> void:
 	
 	for section in _chat_history:
 		var entry:ChatHistoryEntry = CHAT_HISTORY_ENTRY.instantiate()
-		entry.initialize(section)
+		entry.initialize(section, _converstaion.get_assistant_role_name())
 		entries_container.add_child(entry)
 		_entries_map[entry] = section
 		entry.modified.connect(_on_entry_modified)

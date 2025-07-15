@@ -2,6 +2,8 @@
 class_name AIChat
 extends Control
 
+signal models_loaded
+
 enum Caller {
 	You,
 	Bot,
@@ -11,6 +13,7 @@ enum Caller {
 const CHAT_HISTORY_EDITOR = preload("res://addons/ai_assistant_hub/chat_history_editor.tscn")
 
 @onready var http_request: HTTPRequest = %HTTPRequest
+@onready var models_http_request: HTTPRequest = %ModelsHTTPRequest
 @onready var output_window: RichTextLabel = %OutputWindow
 @onready var prompt_txt: TextEdit = %PromptTxt
 @onready var bot_portrait: BotPortrait = %BotPortrait
@@ -21,8 +24,9 @@ const CHAT_HISTORY_EDITOR = preload("res://addons/ai_assistant_hub/chat_history_
 @onready var temperature_slider: HSlider = %TemperatureSlider
 @onready var temperature_override_checkbox: CheckBox = %TemperatureOverrideCheckbox
 @onready var temperature_slider_container: HBoxContainer = %TemperatureSliderContainer
+@onready var api_label: Label = %APILabel
 
-var _plugin:EditorPlugin
+var _plugin:AIHubPlugin
 var _bot_name: String
 var _assistant_settings: AIAssistantResource
 var _last_quick_prompt: AIQuickPromptResource
@@ -32,26 +36,8 @@ var _llm: LLMInterface
 var _conversation: AIConversation
 
 
-# Scroll the output window by one page
-func _scroll_output_by_page() -> void:
-	if output_window == null:
-		return
-	
-	# Get the vertical scrollbar of the output window
-	var v_scroll_bar := output_window.get_v_scroll_bar()
-	if v_scroll_bar == null:
-		return
-	
-	# Get the visible height of the output window (one page height)
-	var visible_height = output_window.size.y
-	
-	# Calculate new position by adding one page height, but don't exceed maximum value
-	var new_value = min(v_scroll_bar.value + visible_height, v_scroll_bar.max_value)
-	
-	# Set the new scroll position
-	v_scroll_bar.value = new_value
-
-func initialize(plugin:EditorPlugin, assistant_settings: AIAssistantResource, bot_name:String) -> void:
+func initialize(plugin:AIHubPlugin, assistant_settings: AIAssistantResource, bot_name:String) -> void:
+	await ready
 	_plugin = plugin
 	_assistant_settings = assistant_settings
 	_bot_name = bot_name
@@ -59,13 +45,24 @@ func initialize(plugin:EditorPlugin, assistant_settings: AIAssistantResource, bo
 	_bot_answer_handler = AIAnswerHandler.new(plugin, _code_selector)
 	_bot_answer_handler.bot_message_produced.connect(func(message): _add_to_chat(message, Caller.Bot) )
 	_bot_answer_handler.error_message_produced.connect(func(message): _add_to_chat(message, Caller.System) )
-	_conversation = AIConversation.new()
+	var llm_provider: LLMProviderResource = assistant_settings.llm_provider
+	if llm_provider == null:
+		_add_to_chat("Warning: Assistant %s does not have LLM provider. Using the current LLM API selected in the main tab." % assistant_settings.type_name, Caller.System)
+		llm_provider = plugin.get_current_llm_provider()
+		if llm_provider == null:
+			_add_to_chat("ERROR: No LLM provider found.", Caller.System)
+			return
+	api_label.text = llm_provider.name
+	_conversation = AIConversation.new(
+		llm_provider.system_role_name,
+		llm_provider.user_role_name,
+		llm_provider.assistant_role_name
+	)
 		
 	if _assistant_settings: # We need to check this, otherwise this is called when editing the plugin
-		load_api(_assistant_settings.api_class)
+		_load_api(llm_provider)
 		_conversation.set_system_message(_assistant_settings.ai_description)
 		
-		await ready
 		temperature_slider.value = assistant_settings.custom_temperature
 		temperature_override_checkbox.button_pressed = assistant_settings.use_custom_temperature
 		_on_temperature_override_checkbox_toggled(temperature_override_checkbox.button_pressed)
@@ -80,40 +77,30 @@ func initialize(plugin:EditorPlugin, assistant_settings: AIAssistantResource, bo
 			qp_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			qp_button.pressed.connect(func(): _on_qp_button_pressed(qp))
 			quick_prompts_panel.add_child(qp_button)
+		
+		_llm.send_get_models_request(models_http_request)
+		await models_loaded
+		prompt_txt.text = ""
+		prompt_txt.editable = true
+		_greet()
 
 
-func load_api(api_class: String) -> void:
-	if not _assistant_settings.api_class.is_empty() and api_class != _assistant_settings.api_class:
-		_add_to_chat("This assistant is still using API class %s. If you want it to change with the API selected in AI Hub, remove the API class property from its assistant type resource and summon a new assistant." % _assistant_settings.api_class, Caller.System)
+func _load_api(llm_provider:LLMProviderResource) -> void:
+	_llm = _plugin.new_llm(llm_provider)
+	if _llm:
+		_llm.model = _assistant_settings.ai_model
+		_llm.override_temperature = _assistant_settings.use_custom_temperature
+		_llm.temperature = _assistant_settings.custom_temperature
 	else:
-		_llm = _plugin.new_llm_provider(api_class)
-		if _llm:
-			_llm.model = _assistant_settings.ai_model
-			_llm.override_temperature = _assistant_settings.use_custom_temperature
-			_llm.temperature = _assistant_settings.custom_temperature
-		else:
-			push_error("LLM provider failed to initialize. Check the API class in the assistant type resource, or if empty, the plugin's LLM provider configuration in Project Settings.")
+		push_error("LLM provider failed to initialize. Check the LLM API configuration for it.")
 
 
-func greet() -> void:
+func _greet() -> void:
 	if _assistant_settings.quick_prompts.size() == 0:
 		_add_to_chat("This assistant type doesn't have Quick Prompts defined. Add them to the assistant's resource configuration to unlock some additional capabilities, like writing in the code editor.", Caller.System)
 	
 	var greet_prompt := "Give a short greeting including just your name (which is \"%s\") and how can you help in a concise sentence." % _bot_name
 	_submit_prompt(greet_prompt)
-
-
-func refresh_models(models: Array[String]) -> void:
-	model_options_btn.clear()
-	var selected_found := false
-	for model in models:
-		model_options_btn.add_item(model)
-		if model.contains(_assistant_settings.ai_model):
-			model_options_btn.select(model_options_btn.item_count - 1)
-			selected_found = true
-	if not selected_found:
-		model_options_btn.add_item(_assistant_settings.ai_model)
-		model_options_btn.select(model_options_btn.item_count - 1)
 
 
 func _input(event: InputEvent) -> void:
@@ -249,6 +236,34 @@ func _add_to_chat(text:String, caller:Caller) -> void:
 		_scroll_output_by_page()
 
 
+func _on_models_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	if result == 0:
+		var models_returned: Array = _llm.read_models_response(body)
+		if models_returned.size() == 0:
+			push_error("No models found. Download at least one model and try again.")
+		else:
+			if models_returned[0] == LLMInterface.INVALID_RESPONSE:
+				push_error("Error while trying to get the models list. Response: %s" % _llm.get_full_response(body))
+			else:
+				_load_models(models_returned)
+	else:
+		push_error("HTTP response: Result: %s, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
+
+
+func _load_models(models: Array[String]) -> void:
+	model_options_btn.clear()
+	var selected_found := false
+	for model in models:
+		model_options_btn.add_item(model)
+		if model == _assistant_settings.ai_model:
+			model_options_btn.select(model_options_btn.item_count - 1)
+			selected_found = true
+	if not selected_found:
+		model_options_btn.add_item(_assistant_settings.ai_model)
+		model_options_btn.select(model_options_btn.item_count - 1)
+	models_loaded.emit()
+
+
 func _on_edit_history_pressed() -> void:
 	var history_editor:ChatHistoryEditor = CHAT_HISTORY_EDITOR.instantiate()
 	history_editor.initialize(_conversation)
@@ -267,3 +282,19 @@ func _on_model_options_btn_item_selected(index: int) -> void:
 
 func _on_temperature_slider_value_changed(value: float) -> void:
 	_llm.temperature = snappedf(temperature_slider.value, 0.001)
+
+
+# Scroll the output window by one page
+func _scroll_output_by_page() -> void:
+	if output_window == null:
+		return
+	# Get the vertical scrollbar of the output window
+	var v_scroll_bar := output_window.get_v_scroll_bar()
+	if v_scroll_bar == null:
+		return
+	# Get the visible height of the output window (one page height)
+	var visible_height = output_window.size.y
+	# Calculate new position by adding one page height, but don't exceed maximum value
+	var new_value = min(v_scroll_bar.value + visible_height, v_scroll_bar.max_value)
+	# Set the new scroll position
+	v_scroll_bar.value = new_value

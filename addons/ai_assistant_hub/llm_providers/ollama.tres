@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="LLMProviderResource" load_steps=2 format=3 uid="uid://c0xq2vafep0gu"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/llm_providers/llm_provider_resource.gd" id="1_xlijg"]
+
+[resource]
+script = ExtResource("1_xlijg")
+api_id = "ollama_api"
+name = "Ollama"
+description = "Locally run open source LLM (requires Ollama software)"
+requires_key = false
+get_key_url = ""
+fix_url = ""
+models_url_postfix = "/api/tags"
+chat_url_postfix = "/api/chat"
+system_role_name = "system"
+user_role_name = "user"
+assistant_role_name = "assistant"

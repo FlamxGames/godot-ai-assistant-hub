@@ -2,29 +2,39 @@
 class_name GeminiAPI
 extends LLMInterface
 
-# Gemini API configuration
-const API_KEY_SETTING := "plugins/ai_assistant_hub/gemini_api_key"
-const BASE_URL := "https://generativelanguage.googleapis.com/v1beta/models"
-const DEFAULT_MODEL := "gemini-2.0-flash"
-const API_KEY_FILE := "res://addons/ai_assistant_hub/llm_apis/gemini_api_key.gd"
+const DEPRECATED_API_KEY_SETTING := "plugins/ai_assistant_hub/gemini_api_key"
+const DEPRECATED_API_KEY_FILE := "res://addons/ai_assistant_hub/llm_apis/gemini_api_key.gd"
+
 
 var _headers := PackedStringArray([
 	"Content-Type: application/json"
 ])
 
+
+func _initialize() -> void:
+	_rebuild_urls()
+	llm_config_changed.connect(_rebuild_urls)
+	model_changed.connect(_rebuild_urls.unbind(1))
+
+
+func _rebuild_urls() -> void:
+	_models_url = "%s?key=%s" % [_base_url, _api_key]
+	_chat_url = "%s/%s:generateContent?key=%s" % [_base_url, model, _api_key]
+
+
 # Get model list (Gemini has a fixed set, but we can fetch or hardcode)
 func send_get_models_request(http_request: HTTPRequest) -> bool:
-	var api_key := _get_api_key()
-	if api_key.is_empty():
-		push_error("Gemini API key not set. Please configure the API key in project settings.")
+	#API key is in LLMInterface base class
+	if _api_key.is_empty():
+		push_error("Gemini API key not set. Configure the API key in the main tab and try again.")
 		return false
 
-	var url := "%s?key=%s" % [BASE_URL, api_key]
-	var error = http_request.request(url, _headers, HTTPClient.METHOD_GET)
+	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Gemini API request failed: %s" % url)
+		push_error("Gemini API request failed: %s" % _models_url)
 		return false
 	return true
+
 
 func read_models_response(body: PackedByteArray) -> Array[String]:
 	var json := JSON.new()
@@ -38,8 +48,8 @@ func read_models_response(body: PackedByteArray) -> Array[String]:
 		model_names.sort()
 		return model_names
 	else:
-		# Fallback: Gemini has a fixed model name
-		return [DEFAULT_MODEL]
+		return [INVALID_RESPONSE]
+
 
 # Helper function: recursively extract 'content' from stringified JSON messages
 func _extract_content_from_json_string(s) -> String:
@@ -58,25 +68,22 @@ func _extract_content_from_json_string(s) -> String:
 			break
 	return str(txt)
 
+
 # NOTE: content is expected as Array of user/system/assistant message texts, not raw JSON.
 # This method will transform the array into the required Gemini format.
 func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	# message_list is Array of Dictionaries: [{role="user", text="Hello"}, ...]
-	var api_key := _get_api_key()
-	if api_key.is_empty():
-		push_error("Gemini API key not set. Please configure the API key in project settings.")
+	if _api_key.is_empty():
+		push_error("Gemini API key not set. Configure the API key in the main tab and spawn a new assistant.")
 		return false
 
-	# Always use DEFAULT_MODEL if not explicitly set
-	if typeof(model) != TYPE_STRING or model.is_empty():
-		model = DEFAULT_MODEL
-		push_warning("Model not set, using default model: %s" % model)
+	if model.is_empty():
+		push_error("ERROR: You need to set an AI model for this assistant type.")
+		return false
 	
 	# Ensure model does not have "models/" prefix
 	if model.begins_with("models/"):
 		model = model.substr("models/".length())
-
-	var url := "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s" % [model, api_key]
 
 	# Gemini expects each message with role and a parts array of {text: ...}
 	var formatted_contents := []
@@ -85,11 +92,6 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 		var role: String = str(msg.get("role", "user"))
 		var text = msg.get("content", msg.get("text", msg))
 		text = _extract_content_from_json_string(text)
-
-		# Remap "assistant" role to "model" for Gemini API compatibility.
-		# Gemini only accepts "user" or "model" roles in its 'contents' array.
-		if role == "assistant":
-			role = "model"
 
 		# If it's the first message and it's a system message, change the role to user
 		if i == 0 and role == "system":
@@ -100,7 +102,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 			"parts": [ { "text": str(text) } ]
 		})
 	
-	print("ACTUAL message_list: ", message_list)
+	#print("ACTUAL message_list: ", message_list)
 
 	var body_dict := {
 		"contents": formatted_contents
@@ -109,21 +111,21 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 		body_dict["generationConfig"] = { "temperature": temperature }
 	var body := JSON.stringify(body_dict)
 
-	var error = http_request.request(url, _headers, HTTPClient.METHOD_POST, body)
-	print("Gemini API Request URL: ", url)
-	print("Gemini API Request body: ", body)
+	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
+	#print("Gemini API Request URL: ", _chat_url)
+	#print("Gemini API Request body: ", body)
 	if error != OK:
-		push_error("Gemini API chat request failed.\nURL: %s\nRequest body: %s" % [url, body])
+		push_error("Gemini API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
 		return false
 	return true
 
 
 func read_response(body: PackedByteArray) -> String:
 	var raw_body = body.get_string_from_utf8()
-	print("Gemini API raw response: ", raw_body)
+	#print("Gemini API raw response: ", raw_body)
 	var json := JSON.new()
 	var parse_result := json.parse(body.get_string_from_utf8())
-	print("HTTP Response body: ", body.get_string_from_utf8())
+	#print("HTTP Response body: ", body.get_string_from_utf8())
 	if parse_result != OK:
 		push_error("Failed to parse Gemini response JSON: %s" % json.get_error_message())
 		return INVALID_RESPONSE
@@ -144,37 +146,21 @@ func read_response(body: PackedByteArray) -> String:
 	push_error("Failed to parse Gemini response: %s" % JSON.stringify(response))
 	return INVALID_RESPONSE
 
-# API key management (file + ProjectSettings)
-func _get_api_key() -> String:
-	var api_key := _load_api_key_from_file()
-	if api_key.is_empty() and ProjectSettings.has_setting(API_KEY_SETTING):
-		api_key = ProjectSettings.get_setting(API_KEY_SETTING)
-		if not api_key.is_empty():
-			_save_api_key_to_file(api_key)
-	return api_key
 
-func _save_api_key_to_file(api_key: String) -> void:
-	var file_content := """@tool
-extends Resource
+# ----- Deprecated section - used to read the key to migrate to user settings file -----
 
-# This file is auto-generated. Do not edit manually.
-# It stores the Gemini API key for the AI Assistant Hub plugin.
+func get_deprecated_api_key() -> String:
+	var old_api_key := _deprecated_load_api_key_from_file()
+	if old_api_key.is_empty() and ProjectSettings.has_setting(DEPRECATED_API_KEY_SETTING):
+		old_api_key = ProjectSettings.get_setting(DEPRECATED_API_KEY_SETTING)
+	return old_api_key
 
-const API_KEY := "%s"
-""" % api_key
-	var file := FileAccess.open(API_KEY_FILE, FileAccess.WRITE)
-	if file:
-		file.store_string(file_content)
-		file.close()
-	else:
-		push_error("Failed to save Gemini API key to file: %s" % API_KEY_FILE)
 
-func _load_api_key_from_file() -> String:
-	if not FileAccess.file_exists(API_KEY_FILE):
+func _deprecated_load_api_key_from_file() -> String:
+	if not FileAccess.file_exists(DEPRECATED_API_KEY_FILE):
 		return ""
-	var file := FileAccess.open(API_KEY_FILE, FileAccess.READ)
+	var file := FileAccess.open(DEPRECATED_API_KEY_FILE, FileAccess.READ)
 	if not file:
-		push_error("Failed to open Gemini API key file: %s" % API_KEY_FILE)
 		return ""
 	var content := file.get_as_text()
 	file.close()
@@ -184,7 +170,3 @@ func _load_api_key_from_file() -> String:
 	if result and result.get_group_count() > 0:
 		return result.get_string(1)
 	return ""
-
-func save_api_key(api_key: String) -> void:
-	_save_api_key_to_file(api_key)
-	ProjectSettings.set_setting(API_KEY_SETTING, api_key)

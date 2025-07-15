@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="LLMProviderResource" load_steps=2 format=3 uid="uid://bxv0aypqsw2hd"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/llm_providers/llm_provider_resource.gd" id="1_er34h"]
+
+[resource]
+script = ExtResource("1_er34h")
+api_id = "openrouter_api"
+name = "OpenRouter"
+description = "Unified interface to access various commercial LLMs"
+requires_key = true
+get_key_url = "https://openrouter.ai/keys"
+fix_url = "https://openrouter.ai/api/v1"
+models_url_postfix = "/models"
+chat_url_postfix = "/chat/completions"
+system_role_name = "system"
+user_role_name = "user"
+assistant_role_name = "assistant"

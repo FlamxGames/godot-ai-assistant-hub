@@ -4,14 +4,14 @@ extends LLMInterface
 
 const HEADERS := ["Content-Type: application/json"]
 
+
 func send_get_models_request(http_request: HTTPRequest) -> bool:
-	var base := ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)
-	var url := "%s/v1/models" % base
-	var err := http_request.request(url, HEADERS, HTTPClient.METHOD_GET)
+	var err := http_request.request(_models_url, HEADERS, HTTPClient.METHOD_GET)
 	if err != OK:
-		push_error("JanAPI GET models failed: %s" % url)
+		push_error("JanAPI GET models failed: %s" % _models_url)
 		return false
 	return true
+
 
 func read_models_response(body: PackedByteArray) -> Array[String]:
 	var j := JSON.new()
@@ -26,6 +26,7 @@ func read_models_response(body: PackedByteArray) -> Array[String]:
 		return out
 	return [INVALID_RESPONSE]
 
+
 func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	if model.is_empty():
 		push_error("JanAPI: no model set!")
@@ -37,13 +38,12 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	if override_temperature:
 		body["temperature"] = temperature
 	var payload := JSON.new().stringify(body)
-	var base := ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)
-	var url := "%s/v1/chat/completions" % base
-	var err := http_request.request(url, HEADERS, HTTPClient.METHOD_POST, payload)
+	var err := http_request.request(_chat_url, HEADERS, HTTPClient.METHOD_POST, payload)
 	if err != OK:
-		push_error("JanAPI chat request failed: %s\n%s" % [url, payload])
+		push_error("JanAPI chat request failed: %s\n%s" % [_chat_url, payload])
 		return false
 	return true
+
 
 func read_response(body: PackedByteArray) -> String:
 	var j := JSON.new()

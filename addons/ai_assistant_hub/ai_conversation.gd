@@ -3,6 +3,27 @@ class_name AIConversation
 
 var _chat_history:= []
 var _system_msg: String
+var _system_role_name:String
+var _user_role_name:String
+var _assistant_role_name:String
+
+
+func _init(system_role_name:String, user_role_name:String, assistant_role_name:String):
+	_system_role_name = system_role_name
+	_user_role_name = user_role_name
+	_assistant_role_name = assistant_role_name
+
+
+func get_system_role_name() -> String:
+	return _system_role_name
+
+
+func get_user_role_name() -> String:
+	return _user_role_name
+
+
+func get_assistant_role_name() -> String:
+	return _assistant_role_name
 
 
 func set_system_message(message:String) -> void:
@@ -18,7 +39,7 @@ func set_system_message(message:String) -> void:
 func add_user_prompt(prompt:String) -> void:
 	_chat_history.append(
 		{
-			"role": "user",
+			"role": _user_role_name,
 			"content": prompt
 		}
 	)
@@ -27,7 +48,7 @@ func add_user_prompt(prompt:String) -> void:
 func add_assistant_response(response:String) -> void:
 	_chat_history.append(
 		{
-			"role": "assistant",
+			"role": _assistant_role_name,
 			"content": response
 		}
 	)
@@ -37,7 +58,7 @@ func build() -> Array:
 	var messages := []
 	messages.append(
 		{
-			"role": "system",
+			"role": _system_role_name,
 			"content": _system_msg
 		}
 	)

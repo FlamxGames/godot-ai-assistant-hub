@@ -9,9 +9,9 @@ signal modified(entry:ChatHistoryEntry)
 @onready var forget_check_box: CheckBox = %ForgetCheckBox
 
 
-func initialize(data:Dictionary) -> void:
+func initialize(data:Dictionary, assistant_role_name:String) -> void:
 	await ready
-	if data["role"] == "assistant":
+	if data["role"] == assistant_role_name:
 		role_option_list.selected = 1
 	content_txt.text = data["content"]
 

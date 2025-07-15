@@ -157,6 +157,7 @@ layout_mode = 2
 [node name="NewAssistantTypeButton" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Select a model, then press this button to create a new type of assistant."
 disabled = true
 text = "New assistant type"
 icon = ExtResource("3_57y2f")
@@ -205,51 +206,21 @@ tooltip_text = "The URL of the host that runs your LLMs.
 The default value is for the local host using Ollama's default port."
 placeholder_text = "e.g. http://127.0.0.1:11434"
 
-[node name="OpenRouterKeyContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="OpenRouterAPIKey" type="LineEdit" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/OpenRouterKeyContainer"]
+[node name="APIKeyTxt" type="LineEdit" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "API key obtained from https://openrouter.ai/keys"
-placeholder_text = "OpenRouter API key"
+placeholder_text = "API key"
 secret = true
 
-[node name="OpenRouterLink" type="LinkButton" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/OpenRouterKeyContainer"]
+[node name="GetKeyLink" type="LinkButton" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "get key"
-uri = "https://openrouter.ai/keys"
+text = "Get key"
 
 [node name="Spacer" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 layout_mode = 2
-
-[node name="Label3" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
-auto_translate_mode = 1
-layout_mode = 2
-text = "API class"
-horizontal_alignment = 2
-
-[node name="ApiClassTxt" type="LineEdit" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-tooltip_text = "This must correspond to a script in `res://addons/ai_assistant_hub/llm_apis/` folder.
-
-If you create your own scripts that extend from `LLMInterface` class, provide the script name in this property to start using it instead of the Ollama API."
-placeholder_text = "ollama_api"
-
-[node name="APILoadBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
-auto_translate_mode = 1
-layout_mode = 2
-size_flags_horizontal = 8
-tooltip_text = "Load this class."
-icon = ExtResource("2_6xner")
-alignment = 2
-icon_alignment = 1
 
 [node name="Spacer2" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 auto_translate_mode = 1
@@ -263,7 +234,7 @@ layout_mode = 2
 
 [node name="VersionLabel" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
 layout_mode = 2
-text = "v1.5.0"
+text = "v1.6.0"
 horizontal_alignment = 2
 
 [node name="SupportBtn" type="LinkButton" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
@@ -282,6 +253,4 @@ uri = "https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/support.md
 [connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/VBoxContainer/NewAssistantTypeButton" to="." method="_on_new_assistant_type_button_pressed"]
 [connection signal="item_selected" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/LLMProviderContainer/LLMProviderOption" to="." method="_on_llm_provider_option_item_selected"]
 [connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/UrlTxt" to="." method="_on_settings_changed"]
-[connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/OpenRouterKeyContainer/OpenRouterAPIKey" to="." method="_on_openrouter_api_key_text_changed"]
-[connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/ApiClassTxt" to="." method="_on_settings_changed"]
-[connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/APILoadBtn" to="." method="_on_api_load_btn_pressed"]
+[connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/APIKeyTxt" to="." method="_on_settings_changed"]

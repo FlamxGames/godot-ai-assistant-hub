@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="LLMProviderResource" load_steps=2 format=3 uid="uid://b0fti7g31ugs1"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/llm_providers/llm_provider_resource.gd" id="1_8xs8o"]
+
+[resource]
+script = ExtResource("1_8xs8o")
+api_id = "gemini_api"
+name = "Gemini"
+description = "Google Gemini LLM"
+requires_key = true
+get_key_url = "https://aistudio.google.com/app/apikey"
+fix_url = "https://generativelanguage.googleapis.com/v1beta/models"
+models_url_postfix = ""
+chat_url_postfix = ""
+system_role_name = "system"
+user_role_name = "user"
+assistant_role_name = "model"

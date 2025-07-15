@@ -4,12 +4,11 @@ extends LLMInterface
 
 const HEADERS := ["Content-Type: application/json"]
 
+
 func send_get_models_request(http_request:HTTPRequest) -> bool:
-	var url:String = "%s/api/tags" % ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)
-	#print("Calling: %s" % url)
-	var error = http_request.request(url, HEADERS, HTTPClient.METHOD_GET)
+	var error = http_request.request(_models_url, HEADERS, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Something when wrong with last AI API call: %s" % url)
+		push_error("Something when wrong with last AI API call: %s" % _models_url)
 		return false
 	return true
 
@@ -44,11 +43,9 @@ func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 	
 	var body := JSON.new().stringify(body_dict)
 	
-	var url = _get_chat_url()
-	#print("calling %s with body: %s" % [url, body])
-	var error = http_request.request(url, HEADERS, HTTPClient.METHOD_POST, body)
+	var error = http_request.request(_chat_url, HEADERS, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		push_error("Something when wrong with last AI API call.\nURL: %s\nBody:\n%s" % [url, body])
+		push_error("Something when wrong with last AI API call.\nURL: %s\nBody:\n%s" % [_chat_url, body])
 		return false
 	return true
 
@@ -61,7 +58,3 @@ func read_response(body) -> String:
 		return ResponseCleaner.clean(response.message.content)
 	else:
 		return LLMInterface.INVALID_RESPONSE
-
-
-func _get_chat_url() -> String:
-	return "%s/api/chat" % ProjectSettings.get_setting(AIHubPlugin.CONFIG_BASE_URL)

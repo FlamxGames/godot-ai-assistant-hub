@@ -2,34 +2,31 @@
 class_name OpenRouterAPI
 extends LLMInterface
 
-# OpenRouter API basic configuration
-const API_KEY_SETTING := "plugins/ai_assistant_hub/openrouter_api_key"
-const BASE_URL := "https://openrouter.ai/api/v1"
-const DEFAULT_MODEL := ""
-const API_KEY_FILE := "res://addons/ai_assistant_hub/llm_apis/openrouter_api_key.gd"
+const DEPRECATED_API_KEY_SETTING := "plugins/ai_assistant_hub/openrouter_api_key"
+const DEPRECATED_API_KEY_FILE := "res://addons/ai_assistant_hub/llm_apis/openrouter_api_key.gd"
 
-# HTTP headers required for every request
-var _headers := PackedStringArray([
-	"Content-Type: application/json",
-	"Authorization: Bearer {api_key}",  # Will be dynamically replaced before the request
-	"HTTP-Referer: godot://ai_assistant_hub", # OpenRouter requires source reference
-])
+var _headers: PackedStringArray # set in _initialize function
+
+
+func _initialize() -> void:
+	_headers = ["Content-Type: application/json",
+				"Authorization: Bearer %s" % _api_key,  # Include the key in the headers
+				"HTTP-Referer: godot://ai_assistant_hub", # OpenRouter requires source reference
+	]
+
 
 # Get model list
 func send_get_models_request(http_request: HTTPRequest) -> bool:
-	var api_key := _get_api_key()
-	if api_key.is_empty():
-		push_error("OpenRouter API key not set. Please configure the API key in project settings.")
+	if _api_key.is_empty():
+		push_error("OpenRouter API key not set. Please configure the API key in the main tab and spawn a new assistant.")
 		return false
 	
-	var headers := _get_headers_with_api_key(api_key)
-	var url := "%s/models" % BASE_URL
-	
-	var error = http_request.request(url, headers, HTTPClient.METHOD_GET)
+	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("OpenRouter API request failed: %s" % url)
+		push_error("OpenRouter API request failed: %s" % _models_url)
 		return false
 	return true
+
 
 # Parse model list response
 func read_models_response(body: PackedByteArray) -> Array[String]:
@@ -48,17 +45,16 @@ func read_models_response(body: PackedByteArray) -> Array[String]:
 		push_error("Failed to get model list from OpenRouter: %s" % JSON.stringify(response))
 		return [INVALID_RESPONSE]
 
+
 # Send chat request
 func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
-	var api_key := _get_api_key()
-	if api_key.is_empty():
-		push_error("OpenRouter API key not set. Please configure the API key in project settings.")
+	if _api_key.is_empty():
+		push_error("OpenRouter API key not set. Please configure the API key in the main tab and spawn a new assistant.")
 		return false
 	
-	# Ensure model is set
 	if model.is_empty():
-		model = DEFAULT_MODEL
-		push_warning("Model not set, using default model: %s" % model)
+		push_error("ERROR: You need to set an AI model for this assistant type.")
+		return false
 	
 	# Build request body
 	var body_dict := {
@@ -71,14 +67,12 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 		body_dict["temperature"] = temperature
 	
 	var body := JSON.stringify(body_dict)
-	var headers := _get_headers_with_api_key(api_key)
-	var url := "%s/chat/completions" % BASE_URL
-	
-	var error = http_request.request(url, headers, HTTPClient.METHOD_POST, body)
+	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		push_error("OpenRouter API chat request failed.\nURL: %s\nRequest body: %s" % [url, body])
+		push_error("OpenRouter API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
 		return false
 	return true
+
 
 # Parse chat response
 func read_response(body: PackedByteArray) -> String:
@@ -93,73 +87,27 @@ func read_response(body: PackedByteArray) -> String:
 	push_error("Failed to parse OpenRouter response: %s" % JSON.stringify(response))
 	return INVALID_RESPONSE
 
-# Helper method: Get API key - tries to load from file first, then falls back to ProjectSettings
-func _get_api_key() -> String:
-	# First try to load from file
-	var api_key := _load_api_key_from_file()
-	
-	# If not found in file, try ProjectSettings
-	if api_key.is_empty() and ProjectSettings.has_setting(API_KEY_SETTING):
-		api_key = ProjectSettings.get_setting(API_KEY_SETTING)
-		# If we found a key in ProjectSettings, save it to file for next time
-		if not api_key.is_empty():
-			_save_api_key_to_file(api_key)
-	
-	return api_key
 
-# Save API key to file
-func _save_api_key_to_file(api_key: String) -> void:
-	var file_content := """@tool
-extends Resource
+# ----- Deprecated section - used to read the key to migrate to user settings file -----
 
-# This file is auto-generated. Do not edit manually.
-# It stores the OpenRouter API key for the AI Assistant Hub plugin.
+func get_deprecated_api_key() -> String:
+	var old_api_key := _deprecated_load_api_key_from_file()
+	if old_api_key.is_empty() and ProjectSettings.has_setting(DEPRECATED_API_KEY_SETTING):
+		old_api_key = ProjectSettings.get_setting(DEPRECATED_API_KEY_SETTING)
+	return old_api_key
 
-const API_KEY := "%s"
-"""
-	file_content = file_content % api_key
-	
-	var file := FileAccess.open(API_KEY_FILE, FileAccess.WRITE)
-	if file:
-		file.store_string(file_content)
-		file.close()
-	else:
-		push_error("Failed to save OpenRouter API key to file: %s" % API_KEY_FILE)
 
-# Load API key from file
-func _load_api_key_from_file() -> String:
-	if not FileAccess.file_exists(API_KEY_FILE):
+func _deprecated_load_api_key_from_file() -> String:
+	if not FileAccess.file_exists(DEPRECATED_API_KEY_FILE):
 		return ""
-		
-	var file := FileAccess.open(API_KEY_FILE, FileAccess.READ)
+	var file := FileAccess.open(DEPRECATED_API_KEY_FILE, FileAccess.READ)
 	if not file:
-		push_error("Failed to open OpenRouter API key file: %s" % API_KEY_FILE)
 		return ""
-		
 	var content := file.get_as_text()
 	file.close()
-	
 	var regex := RegEx.new()
 	regex.compile('const API_KEY := "([^"]*)"')
 	var result := regex.search(content)
-	
 	if result and result.get_group_count() > 0:
 		return result.get_string(1)
-	
 	return ""
-
-# Helper method: Get request headers with API key
-func _get_headers_with_api_key(api_key: String) -> PackedStringArray:
-	var headers := []
-	for header in _headers:
-		if header.begins_with("Authorization:"):
-			headers.append("Authorization: Bearer %s" % api_key)
-		else:
-			headers.append(header)
-	return PackedStringArray(headers)
-
-# Public method to save API key - called when user changes the key in UI
-func save_api_key(api_key: String) -> void:
-	_save_api_key_to_file(api_key)
-	# Also update ProjectSettings for backward compatibility
-	ProjectSettings.set_setting(API_KEY_SETTING, api_key) 

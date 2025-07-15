@@ -20,13 +20,13 @@ const NAMES: Array[String] = ["Ace", "Bean", "Boss", "Bubs", "Bugger", "Shushi",
 
 static var available_names: Array[String]
 
-var _plugin:EditorPlugin
+var _plugin:AIHubPlugin
 var _data: AIAssistantResource
 var _chat: AIChat
 var _name: String
 
 
-func initialize(plugin:EditorPlugin, assistant_resource: AIAssistantResource) -> void:
+func initialize(plugin:AIHubPlugin, assistant_resource: AIAssistantResource) -> void:
 	_plugin = plugin
 	_data = assistant_resource
 	text = _data.type_name

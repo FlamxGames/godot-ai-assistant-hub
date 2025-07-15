@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="LLMProviderResource" load_steps=2 format=3 uid="uid://b07y61hy1g6q"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/llm_providers/llm_provider_resource.gd" id="1_dwm2i"]
+
+[resource]
+script = ExtResource("1_dwm2i")
+api_id = "openwebui_api"
+name = "OpenWebUI"
+description = "OpenWebUI for locally hosted LLM"
+requires_key = true
+get_key_url = ""
+fix_url = ""
+models_url_postfix = "/api/models"
+chat_url_postfix = "/api/chat/completions"
+system_role_name = "system"
+user_role_name = "user"
+assistant_role_name = "assistant"
