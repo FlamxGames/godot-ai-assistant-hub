@@ -1,0 +1,577 @@
+{
+  "name": "GODOT_Doc",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/chat-api",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        100
+      ],
+      "id": "2a0b10cd-b015-40bb-8b55-866d9c37c320",
+      "name": "Webhook",
+      "webhookId": "7c6c7a4f-f01e-4466-ab04-4a1d59abe1fd"
+    },
+    {
+      "parameters": {
+        "jsCode": "const messages = $json.body?.messages || [];\n// Filter messages with role: user and get the last one\nconst userMessages = messages.filter(msg => msg.role === 'user');\nconst latestUserMessage = userMessages.length > 0 ? userMessages[userMessages.length - 1].content : '';\n\nreturn [{\n  json: {\n    messages: messages, // Keep the full messages array for context/memory\n    latestUserMessage: latestUserMessage // Add the latest user message\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        100
+      ],
+      "id": "9ee789bc-8a26-4d14-a2e6-ff0120c4bae4",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.latestUserMessage }}",
+        "options": {
+          "systemMessage": "={{ $json.messages[0].content }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        472,
+        0
+      ],
+      "id": "068e3b55-0fb0-4453-8f42-eefd3d418afa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek-r1-0528-qwen3-8b",
+          "mode": "list",
+          "cachedResultName": "deepseek-r1-0528-qwen3-8b"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        220
+      ],
+      "id": "d2fabd39-4410-46fc-bd5b-64e8a1b35482",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "17m2XHmoUhD8ZqyN",
+          "name": "text-embedding-nomic-embed-text-v1.5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerOn": "folder",
+        "path": "/files/GODOT_documentation",
+        "events": [
+          "add"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.localFileTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        860
+      ],
+      "id": "9d69e3db-23b1-4a8a-937a-648ef37f817b",
+      "name": "Local File Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        440,
+        860
+      ],
+      "id": "f7fd616b-728c-4c00-aa7d-127de8e69490",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "source",
+                "value": "={{ $json.metadata.source }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        1082.5
+      ],
+      "id": "206b275b-4e7e-4b05-9696-67a028e26bcb",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        1280
+      ],
+      "id": "40f6fc9c-536a-46bf-b100-53a6ed9e9e77",
+      "name": "Token Splitter"
+    },
+    {
+      "parameters": {
+        "model": "=text-embedding-nomic-embed-text-v11",
+        "options": {
+          "stripNewLines": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        1080
+      ],
+      "id": "a138b5ec-a9d3-466a-bc82-681ccd9dfda9",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "17m2XHmoUhD8ZqyN",
+          "name": "text-embedding-nomic-embed-text-v1.5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "godotdocumentation",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        860
+      ],
+      "id": "5967a79d-c611-4573-9883-2314b8f7afd5",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "5fmwNmru6e7Npn9c",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    pageContent: $json.data, // The file content from Extract from File\n    metadata: {\n      source: $('Read/Write Files from Disk').first().json.fileName, // Use fileName as the source (e.g., \"MyStory.txt\")\n      // Optionally include other metadata\n      fileName: $('Read/Write Files from Disk').first().json.fileName\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        860
+      ],
+      "id": "e46b166c-37fc-4b4d-a2ee-9ddcaadca304",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        220,
+        860
+      ],
+      "id": "cc9bbbb2-f9b1-45fc-a6aa-06863bc6cb77",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.sessionId }}",
+        "contextWindowLength": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        520
+      ],
+      "id": "ce39ac3a-201d-427c-9a03-19be943aada0",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "WreBzZIqWf9sjvwu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "GODOT_Documentation",
+        "toolDescription": "Use this tool if user asks GODOT documentation related questions or if he asks for coding help.",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "godotdocumentation",
+          "mode": "id"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        220
+      ],
+      "id": "d65933cd-a281-4747-9a26-c187f56aa93e",
+      "name": "Qdrant Vector Store4",
+      "credentials": {
+        "qdrantApi": {
+          "id": "5fmwNmru6e7Npn9c",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "=text-embedding-nomic-embed-text-v11",
+        "options": {
+          "stripNewLines": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        420
+      ],
+      "id": "63249be8-eea3-40b4-9b3f-68a7e633ff75",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "17m2XHmoUhD8ZqyN",
+          "name": "text-embedding-nomic-embed-text-v1.5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        300
+      ],
+      "id": "5b92e6fd-5ff4-4693-96e0-e66eca9d7ad6",
+      "name": "When chat message received",
+      "webhookId": "c8cc44f3-c157-41c3-8f09-c2600c06204e",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the first input item\nconst item = $input.item;\n\n// Extract and process the response text\nlet responseText = item.json.output || '';\nif (typeof responseText !== 'string') {\n    responseText = JSON.stringify(responseText);\n}\nresponseText = responseText.replace(/<think>[\\s\\S]*?<\\/think>\\n*/g, '').trim();\n\n// Construct the structured response\nconst structuredResponse = {\n    model: item.json.model || 'unknown_model',\n    created_at: new Date().toISOString(),\n    message: {\n        role: 'assistant',\n        content: responseText // This should be a JSON string conforming to your schema\n    },\n    done_reason: 'stop',\n    done: true,\n    total_duration: 1000000000,\n    load_duration: 10000000,\n    prompt_eval_count: 10,\n    prompt_eval_duration: 50000000,\n    eval_count: 20,\n    eval_duration: 900000000\n};\n\n// Return the structured response\nreturn {\n    json: structuredResponse\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        100
+      ],
+      "id": "ec12a00c-5dcf-433c-9a37-38c6b7127a53",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        1720,
+        200
+      ],
+      "id": "fc751a89-2912-408b-b393-16d91558effd",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const createdTimestamp = Math.floor(new Date($input.first().json.created_at).getTime() / 1000);\n\nconst output = {\n  id: $input.first().json.sessionId || \"default-session-id\",\n  object: \"chat.completion\",\n  created: createdTimestamp,\n  model: $input.first().json.model || \"unknown_model\",\n  choices: [\n    {\n      index: 0,\n      logprobs: null,\n      finish_reason: $input.first().json.done_reason || \"stop\",\n      message: {\n        role: $input.first().json.message.role,\n        content: $input.first().json.message.content\n      }\n    }\n  ],\n  usage: {\n    prompt_tokens: 85,\n    completion_tokens: 90,\n    total_tokens: 175\n  },\n  stats: {},\n  system_fingerprint: $input.first().json.model || \"unknown_model\"\n};\n\nreturn [{ json: output }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        100
+      ],
+      "id": "c6ae9b66-cb9e-45da-826e-95223a829a2a",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        220
+      ],
+      "id": "fe830e4d-f3f7-41f9-924a-20f9ff3f7167",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local File Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "Qdrant Vector Store4": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store4",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "215fe1d0-13b3-4c2e-a68c-a1b06fb24374",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ccd93534de317893752f2a9bc95e63cba8ec9b5cab46dd62e3086dd714dca312"
+  },
+  "id": "ghBKruZq8vRRQmyu",
+  "tags": []
+}
