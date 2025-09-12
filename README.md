@@ -122,6 +122,7 @@ If you have a powerful PC, just keep increasing the level of the model. You will
 
 **What's new in the latest version**
 -----------------------
+**1.7.0**
 * Ollama Turbo support
 
 [Full version history](versions.md)
