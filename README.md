@@ -79,7 +79,7 @@ The following keywords are used to allow the prompt to pull data from the Code E
 ## Setup steps
 In general this is what you need to do:
 
-0. Install Ollama or some other LLM supported and download a model.
+0. If running your LLMs locally, install Ollama or some other LLM supported and download at least one model.
 1. Download this addon from [here](https://github.com/FlamxGames/godot-ai-assistant-hub/archive/refs/heads/main.zip), unzip it, and copy the folder ai_assistant_hub into your addons folder (`res://addons/ai_assistant_hub/`).
 2. Enable the plugin in your project settings (**Project > Project Settings... > Plugins**), you should see a new tab `AI Hub` in the bottom panel.
 3. Select an LLM provider, by default Ollama is selected.
