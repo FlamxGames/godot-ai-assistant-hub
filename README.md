@@ -132,7 +132,7 @@ If you had the plugin installed and want to upgrade to the latest version, follo
 
 ***Download > Disable current > Install new > Reload project > Enable***
 
-1. Download the latest version from GitHub.
+1. Download the latest version [here](https://github.com/FlamxGames/godot-ai-assistant-hub/archive/refs/heads/main.zip) and unzip it.
 2. **Disable** the plugin from **Project > Project Settings... > Plugins**.
 3. Pull the **ai_assistant_hub** folder from the new version into your addons folder (don't delete the previous one so you don't lose your assistants). You may see errors in Godot's output tab, that is fine.
 4. Ensure Godot loads into memory the new version: **Project > Reload Current Project** (this will reload the whole project, so make sure to save before doing this).
