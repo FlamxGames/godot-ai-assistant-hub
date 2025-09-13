@@ -79,8 +79,8 @@ The following keywords are used to allow the prompt to pull data from the Code E
 ## Setup steps
 In general this is what you need to do:
 
-0. Install Ollama or some other LLM supported and download a model.
-1. Download this addon and copy the folder ai_assistant_hub into your addons folder (`res://addons/ai_assistant_hub/`).
+0. If running your LLMs locally, install Ollama or some other LLM supported and download at least one model.
+1. Download this addon from [here](https://github.com/FlamxGames/godot-ai-assistant-hub/archive/refs/heads/main.zip), unzip it, and copy the folder ai_assistant_hub into your addons folder (`res://addons/ai_assistant_hub/`).
 2. Enable the plugin in your project settings (**Project > Project Settings... > Plugins**), you should see a new tab `AI Hub` in the bottom panel.
 3. Select an LLM provider, by default Ollama is selected.
 4. You should see a list of models you have installed. Click one and use the "New assistant type" button.
@@ -122,6 +122,7 @@ If you have a powerful PC, just keep increasing the level of the model. You will
 
 **What's new in the latest version**
 -----------------------
+**1.7.0**
 * Ollama Turbo support
 
 [Full version history](versions.md)
@@ -132,7 +133,7 @@ If you had the plugin installed and want to upgrade to the latest version, follo
 
 ***Download > Disable current > Install new > Reload project > Enable***
 
-1. Download the latest version from GitHub.
+1. Download the latest version [here](https://github.com/FlamxGames/godot-ai-assistant-hub/archive/refs/heads/main.zip) and unzip it.
 2. **Disable** the plugin from **Project > Project Settings... > Plugins**.
 3. Pull the **ai_assistant_hub** folder from the new version into your addons folder (don't delete the previous one so you don't lose your assistants). You may see errors in Godot's output tab, that is fine.
 4. Ensure Godot loads into memory the new version: **Project > Reload Current Project** (this will reload the whole project, so make sure to save before doing this).
