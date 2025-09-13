@@ -4,6 +4,9 @@
 **1.7.0**
 * Ollama Turbo support
 
+**1.7.1**
+* The plugin checks for the latest version and shows a upgrade button if there is a newer version.
+
 --------------------
 
 **1.6.3**
