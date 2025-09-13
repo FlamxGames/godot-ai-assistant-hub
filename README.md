@@ -125,6 +125,9 @@ If you have a powerful PC, just keep increasing the level of the model. You will
 **1.7.0**
 * Ollama Turbo support
 
+**1.7.1**
+* The plugin checks for the latest version and shows a upgrade button if there is a newer version.
+
 [Full version history](versions.md)
 
 **Upgrading to a newer version**

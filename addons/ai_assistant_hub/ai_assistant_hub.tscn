@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://w1f4dho35qy2"]
+[gd_scene load_steps=7 format=3 uid="uid://w1f4dho35qy2"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_assistant_hub.gd" id="1_x668t"]
 [ext_resource type="Texture2D" uid="uid://tvel41eepthx" path="res://addons/ai_assistant_hub/graphics/icons/Reload.svg" id="2_6xner"]
 [ext_resource type="Texture2D" uid="uid://cb745elrh1ukv" path="res://addons/ai_assistant_hub/graphics/icons/Add.svg" id="3_57y2f"]
+[ext_resource type="Texture2D" uid="uid://dctfmdvk5w5dk" path="res://addons/ai_assistant_hub/graphics/icons/upgrade_notif.svg" id="4_77wrn"]
+[ext_resource type="Texture2D" uid="uid://c1ab17qlptks6" path="res://addons/ai_assistant_hub/graphics/icons/heart.svg" id="4_mwqwj"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_541qc"]
 
@@ -57,9 +59,9 @@ alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_type_variation = &"HeaderMedium"
+theme_type_variation = &"HeaderSmall"
 text = "Summon
-assistant!"
+assistant:"
 
 [node name="AssistantsRefreshBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/HBoxContainer"]
 auto_translate_mode = 1
@@ -229,6 +231,7 @@ secret = true
 [node name="GetKeyLink" type="LinkButton" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 4
 text = "Get key"
 
 [node name="Spacer" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
@@ -244,18 +247,40 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]
 layout_mode = 2
 
-[node name="VersionLabel" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
 layout_mode = 2
-text = "v1.7.0"
+theme_override_constants/separation = -8
+
+[node name="VersionLabel" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "v1.7.1"
 horizontal_alignment = 2
 
-[node name="SupportBtn" type="LinkButton" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
+[node name="UpgradeBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+auto_translate_mode = 1
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+icon = ExtResource("4_77wrn")
+flat = true
+icon_alignment = 1
+
+[node name="SupportBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
+auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 8
+size_flags_vertical = 4
 tooltip_text = "If you like this plugin, see how you can support it."
-text = "♥"
-underline = 2
-uri = "https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/support.md"
+icon = ExtResource("4_mwqwj")
+icon_alignment = 1
+
+[node name="VersionHTTPRequest" type="HTTPRequest" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
+unique_name_in_owner = true
+
+[node name="Control" type="Control" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer"]
+layout_mode = 2
 
 [connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_completed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/HBoxContainer/AssistantsRefreshBtn" to="." method="_on_assistants_refresh_btn_pressed"]
@@ -266,3 +291,6 @@ uri = "https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/support.md
 [connection signal="item_selected" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/LLMProviderContainer/LLMProviderOption" to="." method="_on_llm_provider_option_item_selected"]
 [connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/UrlTxt" to="." method="_on_settings_changed"]
 [connection signal="text_changed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/APIKeyTxt" to="." method="_on_settings_changed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/HBoxContainer/UpgradeBtn" to="." method="_on_upgrade_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/SupportBtn" to="." method="_on_support_btn_pressed"]
+[connection signal="request_completed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/VersionHTTPRequest" to="." method="_on_version_http_request_request_completed"]

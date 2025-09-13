@@ -18,6 +18,10 @@ const AI_CHAT = preload("res://addons/ai_assistant_hub/ai_chat.tscn")
 @onready var url_label: Label = %UrlLabel
 @onready var api_key_txt: LineEdit = %APIKeyTxt
 @onready var get_key_link: LinkButton = %GetKeyLink
+@onready var version_http_request: HTTPRequest = %VersionHTTPRequest
+@onready var version_label: Label = %VersionLabel
+@onready var upgrade_btn: Button = %UpgradeBtn
+
 
 var _plugin:AIHubPlugin
 var _tab_bar:TabBar
@@ -63,6 +67,7 @@ func initialize(plugin:AIHubPlugin) -> void:
 	_tab_bar.tab_close_pressed.connect(_close_tab)
 	
 	_load_saved_chats()
+	_check_version()
 
 
 # Initialize LLM provider options
@@ -292,3 +297,34 @@ func _load_chat(file_path:String) -> void:
 	var chat = AI_CHAT.instantiate()
 	chat.initialize_from_file(_plugin, file_path)
 	_on_new_bot_btn_chat_created(chat)
+
+
+func _check_version() -> void:
+	var err := version_http_request.request("https://api.github.com/repos/FlamxGames/godot-ai-assistant-hub/releases/latest", ["Accept: application/vnd.github+json", "X-GitHub-Api-Version: 2022-11-28"], HTTPClient.METHOD_GET)
+	if err != OK:
+		print("There was an error trying to check the latest version for Godot AI Assistant Hub.")
+
+
+func _on_version_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	var error:= true
+	upgrade_btn.visible = false
+	if result == 0:
+		var j := JSON.new()
+		j.parse(body.get_string_from_utf8())
+		var data := j.get_data()
+		if data.has("name"):
+			var latest_version = data.name
+			if version_label.text != latest_version:
+				upgrade_btn.visible = true
+				upgrade_btn.tooltip_text = "Version available %s. Click here to know more." % latest_version
+			error = false
+	if error:
+		print("It was not possible to check the latest version for Godot AI Assistant Hub, you may want to check GitHub manually: https://github.com/FlamxGames/godot-ai-assistant-hub. The response was: %s " % body)
+
+
+func _on_support_btn_pressed() -> void:
+	OS.shell_open("https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/support.md")
+
+
+func _on_upgrade_btn_pressed() -> void:
+	OS.shell_open("https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/README.md#whats-new-in-the-latest-version")
