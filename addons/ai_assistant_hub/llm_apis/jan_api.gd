@@ -18,7 +18,7 @@ func read_models_response(body: PackedByteArray) -> Array[String]:
 	j.parse(body.get_string_from_utf8())
 	var data := j.get_data()
 	if data.has("data") and data.data is Array:
-		var out := []
+		var out: Array[String]= []
 		for m in data.data:
 			if m.has("id"):
 				out.append(m.id)
