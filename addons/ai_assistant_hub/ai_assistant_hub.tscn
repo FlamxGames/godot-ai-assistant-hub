@@ -36,6 +36,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
+drag_to_rearrange_enabled = true
 
 [node name="AI Hub" type="MarginContainer" parent="VBoxContainer/TabContainer"]
 layout_mode = 2
