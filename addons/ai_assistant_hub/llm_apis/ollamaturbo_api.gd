@@ -13,7 +13,7 @@ func _initialize() -> void:
 func send_get_models_request(http_request:HTTPRequest) -> bool:
 	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Something when wrong with last AI API call: %s" % _models_url)
+		push_error("Something went wrong with last AI API call: %s" % _models_url)
 		return false
 	return true
 
@@ -50,7 +50,7 @@ func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 	
 	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		push_error("Something when wrong with last AI API call.\nURL: %s\nBody:\n%s" % [_chat_url, body])
+		push_error("Something went wrong with last AI API call.\nURL: %s\nBody:\n%s" % [_chat_url, body])
 		return false
 	return true
 
