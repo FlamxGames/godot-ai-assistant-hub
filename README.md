@@ -1,7 +1,7 @@
 **Godot AI Assistant Hub**
 <img src="https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/logo.png" width="50px">
 ==========================
-**Latest version: 1.7.1**
+**Latest version: 1.7.2**
 <sub>([What's new?](#whats-new-in-the-latest-version))</sub>
 <sub>([Upgrading to a newer version](#upgrading-to-a-newer-version))</sub>
 
@@ -127,6 +127,9 @@ If you have a powerful PC, just keep increasing the level of the model. You will
 
 **1.7.1**
 * The plugin checks for the latest version and shows a upgrade button if there is a newer version.
+
+**1.7.2**
+* Bug fix in Jan API.
 
 [Full version history](versions.md)
 
