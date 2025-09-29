@@ -9,6 +9,7 @@
 
 **1.7.2**
 * Bug fix in Jan API.
+* Allow to rearrange chat tabs.
 
 --------------------
 

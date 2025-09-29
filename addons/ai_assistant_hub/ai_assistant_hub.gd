@@ -31,9 +31,9 @@ var _current_api_id:String
 
 
 func _tab_changed(tab_index: int) -> void:
-	if tab_index > 0:
-		var chat = tab_container.get_current_tab_control()
-		if chat is AIChat and chat.save_check_button.button_pressed:
+	var chat = tab_container.get_current_tab_control()
+	if chat is AIChat:
+		if chat.save_check_button.button_pressed:
 			_tab_bar.tab_close_display_policy = TabBar.CLOSE_BUTTON_SHOW_NEVER
 		else:
 			_tab_bar.tab_close_display_policy = TabBar.CLOSE_BUTTON_SHOW_ACTIVE_ONLY
