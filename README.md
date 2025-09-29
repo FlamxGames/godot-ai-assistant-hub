@@ -130,6 +130,7 @@ If you have a powerful PC, just keep increasing the level of the model. You will
 
 **1.7.2**
 * Bug fix in Jan API.
+* Allow to rearrange chat tabs.
 
 [Full version history](versions.md)
 
