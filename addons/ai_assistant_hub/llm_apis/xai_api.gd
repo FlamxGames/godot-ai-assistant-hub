@@ -63,7 +63,7 @@ func _extract_content_from_json_string(s) -> String:
 
 
 # NOTE: content is expected as Array of user/system/assistant message texts, not raw JSON.
-# This method will transform the array into the required Gemini format.
+# This method will transform the array into the required Xai format.
 func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	# example request data: 
 	#{ "messages": [ { "role": "system", "content": "You are a helpful assistant that can answer questions and help with tasks." }, { "role": "user", "content": "What is 101*3?" } ], "model": "grok-4-0709" }
@@ -80,7 +80,8 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 		var msg = message_list[i]
 		var role: String = str(msg.get("role", "user"))
 		var text = msg.get("content", msg.get("text", msg))
-		text = _extract_content_from_json_string(text)
+		#print(text)
+		#text = _extract_content_from_json_string(text)
 
 		formatted_contents.append({
 			"role": role,
@@ -94,7 +95,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	if override_temperature:
 		body_dict["temperature"] = temperature 
 	var body := JSON.stringify(body_dict)
-	print(_chat_url)
+	#print(_chat_url)
 
 	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	
@@ -111,21 +112,21 @@ func read_response(body: PackedByteArray) -> String:
 	#{"reasoning_tokens":69,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":17227500},"system_fingerprint":"fp_dd0aa291c6"}
 	
 	var raw_body = body.get_string_from_utf8()
-	print("Xai API raw response: ", raw_body)
+	#print("Xai API raw response: ", raw_body)
 	
 	var json := JSON.new()
 	var parse_result := json.parse(body.get_string_from_utf8())
 	#print("HTTP Response body: ", body.get_string_from_utf8())
 	if parse_result != OK:
-		push_error("Failed to parse Gemini response JSON: %s" % json.get_error_message())
+		push_error("Failed to parse Xai response JSON: %s" % json.get_error_message())
 		return INVALID_RESPONSE
 	var response := json.get_data()
 	if response == null:
 		push_error("Xai response is null after parsing.")
 		return INVALID_RESPONSE
-	# Print and handle Gemini errors
+	# Print and handle Xai errors
 	if response.has("error"):
-		print("Xai API Error: ", JSON.stringify(response.error))
+		#print("Xai API Error: ", JSON.stringify(response.error))
 		push_error("Xai API Error: " + str(response.error))
 		return INVALID_RESPONSE
 	if response.has("choices") and response.choices.size() > 0:

@@ -5,13 +5,13 @@
 [resource]
 script = ExtResource("1_h0cc7")
 api_id = "xai_api"
-name = "xai"
-description = "api for grok models"
+name = "Xai"
+description = "Api for grok models"
 requires_key = true
 get_key_url = "https://docs.x.ai/developers/quickstart"
-fix_url = ""
-models_url_postfix = "/v1/models"
-chat_url_postfix = "/v1/chat/completions"
+fix_url = "https://api.x.ai/v1"
+models_url_postfix = "/models"
+chat_url_postfix = "/chat/completions"
 system_role_name = "system"
 user_role_name = "user"
 assistant_role_name = "assistant"
