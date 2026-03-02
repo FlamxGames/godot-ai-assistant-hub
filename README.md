@@ -10,7 +10,7 @@ A Flexible Godot Plugin for AI Assistants
 
 Embed AI assistants in Godot with the ability to read and write code in Godot's Code Editor.
 
-This plugin does not run LLM models directly, but acts as an interface between Godot and your local LLM. There are plenty options to run LLMs locally. Thanks to the community this tool supports the following:
+This plugin does not run LLM models directly, but acts as an interface between Godot and your local LLM. There are plenty of options to run LLMs locally. Thanks to the community this tool supports the following:
 
 * [Ollama](https://ollama.com/)*
 * Google Gemini
