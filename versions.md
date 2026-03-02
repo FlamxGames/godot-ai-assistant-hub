@@ -1,6 +1,11 @@
 **Version history**
 --------------------
 
+**1.8.0**
+* xAI API support
+
+--------------------
+
 **1.7.3**
 * Bug fix in Jan API, now it displays the field to input the API key.
 * Bug fix in OllamaTurbo, OpenRouter, and OpenWebUI, now the headers get refreshed when the API key changes.

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="LLMProviderResource" load_steps=2 format=3 uid="uid://n83b6wcg7so"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/llm_providers/llm_provider_resource.gd" id="1_h0cc7"]
+
+[resource]
+script = ExtResource("1_h0cc7")
+api_id = "xai_api"
+name = "xAI"
+description = "API for grok models"
+requires_key = true
+get_key_url = "https://docs.x.ai/developers/quickstart"
+fix_url = "https://api.x.ai/v1"
+models_url_postfix = "/models"
+chat_url_postfix = "/chat/completions"
+system_role_name = "system"
+user_role_name = "user"
+assistant_role_name = "assistant"
