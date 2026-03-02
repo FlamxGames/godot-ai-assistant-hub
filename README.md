@@ -22,6 +22,7 @@ Thanks to contributors, additionally to **Ollama**, the following APIs are alrea
 * OpenRouter
 * Jan
 * OpenWebUI
+* xAI
 
 First Video 👇
 
@@ -41,7 +42,7 @@ First Video 👇
 **System Requirements**
 -----------------------
 
-It depends on the models you use and the speed you expect. Of course, if you extend the plugin to run hosted models (ChatGPT, Gemini, etc.), then you don't need to worry about this (just about the bills).
+It depends on the models you use and the speed you expect. Of course, if you use the plugin to run remote models (Gemini, xAI, etc.), then you don't need to worry about this (just about the bills).
 
 **Tested in versions**
 
@@ -122,19 +123,8 @@ If you have a powerful PC, just keep increasing the level of the model. You will
 
 **What's new in the latest version**
 -----------------------
-**1.7.3**
-* Bug fix in Jan API, now it displays the field to input the API key.
-* Bug fix in OllamaTurbo, OpenRouter, and OpenWebUI, now the headers get refreshed when the API key changes.
-
-**1.7.2**
-* Bug fix in Jan API.
-* Allow to rearrange chat tabs.
-
-**1.7.1**
-* The plugin checks for the latest version and shows a upgrade button if there is a newer version.
-
-**1.7.0**
-* Ollama Turbo support
+**1.8.0**
+* xAI API support
 
 [Full version history](versions.md)
 

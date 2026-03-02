@@ -19,12 +19,12 @@ func _initialize() -> void:
 func send_get_models_request(http_request: HTTPRequest) -> bool:
 	#API key is in LLMInterface base class
 	if _api_key.is_empty():
-		push_error("Xai API key not set. Configure the API key in the main tab and try again.")
+		push_error("xAI API key not set. Configure the API key in the main tab and try again.")
 		return false
 
 	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Xai API request failed: %s" % _models_url)
+		push_error("xAI API request failed: %s" % _models_url)
 		return false
 	return true
 
@@ -63,12 +63,12 @@ func _extract_content_from_json_string(s) -> String:
 
 
 # NOTE: content is expected as Array of user/system/assistant message texts, not raw JSON.
-# This method will transform the array into the required Xai format.
+# This method will transform the array into the required xAI format.
 func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	# example request data: 
 	#{ "messages": [ { "role": "system", "content": "You are a helpful assistant that can answer questions and help with tasks." }, { "role": "user", "content": "What is 101*3?" } ], "model": "grok-4-0709" }
 	if _api_key.is_empty():
-		push_error("Xai API key not set. Configure the API key in the main tab and spawn a new assistant.")
+		push_error("xAI API key not set. Configure the API key in the main tab and spawn a new assistant.")
 		return false
 
 	if model.is_empty():
@@ -100,7 +100,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	
 	if error != OK:
-		push_error("Xai API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
+		push_error("xAI API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
 		return false
 	return true
 
@@ -112,25 +112,25 @@ func read_response(body: PackedByteArray) -> String:
 	#{"reasoning_tokens":69,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":17227500},"system_fingerprint":"fp_dd0aa291c6"}
 	
 	var raw_body = body.get_string_from_utf8()
-	#print("Xai API raw response: ", raw_body)
+	#print("xAI API raw response: ", raw_body)
 	
 	var json := JSON.new()
 	var parse_result := json.parse(body.get_string_from_utf8())
 	#print("HTTP Response body: ", body.get_string_from_utf8())
 	if parse_result != OK:
-		push_error("Failed to parse Xai response JSON: %s" % json.get_error_message())
+		push_error("Failed to parse xAI response JSON: %s" % json.get_error_message())
 		return INVALID_RESPONSE
 	var response := json.get_data()
 	if response == null:
-		push_error("Xai response is null after parsing.")
+		push_error("xAI response is null after parsing.")
 		return INVALID_RESPONSE
-	# Print and handle Xai errors
+	# Print and handle xAI errors
 	if response.has("error"):
-		#print("Xai API Error: ", JSON.stringify(response.error))
-		push_error("Xai API Error: " + str(response.error))
+		#print("xAI API Error: ", JSON.stringify(response.error))
+		push_error("xAI API Error: " + str(response.error))
 		return INVALID_RESPONSE
 	if response.has("choices") and response.choices.size() > 0:
 		if response.choices[0].has("message") and response.choices[0].message.has("content"):
 			return ResponseCleaner.clean(response.choices[0].message.content)
-	push_error("Failed to parse Xai response: %s" % JSON.stringify(response))
+	push_error("Failed to parse xAI response: %s" % JSON.stringify(response))
 	return INVALID_RESPONSE
