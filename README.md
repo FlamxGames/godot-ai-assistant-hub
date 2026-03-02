@@ -82,13 +82,14 @@ In general this is what you need to do:
 
 0. If running your LLMs locally, install Ollama or some other LLM supported and download at least one model.
 1. Download this addon from [here](https://github.com/FlamxGames/godot-ai-assistant-hub/archive/refs/heads/main.zip), unzip it, and copy the folder ai_assistant_hub into your addons folder (`res://addons/ai_assistant_hub/`).
-2. Enable the plugin in your project settings (**Project > Project Settings... > Plugins**), you should see a new tab `AI Hub` in the bottom panel.
-3. Select an LLM provider, by default Ollama is selected.
-4. You should see a list of models you have installed. Click one and use the "New assistant type" button.
-5. Fill up the data for your assistant.
-6. After saving, you should see a new button for your assistant type.
-7. Your assistant type will open in the Inspector panel, there you can optionally confirgure an icon and Quick Prompts for your assistant type, the later would allow it to interact with the code editor.
-8. Click the assistant type button to start a chat with a new assistant of this type.
+2. Reload your project: **Project > Reload Current Project** (this will reload the whole project, so make sure to save before doing this).
+3. Enable the plugin in your project settings (**Project > Project Settings... > Plugins**), you should see a new tab `AI Hub` in the bottom panel.
+4. Select an LLM provider, by default Ollama is selected.
+5. You should see a list of models you have installed. Click one and use the "New assistant type" button.
+6. Fill up the data for your assistant.
+7. After saving, you should see a new button for your assistant type.
+8. Your assistant type will open in the Inspector panel, there you can optionally confirgure an icon and Quick Prompts for your assistant type, the later would allow it to interact with the code editor.
+9. Click the assistant type button to start a chat with a new assistant of this type.
 
 ### Configuring Quick Prompts and icon ###
 1. Right-click the button for your assistant type, there you can select Edit or Delete.
