@@ -37,6 +37,7 @@ func _tab_changed(tab_index: int) -> void:
 			_tab_bar.tab_close_display_policy = TabBar.CLOSE_BUTTON_SHOW_NEVER
 		else:
 			_tab_bar.tab_close_display_policy = TabBar.CLOSE_BUTTON_SHOW_ACTIVE_ONLY
+		chat.focus_prompt()
 	else:
 		_tab_bar.tab_close_display_policy = TabBar.CLOSE_BUTTON_SHOW_NEVER
 
@@ -180,17 +181,10 @@ func _on_assistants_refresh_btn_pressed() -> void:
 		if assistant is AIAssistantResource:
 			found = true
 			var new_bot_btn:NewAIAssistantButton= NEW_AI_ASSISTANT_BUTTON.instantiate()
-			new_bot_btn.initialize(_plugin, assistant)
+			new_bot_btn.initialize(_plugin, assistant, assistant_file)
 			new_bot_btn.chat_created.connect(_on_new_bot_btn_chat_created)
+			new_bot_btn.deleted.connect(_on_assistants_refresh_btn_pressed)
 			assistant_types_container.add_child(new_bot_btn)
-			var bot_menu: PopupMenu = PopupMenu.new()
-			bot_menu.add_item("Edit", 0)
-			bot_menu.add_item("Delete", 1)
-			new_bot_btn.add_child(bot_menu)
-			var menu_callable = Callable(self, "_on_assistant_button_menu_select").bind(assistant_file)
-			bot_menu.id_pressed.connect(menu_callable)
-			var button_callable = Callable(self, "_on_button_gui_input").bind(bot_menu)
-			new_bot_btn.gui_input.connect(button_callable)
 	
 	if not found:
 		no_assistants_guide.text = "Create an assistant type by selecting a model and clicking \"New assistant type\"."
@@ -199,23 +193,6 @@ func _on_assistants_refresh_btn_pressed() -> void:
 	else:
 		no_assistants_guide.visible = false
 		assistant_types_container.visible = true
-
-
-func _on_button_gui_input(event, delete_menu: PopupMenu):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-		delete_menu.position = DisplayServer.mouse_get_position()
-		delete_menu.show()
-
-
-func _on_assistant_button_menu_select(id: int, assistant_file: String) -> void:
-	match id:
-		0:  #  Edit
-			var res = ResourceLoader.load(assistant_file)
-			EditorInterface.edit_resource(res)
-		1:  # Delete
-			DirAccess.remove_absolute(assistant_file)
-			_on_assistants_refresh_btn_pressed()
-			EditorInterface.get_resource_filesystem().scan()
 
 
 func _on_new_bot_btn_chat_created(chat:AIChat) -> void:

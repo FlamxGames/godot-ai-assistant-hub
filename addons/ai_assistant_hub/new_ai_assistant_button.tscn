@@ -8,4 +8,26 @@ custom_minimum_size = Vector2(48, 32)
 text = "Coder"
 script = ExtResource("1_i6vt6")
 
-[connection signal="pressed" from="." to="." method="_on_pressed"]
+[node name="PopupMenu" type="PopupMenu" parent="."]
+unique_name_in_owner = true
+position = Vector2i(6, 26)
+size = Vector2i(71, 66)
+item_count = 3
+item_0/text = "Edit"
+item_0/id = 100
+item_1/id = 1
+item_1/separator = true
+item_2/text = "Delete"
+item_2/id = 200
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Confirm deletion"
+initial_position = 4
+size = Vector2i(384, 100)
+ok_button_text = "Delete"
+dialog_text = "This assistant type will be permanently deleted."
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="id_pressed" from="PopupMenu" to="." method="_on_popup_menu_id_pressed"]
+[connection signal="confirmed" from="ConfirmationDialog" to="." method="_on_confirmation_dialog_confirmed"]

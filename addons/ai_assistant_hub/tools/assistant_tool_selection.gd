@@ -79,21 +79,20 @@ func back_to_selection() -> bool:
 	if _selected_code.is_empty():
 		return false
 	
-	#double check the script to edit is still open, if it's not open it
-	var editor_interface:EditorInterface = _plugin.get_editor_interface()
-	var curr_script:Script = editor_interface.get_script_editor().get_current_script()
+	#double check the script to edit is still open, if it's not, open it
+	var curr_script:Script = EditorInterface.get_script_editor().get_current_script()
 	if curr_script != _selected_script:
 		#print("The script for the original request was: %s" % _selected_script.resource_path)
 		#print("The script currently opened is: %s" % curr_script.resource_path)
-		print("Opening %s" % _selected_script.resource_path)
-		editor_interface.edit_script(_selected_script)
+		print("AI Assistant Hub: Opening %s" % _selected_script.resource_path)
+		EditorInterface.edit_script(_selected_script)
 		forget_selection()
 	
-	var script_editor:= _plugin.get_editor_interface().get_script_editor()
+	var script_editor:= EditorInterface.get_script_editor()
 	var code_editor:TextEdit = script_editor.get_current_editor().get_base_editor()
 	var curr_selection: String = code_editor.get_selected_text()
 	if _selected_code != curr_selection:
-		print("The selection changed. Finding: %s" % _selected_code_first_line)
+		print("AI Assistant Hub: The selection changed. Finding: %s" % _selected_code_first_line)
 		var search_start:Vector2i = code_editor.search(_selected_code_first_line, TextEdit.SearchFlags.SEARCH_MATCH_CASE, 0, 0)
 		if search_start.x == -1:
 			return false
@@ -107,7 +106,7 @@ func back_to_selection() -> bool:
 				#print("Last line found.")
 				var line_diff = search_end.y - search_start.y
 				if original_line_diff == line_diff:
-					code_editor.select(search_start.y, search_start.x, search_end.y, _selected_code_line_end_column)
+					code_editor.select(search_start.y, _selected_code_line_start_column, search_end.y, _selected_code_line_end_column)
 				else:
 					return false
 	return true
