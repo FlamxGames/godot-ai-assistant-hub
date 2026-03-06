@@ -15,13 +15,29 @@ const DEPRECATED_CONFIG_GEMINI_API_KEY := "plugins/ai_assistant_hub/gemini_api_k
 const DEPRECATED_CONFIG_OPENWEBUI_API_KEY := "plugins/ai_assistant_hub/openwebui_api_key"
 
 var _hub_dock:AIAssistantHub
+var _dock #Not giving type EditorDock to keep this compatible with versions older than 4.6
 
 func _enter_tree() -> void:
 	initialize_project_settings()
 	_hub_dock = load("res://addons/ai_assistant_hub/ai_assistant_hub.tscn").instantiate()
 	_hub_dock.initialize(self)
-	add_control_to_bottom_panel(_hub_dock, "AI Hub")
-	#add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UL, _hub_dock)
+	
+	#----------------------------#
+	# Uncomment this in Godot 4.6+. I'm not making this default as EditorDock is experimental, and want to keep compatibility with olver versions.
+	# Make sure to ALSO uncomment the similar marked code below in _exit_tree() function.
+	# Once both are uncommented, reload the plugin, now you could right click the AI Hub tab (the one at the bottom) to make it floating.
+	#----------------------------#
+	#_dock = EditorDock.new()
+	#_dock.title = "AI Hub"
+	#_dock.default_slot = EditorDock.DOCK_SLOT_BOTTOM
+	#_dock.set_available_layouts(EditorDock.DOCK_LAYOUT_HORIZONTAL | EditorDock.DOCK_LAYOUT_FLOATING);
+	#_dock.add_child(_hub_dock)
+	#add_dock(_dock)
+	#_dock.open()
+	#----------------------------#
+	
+	if not _dock:
+		add_control_to_bottom_panel(_hub_dock, "AI Hub")
 
 
 func initialize_project_settings() -> void:
@@ -83,8 +99,15 @@ func initialize_project_settings() -> void:
 
 
 func _exit_tree() -> void:
-	remove_control_from_bottom_panel(_hub_dock)
-	#remove_control_from_docks(_hub_dock)
+	if _dock:
+		#----------------------------#
+		# Uncomment this in Godot 4.6
+		#----------------------------#
+		#remove_dock(_dock)
+		#----------------------------#
+		pass
+	else:
+		remove_control_from_bottom_panel(_hub_dock)
 	_hub_dock.queue_free()
 
 

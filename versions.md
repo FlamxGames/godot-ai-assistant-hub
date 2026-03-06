@@ -1,6 +1,12 @@
 **Version history**
 --------------------
 
+**1.8.1**
+* When you select an assistant tab, the chat text box is now focused automatically.
+* Added commented code in ai_hub_plugin.gd under _enter_tree() and _exit_tree(), in Godot 4.6 you can uncomment this to enable making the plugin screen floating by right-clicking its tab.
+* Fixed bugs in code placement when replacing the selection. Also improved code placement in general removing extra lines around it.
+* Fixed bug that caused freeze when editing an assistant resource in Linux.
+
 **1.8.0**
 * xAI API support
 

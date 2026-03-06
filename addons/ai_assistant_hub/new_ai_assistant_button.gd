@@ -58,11 +58,12 @@ func _on_gui_input(event: InputEvent) -> void:
 
 
 func _on_popup_menu_id_pressed(id: int) -> void:
+	# Using big numbers because Godot sometimes have bugs giving default values based on position
 	match id:
-		1:  #  Edit
+		100:  #  Edit
 			var res = ResourceLoader.load(_assistant_type_path)
 			EditorInterface.edit_resource(res)
-		2:  # Delete
+		200:  # Delete
 			confirmation_dialog.show()
 
 

@@ -444,3 +444,7 @@ func _on_conversation_chat_appended(new_entry:Dictionary) -> void:
 			var current_chat:Array = config.get_value("chat","entries", [])
 			current_chat.append(new_entry)
 			config.save(_chat_save_path)
+
+
+func focus_prompt() -> void:
+	prompt_txt.grab_focus()

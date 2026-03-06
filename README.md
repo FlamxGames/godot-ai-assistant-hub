@@ -1,7 +1,7 @@
 **Godot AI Assistant Hub**
 <img src="https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/logo.png" width="50px">
 ==========================
-**Latest version: 1.8.0**
+**Latest version: 1.8.1**
 <sub>([What's new?](#whats-new-in-the-latest-version))</sub>
 <sub>([Upgrading to a newer version](#upgrading-to-a-newer-version))</sub>
 
@@ -68,8 +68,6 @@ There are 2 main concepts for this addon, familiarize yourself with them, both a
 #### A) AI assistant type (AIAssistantResource). 🤖
 This is the setup for an assistant, it describes what the assistant does, what LLM model to use, and what Quick Prompts it can use.
 
-<Insert an image>
-
 Think of it as a template for creating assistants. For example, you can have an assistant that helps with coding, and one that helps with writing. In that case, you would have 2 assistant types, and you can summon as many coders or writers you need.
 
 #### B) Quick Prompt (AIQuickPromptResource). 🪄
@@ -78,7 +76,12 @@ The following keywords are used to allow the prompt to pull data from the Code E
 * Use `{CODE}` to insert the code currently selected in the editor.
 * Use `{CHAT}` to include the current content of the text prompt.
 
-<Insert an image>
+**Note**: Most models already tag their code properly, but not all of them. In order for the plugin to identify what code to use from the assistant's response, you may need to give explicit instructions in their description, for example:
+
+    Any code you write you mark it properly, for example:
+    ```gdscript
+    var x:String = "abc"
+    ```
 
 ## Setup steps
 In general this is what you need to do:
@@ -91,7 +94,7 @@ In general this is what you need to do:
 5. You should see a list of models you have installed. Click one and use the "New assistant type" button.
 6. Fill up the data for your assistant.
 7. After saving, you should see a new button for your assistant type.
-8. Your assistant type will open in the Inspector panel, there you can optionally confirgure an icon and Quick Prompts for your assistant type, the later would allow it to interact with the code editor.
+8. Your assistant type will open in the Inspector panel, there you can optionally configure an icon and Quick Prompts for your assistant type, the later would allow it to interact with the code editor.
 9. Click the assistant type button to start a chat with a new assistant of this type.
 
 ### Configuring Quick Prompts and icon ###
@@ -115,18 +118,19 @@ Experiment and build the right type of assistants for your workflow.
 
 ### Not sure what models to use?
 
-Some popular models that work fine in low-end computers at the time I wrote this (Oct 2024) are:
-* **llama3.2:** Fast and efficient, but may have occasional accuracy issues.
-* **granite-code:** Ideal for coding on lower-end machines.
-* **mistral:** Excellent for writing tasks.
-* **deepseek-coder-v2:** Powerful coding model (requires at least 8GB of VRAM).
+I found it is not a good idea to give advice here, as models change all the time. What I suggest you to do is to search “Best coding local LLM models in (current year) that fit (insert your setup here).”
+For example, “Best coding local LLM models in 2026 that fit 8 GB of VRAM.”
 
-⚠️ If you don't agree with these suggestions or have an updated list of recommendations, leave a comment in the Discussions page with your suggestions.
-
-If you have a powerful PC, just keep increasing the level of the model. You will see many models have versions like 1.5B, 3B, 7B, 30B, 77B, these mean billions of parameters. You can consider 1.5B for very low-end machines, and 77B for very powerful ones. If you are not sure, just try them out, they are easy to delete as well.
+The rule of thumb I follow is to check the output speed by chatting with it. If it is slow, the model is not being loaded onto my GPU; it is using RAM/CPU. You probably only want to do that if the results the model produces are remarkably better, or simply if you don’t have a GPU capable of loading any models.
 
 **What's new in the latest version**
 -----------------------
+**1.8.1**
+* When you select an assistant tab, the chat text box is now focused automatically.
+* Added commented code in ai_hub_plugin.gd under _enter_tree() and _exit_tree(), in Godot 4.6 you can uncomment this to enable making the plugin screen floating by right-clicking its tab.
+* Fixed bugs in code placement when replacing the selection. Also improved code placement in general removing extra lines around it.
+* Fixed bug that caused freeze when editing an assistant resource in Linux.
+
 **1.8.0**
 * xAI API support
 
@@ -156,4 +160,4 @@ I'm a solo game developer that sometimes ends up building game dev tools. This a
 
 **License**
 ----------
-This project is licensed under the MIT license. Enjoy!
+This project is licensed under the MIT license.
