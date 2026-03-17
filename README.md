@@ -1,7 +1,7 @@
 **Godot AI Assistant Hub**
 <img src="https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/logo.png" width="50px">
 ==========================
-**Latest version: 1.8.1**
+**Latest version: 1.8.2**
 <sub>([What's new?](#whats-new-in-the-latest-version))</sub>
 <sub>([Upgrading to a newer version](#upgrading-to-a-newer-version))</sub>
 
@@ -125,6 +125,9 @@ The rule of thumb I follow is to check the output speed by chatting with it. If 
 
 **What's new in the latest version**
 -----------------------
+**1.8.2**
+* New entry in settings to disable/enable chat sounds (Project Settings > General > Plugins > AI Assistant Hub > Audio Hints).
+
 **1.8.1**
 * When you select an assistant tab, the chat text box is now focused automatically.
 * Added commented code in ai_hub_plugin.gd under _enter_tree() and _exit_tree(), in Godot 4.6 you can uncomment this to enable making the plugin screen floating by right-clicking its tab.

@@ -6,7 +6,7 @@ enum ThinkingTargets { Output, Chat, Discard }
 const PREF_REMOVE_THINK:= "plugins/ai_assistant_hub/preferences/thinking_target"
 const PREF_SCROLL_BOTTOM:= "plugins/ai_assistant_hub/preferences/always_scroll_to_bottom"
 const PREF_SKIP_GREETING:= "plugins/ai_assistant_hub/preferences/skip_greeting"
-const AUDIO_HINTS:= "plugins/ai_assistant_hub/preferences/audio_hints"
+const PREF_AUDIO_HINTS:= "plugins/ai_assistant_hub/preferences/audio_hints"
 
 const CONFIG_LLM_API:= "plugins/ai_assistant_hub/llm_api"
 
@@ -98,8 +98,8 @@ func initialize_project_settings() -> void:
 		ProjectSettings.set_setting(PREF_SCROLL_BOTTOM, false)
 		ProjectSettings.save()
 	
-	if not ProjectSettings.has_setting(AUDIO_HINTS):
-		ProjectSettings.set_setting(AUDIO_HINTS, true)
+	if not ProjectSettings.has_setting(PREF_AUDIO_HINTS):
+		ProjectSettings.set_setting(PREF_AUDIO_HINTS, true)
 		ProjectSettings.save()
 
 
