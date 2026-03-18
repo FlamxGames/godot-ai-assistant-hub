@@ -23,6 +23,7 @@ ai_assistant_hub/preferences/thinking_target=0
 ai_assistant_hub/preferences/always_scroll_to_bottom=false
 ai_assistant_hub/llm_api="ollama_api"
 ai_assistant_hub/preferences/skip_greeting=false
+ai_assistant_hub/preferences/audio_hints=true
 
 [rendering]
 

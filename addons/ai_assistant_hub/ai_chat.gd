@@ -260,7 +260,8 @@ func _submit_prompt(prompt:String, quick_prompt:AIQuickPromptResource = null) ->
 
 
 func _abandon_request() -> void:
-	error_sound.play()
+	if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
+		error_sound.play()
 	http_request.cancel_request()
 	bot_portrait.is_thinking = false
 	_add_to_chat("Abandoned previous request.", Caller.System)
@@ -273,15 +274,18 @@ func _on_http_request_completed(result: int, response_code: int, headers: Packed
 	if result == 0:
 		var text_answer = _llm.read_response(body)
 		if text_answer == LLMInterface.INVALID_RESPONSE:
-			error_sound.play()
+			if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
+				error_sound.play()
 			push_error("Response: %s" % _llm.get_full_response(body))
 			_add_to_chat("An error occurred while processing your last request. Review the details in Godot's Output tab.", Caller.System)
 		else:
-			reply_sound.play()
+			if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
+				reply_sound.play()
 			_conversation.add_assistant_response(text_answer)
 			_bot_answer_handler.handle(text_answer, _last_quick_prompt)
 	else:
-		error_sound.play()
+		if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
+			error_sound.play()
 		push_error("HTTP response: Result: %s, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
 		_add_to_chat("An error occurred while communicating with the assistant. Review the details in Godot's Output tab.", Caller.System)
 
