@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c5d12f133cpv7"]
 
-[ext_resource type="Script" uid="uid://db3tjnjby60b4" path="res://addons/ai_assistant_hub/ai_chat.gd" id="1_v0kvm"]
+[ext_resource type="Script" uid="uid://bvxujbnkwvxsv" path="res://addons/ai_assistant_hub/ai_chat.gd" id="1_v0kvm"]
 [ext_resource type="Texture2D" uid="uid://beq5nk70uk8v4" path="res://addons/ai_assistant_hub/graphics/icons/edit_chat_icon.png" id="2_8urns"]
 [ext_resource type="Texture2D" uid="uid://jf8xovk1vky0" path="res://addons/ai_assistant_hub/graphics/icons/copy.png" id="3_kaeu5"]
 [ext_resource type="PackedScene" uid="uid://dxr0f1xqsje6b" path="res://addons/ai_assistant_hub/bot_portrait.tscn" id="3_lcoap"]
@@ -102,6 +102,26 @@ offset_bottom = 4.0
 grow_horizontal = 0
 grow_vertical = 2
 icon = ExtResource("3_kaeu5")
+
+[node name="CopyChatMessage" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/CopyChatButton" unique_id=1729234444]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = -51.5
+offset_right = -65.0
+offset_bottom = 49.5
+grow_horizontal = 0
+grow_vertical = 2
+text = "full chat 
+copied
+to 
+clipboard!"
 
 [node name="BotPortrait" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" unique_id=358812880 instance=ExtResource("3_lcoap")]
 unique_name_in_owner = true

@@ -29,6 +29,7 @@ const SAVE_PATH := "user://ai_assistant_hub/saved_chats/"
 @onready var api_label: Label = %APILabel
 @onready var bot_cancel: Button = %BotCancel
 @onready var save_check_button: CheckButton = %SaveCheckButton
+@onready var copy_chat_message: Label = %CopyChatMessage
 
 var _plugin:AIHubPlugin
 var _bot_name: String
@@ -398,6 +399,10 @@ func _on_edit_history_pressed() -> void:
 func _on_copy_chat_button_pressed() -> void:
 	var full_chat:String = output_window.text
 	DisplayServer.clipboard_set(full_chat)
+	var tween:Tween = get_tree().create_tween()
+	tween.tween_property(copy_chat_message,"modulate",Color(1.0,1.0,1.0,1.0),0.5)
+	tween.tween_property(copy_chat_message,"modulate",Color(1.0,1.0,1.0,0.0),0.5)
+	
 
 
 func _on_temperature_override_checkbox_toggled(toggled_on: bool) -> void:
