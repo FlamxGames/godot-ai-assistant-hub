@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://c5d12f133cpv7"]
+[gd_scene format=3 uid="uid://c5d12f133cpv7"]
 
-[ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_chat.gd" id="1_v0kvm"]
+[ext_resource type="Script" uid="uid://db3tjnjby60b4" path="res://addons/ai_assistant_hub/ai_chat.gd" id="1_v0kvm"]
 [ext_resource type="Texture2D" uid="uid://beq5nk70uk8v4" path="res://addons/ai_assistant_hub/graphics/icons/edit_chat_icon.png" id="2_8urns"]
+[ext_resource type="Texture2D" uid="uid://jf8xovk1vky0" path="res://addons/ai_assistant_hub/graphics/icons/copy.png" id="3_kaeu5"]
 [ext_resource type="PackedScene" uid="uid://dxr0f1xqsje6b" path="res://addons/ai_assistant_hub/bot_portrait.tscn" id="3_lcoap"]
 [ext_resource type="AudioStream" uid="uid://dk1yumltykf6x" path="res://addons/ai_assistant_hub/sounds/ai_replied.wav" id="4_7y76u"]
 [ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="4_11xim"]
@@ -11,7 +12,7 @@
 atlas = ExtResource("4_11xim")
 region = Rect2(416.097, 735.908, 31.3832, 32.4435)
 
-[node name="AIChat" type="Control"]
+[node name="AIChat" type="Control" unique_id=1706899364]
 clip_contents = true
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 3
@@ -24,13 +25,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_v0kvm")
 
-[node name="HTTPRequest" type="HTTPRequest" parent="."]
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=952579350]
 unique_name_in_owner = true
 
-[node name="ModelsHTTPRequest" type="HTTPRequest" parent="."]
+[node name="ModelsHTTPRequest" type="HTTPRequest" parent="." unique_id=595266197]
 unique_name_in_owner = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1287347091]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,30 +39,30 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer" unique_id=1349840769]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="QuickPromptsPanel" type="VBoxContainer" parent="HBoxContainer/ScrollContainer"]
+[node name="QuickPromptsPanel" type="VBoxContainer" parent="HBoxContainer/ScrollContainer" unique_id=75618672]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=1565080660]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VSplitContainer" type="VSplitContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="HBoxContainer/VBoxContainer" unique_id=1672658166]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 7
 theme_override_constants/autohide = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer" unique_id=326883713]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="OutputWindow" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer"]
+[node name="OutputWindow" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer" unique_id=1086125271]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -72,11 +73,11 @@ scroll_following = true
 selection_enabled = true
 deselect_on_focus_loss_enabled = false
 
-[node name="MarginContainer" type="Control" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer"]
+[node name="MarginContainer" type="Control" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer" unique_id=1000536476]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="EditHistory" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer"]
+[node name="EditHistory" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" unique_id=511047724]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -88,7 +89,21 @@ size_flags_vertical = 0
 icon = ExtResource("2_8urns")
 icon_alignment = 1
 
-[node name="BotPortrait" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" instance=ExtResource("3_lcoap")]
+[node name="CopyChatButton" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" unique_id=65128386]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -4.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 2
+icon = ExtResource("3_kaeu5")
+
+[node name="BotPortrait" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" unique_id=358812880 instance=ExtResource("3_lcoap")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -104,7 +119,7 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="BotCancel" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer"]
+[node name="BotCancel" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" unique_id=753711635]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -126,15 +141,15 @@ icon = SubResource("AtlasTexture_glvco")
 flat = true
 icon_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer" unique_id=873077611]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2" unique_id=1588238780]
 layout_mode = 2
 theme_type_variation = &"HeaderLarge"
 text = ">"
 
-[node name="PromptTxt" type="TextEdit" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2"]
+[node name="PromptTxt" type="TextEdit" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2" unique_id=1953993083]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
@@ -144,38 +159,38 @@ placeholder_text = "Ask something, press ENTER to send. Use CTRL + ENTER or SHIF
 editable = false
 wrap_mode = 1
 
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer" unique_id=362014468]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=48907668]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="SaveCheckButton" type="CheckButton" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="SaveCheckButton" type="CheckButton" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=376036757]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "If selected this chat will still be here the next time you open Godot."
 text = "Save"
 
-[node name="VSeparator2" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1257949078]
 layout_mode = 2
 
-[node name="TemperatureOverrideCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="TemperatureOverrideCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=974992996]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Override model's behavior."
 
-[node name="TemperatureSliderContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="TemperatureSliderContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=303905153]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer" unique_id=1643391536]
 layout_mode = 2
 text = "Precise"
 vertical_alignment = 1
 
-[node name="TemperatureSlider" type="HSlider" parent="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer"]
+[node name="TemperatureSlider" type="HSlider" parent="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer" unique_id=1605790937]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -184,44 +199,45 @@ max_value = 1.0
 step = 0.001
 ticks_on_borders = true
 
-[node name="Label2" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer"]
+[node name="Label2" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer" unique_id=1439705950]
 auto_translate_mode = 1
 layout_mode = 2
 text = "Creative"
 vertical_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1960160419]
 layout_mode = 2
 
-[node name="APILabel" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="APILabel" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1659544804]
 unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
 text = "API"
 vertical_alignment = 1
 
-[node name="Label3" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Label3" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1435892993]
 auto_translate_mode = 1
 layout_mode = 2
 text = "Model"
 vertical_alignment = 1
 
-[node name="ModelOptionsBtn" type="OptionButton" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="ModelOptionsBtn" type="OptionButton" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=29010486]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ReplySound" type="AudioStreamPlayer" parent="."]
+[node name="ReplySound" type="AudioStreamPlayer" parent="." unique_id=494688158]
 unique_name_in_owner = true
 stream = ExtResource("4_7y76u")
 pitch_scale = 1.0108
 
-[node name="ErrorSound" type="AudioStreamPlayer" parent="."]
+[node name="ErrorSound" type="AudioStreamPlayer" parent="." unique_id=1682057194]
 unique_name_in_owner = true
 stream = ExtResource("5_mmsii")
 
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_completed"]
 [connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_request_completed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/EditHistory" to="." method="_on_edit_history_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/CopyChatButton" to="." method="_on_copy_chat_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/BotCancel" to="." method="_abandon_request"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/SaveCheckButton" to="." method="_on_save_check_button_toggled"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureOverrideCheckbox" to="." method="_on_temperature_override_checkbox_toggled"]

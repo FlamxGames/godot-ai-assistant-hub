@@ -395,6 +395,11 @@ func _on_edit_history_pressed() -> void:
 	history_editor.popup()
 
 
+func _on_copy_chat_button_pressed() -> void:
+	var full_chat:String = output_window.text
+	DisplayServer.clipboard_set(full_chat)
+
+
 func _on_temperature_override_checkbox_toggled(toggled_on: bool) -> void:
 	temperature_slider_container.visible = toggled_on
 	_llm.override_temperature = toggled_on
