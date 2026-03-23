@@ -74,6 +74,7 @@ Open an issue **before** you start coding so we can discuss it.
 
 - Do not generate long AI‑written descriptions (you didn't see that coming, did you? 😉).
 - Keep it short, straight to the point, and focus on *what* changed and *why*.
+- Mention what Godot version and Operative System you used for testing.
 
 ---
 
