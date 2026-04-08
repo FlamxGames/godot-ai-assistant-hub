@@ -88,7 +88,7 @@ func _enter_tree() -> void:
 
 func initialize_project_settings() -> void:
 	if not ProjectSettings.has_setting(OPT_DEBUG):
-		ProjectSettings.set_setting(OPT_DEBUG, false)
+		ProjectSettings.set_setting(OPT_DEBUG, DebugOption.Disabled)
 		ProjectSettings.save()
 	elif ProjectSettings.get_setting(OPT_DEBUG, DebugOption.Disabled) == DebugOption.ConsoleAndLog:
 		if DirAccess.dir_exists_absolute(LOG_PATH.get_base_dir()):
