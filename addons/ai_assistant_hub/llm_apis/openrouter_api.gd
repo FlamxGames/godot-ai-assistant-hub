@@ -23,12 +23,12 @@ func _initialize() -> void:
 # Get model list
 func send_get_models_request(http_request: HTTPRequest) -> bool:
 	if _api_key.is_empty():
-		push_error("OpenRouter API key not set. Please configure the API key in the main tab and spawn a new assistant.")
+		AIHubPlugin.print_err("OpenRouter API key not set. Please configure the API key in the main tab and spawn a new assistant.")
 		return false
 	
 	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("OpenRouter API request failed: %s" % _models_url)
+		AIHubPlugin.print_err("OpenRouter API request failed: %s" % _models_url)
 		return false
 	return true
 
@@ -47,18 +47,18 @@ func read_models_response(body: PackedByteArray) -> Array[String]:
 		model_names.sort()
 		return model_names
 	else:
-		push_error("Failed to get model list from OpenRouter: %s" % JSON.stringify(response))
+		AIHubPlugin.print_err("Failed to get model list from OpenRouter: %s" % JSON.stringify(response))
 		return [INVALID_RESPONSE]
 
 
 # Send chat request
 func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	if _api_key.is_empty():
-		push_error("OpenRouter API key not set. Please configure the API key in the main tab and spawn a new assistant.")
+		AIHubPlugin.print_err("OpenRouter API key not set. Please configure the API key in the main tab and spawn a new assistant.")
 		return false
 	
 	if model.is_empty():
-		push_error("ERROR: You need to set an AI model for this assistant type.")
+		AIHubPlugin.print_err("ERROR: You need to set an AI model for this assistant type.")
 		return false
 	
 	# Build request body
@@ -74,7 +74,7 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	var body := JSON.stringify(body_dict)
 	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		push_error("OpenRouter API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
+		AIHubPlugin.print_err("OpenRouter API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
 		return false
 	return true
 
@@ -87,9 +87,9 @@ func read_response(body: PackedByteArray) -> String:
 	
 	if response.has("choices") and response.choices.size() > 0:
 		if response.choices[0].has("message") and response.choices[0].message.has("content"):
-			return ResponseCleaner.clean(response.choices[0].message.content)
+			return _msg_cleaner.clean(response.choices[0].message.content)
 	
-	push_error("Failed to parse OpenRouter response: %s" % JSON.stringify(response))
+	AIHubPlugin.print_err("Failed to parse OpenRouter response: %s" % JSON.stringify(response))
 	return INVALID_RESPONSE
 
 

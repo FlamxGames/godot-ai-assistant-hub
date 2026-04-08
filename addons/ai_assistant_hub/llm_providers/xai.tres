@@ -7,6 +7,7 @@ script = ExtResource("1_h0cc7")
 api_id = "xai_api"
 name = "xAI"
 description = "API for grok models"
+reasoning_levels = Array[String](["Default"])
 requires_key = true
 get_key_url = "https://docs.x.ai/developers/quickstart"
 fix_url = "https://api.x.ai/v1"

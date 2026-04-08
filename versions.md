@@ -1,6 +1,14 @@
 **Version history**
 --------------------
 
+**1.8.3**
+* Added reasoning level support for Ollama (help wanted to add it to other LLM Providers!)
+* "Make floating" option (by right-click to the plugin tab) is now enabled in Godot 4.6 without need to do any manual code changes (closes #64).
+* Thinking content is now obtained when it comes separate to the agent response and displayed accordingly to the user settings (Project Settings > General > Plugins > AI Assistant Hub > Thinking Target).
+* Reworked error/debugging handling, a new option exists now to ease debugging (Project Settings > General > Plugins > AI Assistant Hub > Debug Mode). This supports logging to a log file that skips keys automatically.
+* System message is no longer lost in saved chats (closes #75).
+* Added anonymous (counting) usage stats to understand better what versions and APIs most people use.
+
 **1.8.2**
 * New entry in settings to disable/enable chat sounds (Project Settings > General > Plugins > AI Assistant Hub > Audio Hints).
 

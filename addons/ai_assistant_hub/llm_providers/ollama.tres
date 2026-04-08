@@ -7,6 +7,7 @@ script = ExtResource("1_xlijg")
 api_id = "ollama_api"
 name = "Ollama"
 description = "Locally run open source LLM (requires Ollama software)"
+reasoning_levels = Array[String](["Default", "Disabled | In supported models, generates the answer without a reasoning step", "Enabled | In supported models, generates the answer using reasoning", "Low | Thinks less. If not supported by the model, the chat will error out", "Medium | Does some thinking. If not supported by the model, the chat will error out", "High | Thinks more. If not supported by the model, the chat will error out"])
 requires_key = false
 get_key_url = ""
 fix_url = ""

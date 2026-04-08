@@ -12,7 +12,10 @@ var _headers := PackedStringArray([
 
 
 func _initialize() -> void:
+	AIHubPlugin.print_msg("Gemini _initialize")
 	_rebuild_urls()
+	AIHubPlugin.print_hidding("_models_url: %s" % _models_url, _api_key)
+	AIHubPlugin.print_hidding("_chat_url: %s" % _chat_url, _api_key)
 	llm_config_changed.connect(_rebuild_urls)
 	model_changed.connect(_rebuild_urls.unbind(1))
 
@@ -26,12 +29,12 @@ func _rebuild_urls() -> void:
 func send_get_models_request(http_request: HTTPRequest) -> bool:
 	#API key is in LLMInterface base class
 	if _api_key.is_empty():
-		push_error("Gemini API key not set. Configure the API key in the main tab and try again.")
+		AIHubPlugin.print_err("Gemini API key not set. Configure the API key in the main tab and try again.")
 		return false
 
 	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Gemini API request failed: %s" % _models_url)
+		AIHubPlugin.print_err("Gemini API request failed: %s" % _models_url)
 		return false
 	return true
 
@@ -74,11 +77,11 @@ func _extract_content_from_json_string(s) -> String:
 func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	# message_list is Array of Dictionaries: [{role="user", text="Hello"}, ...]
 	if _api_key.is_empty():
-		push_error("Gemini API key not set. Configure the API key in the main tab and spawn a new assistant.")
+		AIHubPlugin.print_err("Gemini API key not set. Configure the API key in the main tab and spawn a new assistant.")
 		return false
 
 	if model.is_empty():
-		push_error("ERROR: You need to set an AI model for this assistant type.")
+		AIHubPlugin.print_err("ERROR: You need to set an AI model for this assistant type.")
 		return false
 	
 	# Ensure model does not have "models/" prefix
@@ -111,7 +114,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	#print("Gemini API Request URL: ", _chat_url)
 	#print("Gemini API Request body: ", body)
 	if error != OK:
-		push_error("Gemini API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
+		AIHubPlugin.print_err("Gemini API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
 		return false
 	return true
 
@@ -123,16 +126,15 @@ func read_response(body: PackedByteArray) -> String:
 	var parse_result := json.parse(body.get_string_from_utf8())
 	#print("HTTP Response body: ", body.get_string_from_utf8())
 	if parse_result != OK:
-		push_error("Failed to parse Gemini response JSON: %s" % json.get_error_message())
+		AIHubPlugin.print_err("Failed to parse Gemini response JSON: %s" % json.get_error_message())
 		return INVALID_RESPONSE
 	var response := json.get_data()
 	if response == null:
-		push_error("Gemini response is null after parsing.")
+		AIHubPlugin.print_err("Gemini response is null after parsing.")
 		return INVALID_RESPONSE
 	# Print and handle Gemini errors
 	if response.has("error"):
-		print("Gemini API Error: ", JSON.stringify(response.error))
-		push_error("Gemini API Error: " + str(response.error))
+		AIHubPlugin.print_err("Gemini API Error: " + str(response.error))
 		return INVALID_RESPONSE
 	if response.has("candidates") and response.candidates.size() > 0:
 		if response.candidates[0].has("content") and response.candidates[0].content.has("parts"):
@@ -141,8 +143,8 @@ func read_response(body: PackedByteArray) -> String:
 			for part in parts:
 				if part.has("text"):
 					conc_response += part.text
-			return ResponseCleaner.clean(conc_response)
-	push_error("Failed to parse Gemini response: %s" % JSON.stringify(response))
+			return _msg_cleaner.clean(conc_response)
+	AIHubPlugin.print_err("Failed to parse Gemini response: %s" % JSON.stringify(response))
 	return INVALID_RESPONSE
 
 

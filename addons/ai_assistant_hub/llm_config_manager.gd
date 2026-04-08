@@ -13,7 +13,7 @@ var _llm_settings_path:String
 func _init(api_id:String) -> void:
 	_api_id = api_id
 	if _api_id.is_empty():
-		push_error("Error while configuring API settings, no API ID provided")
+		AIHubPlugin.print_err("Error while configuring API settings, no API ID provided")
 	if not DirAccess.dir_exists_absolute(ADDON_FOLDER_PATH):
 		DirAccess.make_dir_absolute(ADDON_FOLDER_PATH)
 	_llm_settings_path = ADDON_FOLDER_PATH + SETTINGS_FILE_NAME
@@ -46,9 +46,9 @@ func _save_string_property(property:String, value:String) -> void:
 			config.set_value(_api_id, property, value)
 			var save_response := config.save(_llm_settings_path)
 			if save_response != OK:
-				printerr("Error when saving API configuration. Error: %d" % save_response)
+				AIHubPlugin.print_err("Error when saving API configuration. Error: %d" % save_response)
 	else:
-		printerr("Cannot save API configuration, API ID or %s value is null" % property)
+		AIHubPlugin.print_err("Cannot save API configuration, API ID or %s value is null" % property)
 
 
 func _load_string_property(property:String) -> String:
@@ -74,7 +74,7 @@ func migrate_deprecated_1_5_0_base_url() -> void:
 		ProjectSettings.set_setting(deprecated_base_url_1_5_0, null)
 		ProjectSettings.save()
 	if not old_base_url.is_empty():
-		print("Migrating base URL project settings to per LLM settings")
+		AIHubPlugin.print_msg("Migrating base URL project settings to per LLM settings")
 		if not _api_id.is_empty() and _api_id != "gemini_api" and _api_id != "openrouter_api":
 			if load_url().is_empty():
 				save_url(old_base_url)
@@ -85,13 +85,13 @@ func migrate_deprecated_1_5_0_api_key(old_key:String, old_key_settings:String, o
 	if not old_key.is_empty():
 		var new_key := load_key()
 		if new_key.is_empty():
-			print("Migrating existing %s Key to user settings" % _api_id)
+			AIHubPlugin.print_msg("Migrating existing %s Key to user settings" % _api_id)
 			save_key(old_key)
-		print("Deleting old %s Key project settings and redundant API key file" % _api_id)
+		AIHubPlugin.print_msg("Deleting old %s Key project settings and redundant API key file" % _api_id)
 		if not old_key_file.is_empty() and FileAccess.file_exists(old_key_file):
 			var err := OS.move_to_trash(ProjectSettings.globalize_path(old_key_file))
 			if err != OK:
-				printerr("Error while trying to delete deprecated %s API key file. Error: %d" % [_api_id, err])
+				AIHubPlugin.print_err("Error while trying to delete deprecated %s API key file. Error: %d" % [_api_id, err])
 		if ProjectSettings.has_setting(old_key_settings):
 			ProjectSettings.set_setting(old_key_settings, null)
 			ProjectSettings.save()

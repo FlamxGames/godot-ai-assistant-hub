@@ -4,6 +4,7 @@ extends Resource
 @export var api_id: String ## Identifier of the LLM API.
 @export var name: String ## User friendly name, used in the LLM Provider list.
 @export var description: String ## Description to be displayed as a tooltip when hovered in the LLM Provider list.
+@export var reasoning_levels: Array[String] ## List of reasoning levels accepted by this LLM Provider.
 
 @export_group("API key setup")
 @export var requires_key: bool ## Check this if the API requires an API key to work.

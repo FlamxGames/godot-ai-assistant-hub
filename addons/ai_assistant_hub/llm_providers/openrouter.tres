@@ -7,6 +7,7 @@ script = ExtResource("1_er34h")
 api_id = "openrouter_api"
 name = "OpenRouter"
 description = "Unified interface to access various commercial LLMs"
+reasoning_levels = Array[String](["Default"])
 requires_key = true
 get_key_url = "https://openrouter.ai/keys"
 fix_url = "https://openrouter.ai/api/v1"

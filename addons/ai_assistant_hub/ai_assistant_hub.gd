@@ -21,6 +21,7 @@ const AI_CHAT = preload("res://addons/ai_assistant_hub/ai_chat.tscn")
 @onready var version_http_request: HTTPRequest = %VersionHTTPRequest
 @onready var version_label: Label = %VersionLabel
 @onready var upgrade_btn: Button = %UpgradeBtn
+@onready var stats_http_request: AIHubStats = %StatsHTTPRequest
 
 
 var _plugin:AIHubPlugin
@@ -28,6 +29,7 @@ var _tab_bar:TabBar
 var _model_names:Array[String] = []
 var _models_llm: LLMInterface
 var _current_api_id:String
+var _apis_used:Dictionary
 
 
 func _tab_changed(tab_index: int) -> void:
@@ -58,6 +60,7 @@ func _close_tab(tab_index: int) -> void:
 func initialize(plugin:AIHubPlugin) -> void:
 	_plugin = plugin
 	await ready
+	AIHubPlugin.print_msg("Initializing main tab.")
 	_current_api_id = ProjectSettings.get_setting(AIHubPlugin.CONFIG_LLM_API)
 	
 	_initialize_llm_provider_options() # Load LLM providers
@@ -69,10 +72,13 @@ func initialize(plugin:AIHubPlugin) -> void:
 	
 	_load_saved_chats()
 	_check_version()
+	
+	stats_http_request.gather(_apis_used)
 
 
 # Initialize LLM provider options
 func _initialize_llm_provider_options() -> void:
+	AIHubPlugin.print_msg("Loading LLM providers.")
 	llm_provider_option.clear()
 
 	var files := _get_all_resources("%s/llm_providers" % self.scene_file_path.get_base_dir())
@@ -80,6 +86,7 @@ func _initialize_llm_provider_options() -> void:
 	for provider_file in files:
 		var provider = load(provider_file)
 		if provider is LLMProviderResource:
+			AIHubPlugin.print_msg("Found %s" % provider.name)
 			llm_provider_option.add_item(provider.name)
 			llm_provider_option.set_item_tooltip(i, provider.description)
 			llm_provider_option.set_item_metadata(i, provider)
@@ -88,13 +95,15 @@ func _initialize_llm_provider_options() -> void:
 				llm_provider_option.select(i)
 				_on_llm_provider_option_item_selected(i)
 			i += 1
+		else:
+			AIHubPlugin.print_msg("File %s is not an LLMProviderResource." % provider_file)
 
 
 # Update UI based on current provider selection
 func _update_provider_ui() -> void:
 	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
 	if llm_provider == null:
-		push_error("No LLM provider is selected.")
+		AIHubPlugin.print_err("No LLM provider is selected.")
 		return
 	
 	var config = LLMConfigManager.new(llm_provider.api_id)
@@ -115,12 +124,13 @@ func _update_provider_ui() -> void:
 		url_label.text = "Server URL"
 	
 	_on_refresh_models_btn_pressed() # Load models
+	AIHubPlugin.print_msg("Completed loading API %s" % llm_provider.name)
 
 
 func _on_settings_changed(_x) -> void:
 	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
 	if llm_provider == null:
-		push_error("No LLM provider is selected. Settings not saved.")
+		AIHubPlugin.print_err("No LLM provider is selected. Settings not saved.")
 		return
 	var config = LLMConfigManager.new(llm_provider.api_id)
 	if not api_key_txt.text.is_empty():
@@ -132,6 +142,7 @@ func _on_settings_changed(_x) -> void:
 
 func _on_refresh_models_btn_pressed() -> void:
 	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
+	AIHubPlugin.print_msg("Requesting list of models for %s" % llm_provider.name)
 	if not url_txt.text.is_empty():
 		models_list.deselect_all()
 		models_list.visible = false
@@ -146,6 +157,7 @@ func _on_refresh_models_btn_pressed() -> void:
 func _on_models_http_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	models_list_error.visible = false
 	models_list.visible = false
+	AIHubPlugin.print_msg("Models response received. Response code: %d" % response_code)
 	if result == 0:
 		var models_returned: Array = _models_llm.read_models_response(body)
 		if models_returned.size() == 0:
@@ -156,19 +168,23 @@ func _on_models_http_request_completed(result: int, response_code: int, headers:
 				models_list_error.text = "Error while trying to get the models list. Response: %s" % _models_llm.get_full_response(body)
 				models_list_error.visible = true
 			else:
+				AIHubPlugin.print_msg("Models found: %s" % models_returned.size())
 				models_list.clear()
 				models_list.visible = true
 				_model_names = models_returned
 				for model in _model_names:
 					models_list.add_item(model)
 	else:
-		push_error("HTTP response: Result: %s, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
+		AIHubPlugin.print_msg("Models request HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
+		)
 		models_list_error.text = "Something went wrong querying for models, is the Server URL correct?"
 		models_list_error.visible = true
 
 
 func _on_assistants_refresh_btn_pressed() -> void:
 	var assistants_path = "%s/assistants" % self.scene_file_path.get_base_dir()
+	AIHubPlugin.print_msg("Finding assistants in %s" % assistants_path)
 	var files = _get_all_resources(assistants_path)
 	var found:= false
 	
@@ -177,6 +193,7 @@ func _on_assistants_refresh_btn_pressed() -> void:
 			assistant_types_container.remove_child(child)
 	
 	for assistant_file in files:
+		AIHubPlugin.print_msg("Loading %s" % assistant_file)
 		var assistant = load(assistant_file)
 		if assistant is AIAssistantResource:
 			found = true
@@ -185,6 +202,9 @@ func _on_assistants_refresh_btn_pressed() -> void:
 			new_bot_btn.chat_created.connect(_on_new_bot_btn_chat_created)
 			new_bot_btn.deleted.connect(_on_assistants_refresh_btn_pressed)
 			assistant_types_container.add_child(new_bot_btn)
+			_apis_used[assistant.llm_provider.api_id] = true
+		else:
+			AIHubPlugin.print_msg("Not an AIAssistantResource, skipping.")
 	
 	if not found:
 		no_assistants_guide.text = "Create an assistant type by selecting a model and clicking \"New assistant type\"."
@@ -196,6 +216,7 @@ func _on_assistants_refresh_btn_pressed() -> void:
 
 
 func _on_new_bot_btn_chat_created(chat:AIChat) -> void:
+	AIHubPlugin.print_msg("Starting new chat.")
 	tab_container.add_child(chat)
 	tab_container.set_tab_icon(tab_container.get_child_count() - 1, chat.get_assistant_settings().type_icon)
 	tab_container.current_tab = chat.get_index()
@@ -218,10 +239,11 @@ func _get_all_resources(path: String) -> Array[String]:
 # Called when LLM provider option changes
 func _on_llm_provider_option_item_selected(index: int) -> void:
 	var llm_provider:LLMProviderResource = llm_provider_option.get_item_metadata(index)
+	AIHubPlugin.print_msg("Switching to API %s" % llm_provider.name)
 	_current_api_id = llm_provider.api_id
 	var new_llm:LLMInterface = _plugin.new_llm(llm_provider)
 	if new_llm == null:
-		push_error("Invalid LLM API")
+		AIHubPlugin.print_err("Invalid LLM API")
 	else:
 		_models_llm = new_llm
 	ProjectSettings.set_setting(AIHubPlugin.CONFIG_LLM_API, llm_provider.api_id)
@@ -258,6 +280,7 @@ func _on_models_list_empty_clicked(at_position: Vector2, mouse_button_index: int
 
 
 func _load_saved_chats() -> void:
+	AIHubPlugin.print_msg("Loading saved chats.")
 	var dir = DirAccess.open(AIChat.SAVE_PATH)  
 	if dir:
 		dir.list_dir_begin()
@@ -265,6 +288,7 @@ func _load_saved_chats() -> void:
 		while not file_name.is_empty():  
 			if file_name.ends_with(".cfg"):
 				var file_path = "%s/%s" % [ AIChat.SAVE_PATH , file_name ]
+				AIHubPlugin.print_msg("File: %s" % file_path)
 				_load_chat(file_path)
 			file_name = dir.get_next()
 	tab_container.current_tab = 0
@@ -277,9 +301,10 @@ func _load_chat(file_path:String) -> void:
 
 
 func _check_version() -> void:
+	version_label.text = "v%s" % _plugin.get_version()
 	var err := version_http_request.request("https://api.github.com/repos/FlamxGames/godot-ai-assistant-hub/releases/latest", ["Accept: application/vnd.github+json", "X-GitHub-Api-Version: 2022-11-28"], HTTPClient.METHOD_GET)
 	if err != OK:
-		print("There was an error trying to check the latest version for Godot AI Assistant Hub.")
+		AIHubPlugin.print_msg("There was an error trying to check the latest version for Godot AI Assistant Hub.")
 
 
 func _on_version_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -296,7 +321,7 @@ func _on_version_http_request_request_completed(result: int, response_code: int,
 				upgrade_btn.tooltip_text = "Version available %s. Click here to know more." % latest_version
 			error = false
 	if error:
-		print("It was not possible to check the latest version for Godot AI Assistant Hub, you may want to check GitHub manually: https://github.com/FlamxGames/godot-ai-assistant-hub. The response was: %s " % body)
+		AIHubPlugin.print_msg("It was not possible to check the latest version for Godot AI Assistant Hub, you may want to check GitHub manually: https://github.com/FlamxGames/godot-ai-assistant-hub. The response was: %s " % body)
 
 
 func _on_support_btn_pressed() -> void:
