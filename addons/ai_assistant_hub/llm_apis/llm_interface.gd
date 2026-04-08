@@ -7,6 +7,7 @@ class_name LLMInterface
 signal model_changed(model:String)
 signal override_temperature_changed(value:bool)
 signal temperature_changed(temperature:float)
+signal reasoning_changed(reasoning:String)
 signal llm_config_changed
 
 const INVALID_RESPONSE := "[INVALID_RESPONSE]"
@@ -33,6 +34,15 @@ var temperature: float:
 	get:
 		return temperature
 
+var reasoning: String:
+	set(value):
+		reasoning = value
+		reasoning_changed.emit(value)
+	get:
+		return reasoning
+
+var _msg_cleaner:= ResponseCleaner.new()
+
 var _base_url:String
 var _models_url:String
 var _chat_url:String
@@ -42,7 +52,7 @@ var _llm_provider:LLMProviderResource
 
 func _init(llm_provider:LLMProviderResource) -> void:
 	if llm_provider == null:
-		push_error("Tried to create LLM instance with no provider.")
+		AIHubPlugin.print_err("Tried to create LLM instance with no provider.")
 		return
 	_llm_provider = llm_provider
 	load_llm_parameters()
@@ -65,13 +75,13 @@ func get_full_response(body: PackedByteArray) -> Variant:
 	var json := JSON.new()
 	var parse_result := json.parse(body.get_string_from_utf8())
 	if parse_result != OK:
-		push_error("Failed to parse JSON in get_full_response: %s" % json.get_error_message())
+		AIHubPlugin.print_err("Failed to parse JSON in get_full_response: %s" % json.get_error_message())
 		return body.get_string_from_utf8()
 	var data = json.get_data()
 	if typeof(data) == TYPE_DICTIONARY:
 		return data
 	else:
-		push_error("Parsed JSON is not a Dictionary in get_full_response.")
+		AIHubPlugin.print_err("Parsed JSON is not a Dictionary in get_full_response.")
 		return body.get_string_from_utf8()
 
 
@@ -91,6 +101,17 @@ func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 
 func read_response(body:PackedByteArray) -> String:
 	return INVALID_RESPONSE
+
+
+func handle_thinking(thought:String) -> String:
+	var think_target:AIHubPlugin.ThinkingTargets = ProjectSettings.get_setting(AIHubPlugin.PREF_REMOVE_THINK, AIHubPlugin.ThinkingTargets.Output)
+	var think_content := "[Think start]:\n%s\n[Think end]" % thought
+	match think_target:
+		AIHubPlugin.ThinkingTargets.Chat:
+			return _msg_cleaner.clean(think_content) + "\n\n"
+		AIHubPlugin.ThinkingTargets.Output:
+			print(think_content)
+	return ""
 
 
 ## This is an optional method to override, only if you need to perform any logic

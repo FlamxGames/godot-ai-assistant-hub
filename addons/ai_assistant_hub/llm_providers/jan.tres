@@ -7,6 +7,7 @@ script = ExtResource("1_0qmth")
 api_id = "jan_api"
 name = "Jan"
 description = "Locally run open source LLMs models (requires Jan’s OpenAI‑compatible server)"
+reasoning_levels = Array[String](["Default"])
 requires_key = true
 get_key_url = "https://www.jan.ai/docs/desktop/api-server"
 fix_url = ""

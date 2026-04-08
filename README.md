@@ -1,7 +1,7 @@
 **Godot AI Assistant Hub**
 <img src="https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/logo.png" width="50px">
 ==========================
-**Latest version: 1.8.2**
+**Latest version: 1.8.3**
 <sub>([What's new?](#whats-new-in-the-latest-version))</sub>
 <sub>([Upgrading to a newer version](#upgrading-to-a-newer-version))</sub>
 
@@ -125,6 +125,13 @@ The rule of thumb I follow is to check the output speed by chatting with it. If 
 
 **What's new in the latest version**
 -----------------------
+**1.8.3**
+* Added reasoning level support for Ollama (help wanted to add it to other LLM Providers!)
+* Thinking content is now obtained when it comes separate to the agent response and displayed accordingly to the user settings (Project Settings > General > Plugins > AI Assistant Hub > Thinking Target).
+* Reworked error/debugging handling, a new option exists now to ease debugging (Project Settings > General > Plugins > AI Assistant Hub > Debug Mode). This supports logging to a log file that skips keys automatically.
+* System message is no longer lost in saved chats (issue #75).
+* Added anonymous (counting) usage stats to understand better what versions and APIs most people use.
+
 **1.8.2**
 * New entry in settings to disable/enable chat sounds (Project Settings > General > Plugins > AI Assistant Hub > Audio Hints).
 

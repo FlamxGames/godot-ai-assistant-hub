@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://w1f4dho35qy2"]
+[gd_scene load_steps=8 format=3 uid="uid://w1f4dho35qy2"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_assistant_hub.gd" id="1_x668t"]
 [ext_resource type="Texture2D" uid="uid://tvel41eepthx" path="res://addons/ai_assistant_hub/graphics/icons/Reload.svg" id="2_6xner"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_hub_stats.gd" id="2_62yhg"]
 [ext_resource type="Texture2D" uid="uid://cb745elrh1ukv" path="res://addons/ai_assistant_hub/graphics/icons/Add.svg" id="3_57y2f"]
 [ext_resource type="Texture2D" uid="uid://dctfmdvk5w5dk" path="res://addons/ai_assistant_hub/graphics/icons/upgrade_notif.svg" id="4_77wrn"]
 [ext_resource type="Texture2D" uid="uid://c1ab17qlptks6" path="res://addons/ai_assistant_hub/graphics/icons/heart.svg" id="4_mwqwj"]
@@ -22,6 +23,12 @@ script = ExtResource("1_x668t")
 unique_name_in_owner = true
 accept_gzip = false
 timeout = 10.0
+
+[node name="StatsHTTPRequest" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+accept_gzip = false
+timeout = 10.0
+script = ExtResource("2_62yhg")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -255,7 +262,7 @@ theme_override_constants/separation = -8
 [node name="VersionLabel" type="Label" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "v1.8.2"
+text = "loading..."
 horizontal_alignment = 2
 
 [node name="UpgradeBtn" type="Button" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings/HBoxContainer/HBoxContainer"]
@@ -284,6 +291,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_completed"]
+[connection signal="request_completed" from="StatsHTTPRequest" to="StatsHTTPRequest" method="_http_request_completed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/HBoxContainer/HBoxContainer/AssistantsRefreshBtn" to="." method="_on_assistants_refresh_btn_pressed"]
 [connection signal="pressed" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer2/RefreshModelsBtn" to="." method="_on_refresh_models_btn_pressed"]
 [connection signal="empty_clicked" from="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/PanelContainer/ModelsList" to="." method="_on_models_list_empty_clicked"]

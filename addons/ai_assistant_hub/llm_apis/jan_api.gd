@@ -12,20 +12,20 @@ func _rebuild_headers() -> void:
 
 
 func _initialize() -> void:
+	AIHubPlugin.print_msg("JanAPI _initialize")
 	_rebuild_headers()
+	AIHubPlugin.print_hidding("Headers: %s" % _headers, _api_key)
 	llm_config_changed.connect(_rebuild_headers)
 
 
 func send_get_models_request(http_request: HTTPRequest) -> bool:
 	if _api_key.is_empty():
-		push_error("JanAPI API key not set. Please configure the API key in the main tab.")
+		AIHubPlugin.print_err("JanAPI API key not set. Please configure the API key in the main tab.")
 		return false
-	
-	print(_headers)
 	
 	var err := http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if err != OK:
-		push_error("JanAPI GET models failed: %s" % _models_url)
+		AIHubPlugin.print_err("JanAPI GET models failed: %s" % _models_url)
 		return false
 	return true
 
@@ -46,11 +46,11 @@ func read_models_response(body: PackedByteArray) -> Array[String]:
 
 func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	if _api_key.is_empty():
-		push_error("JanAPI API key not set. Please configure the API key in the main tab and spawn a new assistant.")
+		AIHubPlugin.print_err("JanAPI API key not set. Please configure the API key in the main tab and spawn a new assistant.")
 		return false
 	
 	if model.is_empty():
-		push_error("ERROR: You need to set an AI model for this assistant type.")
+		AIHubPlugin.print_err("ERROR: You need to set an AI model for this assistant type.")
 		return false
 	
 	var body := {
@@ -62,7 +62,7 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	var payload := JSON.new().stringify(body)
 	var err := http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, payload)
 	if err != OK:
-		push_error("JanAPI chat request failed: %s\n%s" % [_chat_url, payload])
+		AIHubPlugin.print_err("JanAPI chat request failed: %s\n%s" % [_chat_url, payload])
 		return false
 	return true
 
@@ -74,6 +74,6 @@ func read_response(body: PackedByteArray) -> String:
 	if data.has("choices") and data.choices.size() > 0:
 		var c = data.choices[0]
 		if c.has("message") and c.message.has("content"):
-			return ResponseCleaner.clean(c.message.content)
+			return _msg_cleaner.clean(c.message.content)
 	return INVALID_RESPONSE
  

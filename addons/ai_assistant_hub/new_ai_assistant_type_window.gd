@@ -43,7 +43,7 @@ func _on_create_button_pressed() -> void:
 	res.take_over_path(path)
 	var error := ResourceSaver.save(res, path)
 	if error != OK:
-		printerr("Error while creating the new assistant type resource. Error code: %d" % error)
+		AIHubPlugin.print_err("Error while creating the new assistant type resource. Error code: %d" % error)
 	else:
 		assistant_type_created.emit()
 	EditorInterface.edit_resource(res)

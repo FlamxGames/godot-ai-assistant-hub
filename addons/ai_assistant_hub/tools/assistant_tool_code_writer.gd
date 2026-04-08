@@ -35,7 +35,7 @@ func write_to_code_editor(text_answer:String, code_placement:AIQuickPromptResour
 				text_answer = strip_empty_surrounding_lines(text_answer)
 				code_editor.insert_text_at_caret(text_answer)
 			_:
-				push_error("Unexpected Quick Prompt code placement value: %s" % code_placement)
+				AIHubPlugin.print_err("Unexpected Quick Prompt code placement value: %s" % code_placement)
 		code_editor.scroll_vertical = code_editor.get_scroll_pos_for_line(start_line) - 10
 		code_editor.select(start_line, 0, start_line, 0)
 		return true

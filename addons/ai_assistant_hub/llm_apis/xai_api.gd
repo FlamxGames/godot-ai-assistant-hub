@@ -19,12 +19,12 @@ func _initialize() -> void:
 func send_get_models_request(http_request: HTTPRequest) -> bool:
 	#API key is in LLMInterface base class
 	if _api_key.is_empty():
-		push_error("xAI API key not set. Configure the API key in the main tab and try again.")
+		AIHubPlugin.print_err("xAI API key not set. Configure the API key in the main tab and try again.")
 		return false
 
 	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("xAI API request failed: %s" % _models_url)
+		AIHubPlugin.print_err("xAI API request failed: %s" % _models_url)
 		return false
 	return true
 
@@ -68,11 +68,11 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	# example request data: 
 	#{ "messages": [ { "role": "system", "content": "You are a helpful assistant that can answer questions and help with tasks." }, { "role": "user", "content": "What is 101*3?" } ], "model": "grok-4-0709" }
 	if _api_key.is_empty():
-		push_error("xAI API key not set. Configure the API key in the main tab and spawn a new assistant.")
+		AIHubPlugin.print_err("xAI API key not set. Configure the API key in the main tab and spawn a new assistant.")
 		return false
 
 	if model.is_empty():
-		push_error("ERROR: You need to set an AI model for this assistant type.")
+		AIHubPlugin.print_err("ERROR: You need to set an AI model for this assistant type.")
 		return false
 
 	var formatted_contents := []
@@ -80,8 +80,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 		var msg = message_list[i]
 		var role: String = str(msg.get("role", "user"))
 		var text = msg.get("content", msg.get("text", msg))
-		#print(text)
-		#text = _extract_content_from_json_string(text)
+		AIHubPlugin.print_msg(text)
 
 		formatted_contents.append({
 			"role": role,
@@ -100,7 +99,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	
 	if error != OK:
-		push_error("xAI API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
+		AIHubPlugin.print_err("xAI API chat request failed.\nURL: %s\nRequest body: %s" % [_chat_url, body])
 		return false
 	return true
 
@@ -118,19 +117,19 @@ func read_response(body: PackedByteArray) -> String:
 	var parse_result := json.parse(body.get_string_from_utf8())
 	#print("HTTP Response body: ", body.get_string_from_utf8())
 	if parse_result != OK:
-		push_error("Failed to parse xAI response JSON: %s" % json.get_error_message())
+		AIHubPlugin.print_err("Failed to parse xAI response JSON: %s" % json.get_error_message())
 		return INVALID_RESPONSE
 	var response := json.get_data()
 	if response == null:
-		push_error("xAI response is null after parsing.")
+		AIHubPlugin.print_err("xAI response is null after parsing.")
 		return INVALID_RESPONSE
 	# Print and handle xAI errors
 	if response.has("error"):
 		#print("xAI API Error: ", JSON.stringify(response.error))
-		push_error("xAI API Error: " + str(response.error))
+		AIHubPlugin.print_err("xAI API Error: " + str(response.error))
 		return INVALID_RESPONSE
 	if response.has("choices") and response.choices.size() > 0:
 		if response.choices[0].has("message") and response.choices[0].message.has("content"):
-			return ResponseCleaner.clean(response.choices[0].message.content)
-	push_error("Failed to parse xAI response: %s" % JSON.stringify(response))
+			return _msg_cleaner.clean(response.choices[0].message.content)
+	AIHubPlugin.print_err("Failed to parse xAI response: %s" % JSON.stringify(response))
 	return INVALID_RESPONSE

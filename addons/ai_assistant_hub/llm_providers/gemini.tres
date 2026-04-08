@@ -7,6 +7,7 @@ script = ExtResource("1_8xs8o")
 api_id = "gemini_api"
 name = "Gemini"
 description = "Google Gemini LLM"
+reasoning_levels = Array[String](["Default"])
 requires_key = true
 get_key_url = "https://aistudio.google.com/app/apikey"
 fix_url = "https://generativelanguage.googleapis.com/v1beta/models"

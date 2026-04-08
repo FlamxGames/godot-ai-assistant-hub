@@ -29,6 +29,9 @@ const SAVE_PATH := "user://ai_assistant_hub/saved_chats/"
 @onready var api_label: Label = %APILabel
 @onready var bot_cancel: Button = %BotCancel
 @onready var save_check_button: CheckButton = %SaveCheckButton
+@onready var reasoning_section: HBoxContainer = %ReasoningSection
+@onready var reasoning_options_btn: OptionButton = %ReasoningOptionsBtn
+
 
 var _plugin:AIHubPlugin
 var _bot_name: String
@@ -42,6 +45,7 @@ var _chat_save_path: String
 
 
 func initialize(plugin:AIHubPlugin, assistant_settings: AIAssistantResource, bot_name:String) -> void:
+	AIHubPlugin.print_msg("Initializing AIChat with %s." % bot_name)
 	_plugin = plugin
 	_assistant_settings = assistant_settings
 	_bot_name = bot_name
@@ -57,6 +61,7 @@ func initialize(plugin:AIHubPlugin, assistant_settings: AIAssistantResource, bot
 		var save_id = ("%s_%s_%s" % [Time.get_datetime_string_from_system(), assistant_settings.type_name, bot_name]).validate_filename()
 		_chat_save_path = SAVE_PATH + save_id + ".cfg"
 		if not DirAccess.dir_exists_absolute(SAVE_PATH):
+			AIHubPlugin.print_msg("Creating folder %s" % SAVE_PATH)
 			DirAccess.make_dir_absolute(SAVE_PATH)
 	
 	var llm_provider:= _find_llm_provider()
@@ -70,16 +75,33 @@ func initialize(plugin:AIHubPlugin, assistant_settings: AIAssistantResource, bot
 	
 	if _assistant_settings: # We need to check this, otherwise this is called when editing the plugin
 		_load_api(llm_provider)
+		if llm_provider.reasoning_levels and llm_provider.reasoning_levels.size() > 1:
+			AIHubPlugin.print_msg("Loading reasoning levels for API %s." % llm_provider.name)
+			reasoning_section.visible = true
+			for level in llm_provider.reasoning_levels:
+				var parts := level.split("|")
+				var reasoning_key = parts[0].strip_edges()
+				reasoning_options_btn.add_item(reasoning_key)
+				if parts.size() > 1:
+					reasoning_options_btn.set_item_tooltip(reasoning_options_btn.item_count - 1, parts[1].strip_edges())
+		else:
+			AIHubPlugin.print_msg("Reasoning levels are not supported yet for API %s." % llm_provider.name)
+			reasoning_section.visible = false
+		
 		temperature_slider.value = assistant_settings.custom_temperature
 		temperature_override_checkbox.button_pressed = assistant_settings.use_custom_temperature
 		_on_temperature_override_checkbox_toggled(temperature_override_checkbox.button_pressed)
 		
+		_conversation.set_system_message("%s\nYour name is %s." % [_assistant_settings.ai_description, _bot_name])
 		if new_conversation:
-			_conversation.set_system_message("%s\nYour name is %s." % [_assistant_settings.ai_description, _bot_name])
 			bot_portrait.set_random()
 		bot_portrait.think.connect(func(value:bool): bot_cancel.visible = value)
 		reply_sound.pitch_scale = randf_range(0.7, 1.2)
 	
+		if _assistant_settings.quick_prompts and _assistant_settings.quick_prompts.size() > 0:
+			AIHubPlugin.print_msg("Loading quick prompts for %s." % bot_name)
+		else:
+			AIHubPlugin.print_msg("No quick prompts found for %s." % bot_name)
 		for qp in _assistant_settings.quick_prompts:
 			var qp_button:= Button.new()
 			qp_button.text = qp.action_name
@@ -94,6 +116,7 @@ func initialize(plugin:AIHubPlugin, assistant_settings: AIAssistantResource, bot
 		prompt_txt.editable = true
 		if new_conversation:
 			_greet()
+		AIHubPlugin.print_msg("Chat initialized for %s." % bot_name)
 
 
 func get_assistant_settings() -> AIAssistantResource:
@@ -105,6 +128,7 @@ func initialize_from_file(plugin:AIHubPlugin, file:String) -> void:
 	_chat_save_path = file
 	if not is_node_ready():
 		await ready
+	AIHubPlugin.print_msg("Loading chat from %s." % file)
 	var config = ConfigFile.new()
 	config.load(_chat_save_path)
 	var res_path = config.get_value("setup","assistant_res")
@@ -120,13 +144,13 @@ func initialize_from_file(plugin:AIHubPlugin, file:String) -> void:
 	_conversation.set_system_message(system_message)
 	await initialize(plugin, _assistant_settings, bot_name)
 	_conversation.overwrite_chat(chat_history)
-	_conversation.set_system_message(chat_history[0].content)
 	_load_conversation_to_chat(chat_history)
 	var port_base_region:Rect2 = config.get_value("portrait","base_region")
 	var port_mouth_region:Rect2 = config.get_value("portrait","mouth_region")
 	var port_eyes_region:Rect2 = config.get_value("portrait","eyes_region")
 	bot_portrait.load_regions(port_base_region, port_mouth_region, port_eyes_region)
 	save_check_button.button_pressed = true
+	AIHubPlugin.print_msg("Completed loading chat from %s." % file)
 
 
 func _create_save_file() -> void:
@@ -143,6 +167,7 @@ func _create_save_file() -> void:
 
 
 func _create_conversation(llm_provider: LLMProviderResource) -> void:
+	AIHubPlugin.print_msg("Starting new conversaion using API %s." % llm_provider.name)
 	_conversation = AIConversation.new(
 		llm_provider.system_role_name,
 		llm_provider.user_role_name,
@@ -189,7 +214,7 @@ func _load_api(llm_provider:LLMProviderResource) -> void:
 		_llm.override_temperature = _assistant_settings.use_custom_temperature
 		_llm.temperature = _assistant_settings.custom_temperature
 	else:
-		push_error("LLM provider failed to initialize. Check the LLM API configuration for it.")
+		AIHubPlugin.print_err("LLM provider failed to initialize. Check the LLM API configuration for it.")
 
 
 func _greet() -> void:
@@ -251,7 +276,7 @@ func _submit_prompt(prompt:String, quick_prompt:AIQuickPromptResource = null) ->
 	bot_portrait.is_thinking = true
 	_conversation.add_user_prompt(prompt)
 	if not _llm:
-		push_error("No LLM provider loaded. Check your Project Settings!")
+		AIHubPlugin.print_err("No LLM provider loaded. Check your Project Settings!")
 		_add_to_chat("No language model provider loaded. Check configuration!", Caller.System)
 		return
 	var success := _llm.send_chat_request(http_request, _conversation.build())
@@ -269,14 +294,14 @@ func _abandon_request() -> void:
 
 
 func _on_http_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	#print("HTTP response: Result: %d, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
 	bot_portrait.is_thinking = false
+	AIHubPlugin.print_msg("Chat response received. Response code: %d" % response_code)
 	if result == 0:
 		var text_answer = _llm.read_response(body)
 		if text_answer == LLMInterface.INVALID_RESPONSE:
 			if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
 				error_sound.play()
-			push_error("Response: %s" % _llm.get_full_response(body))
+			AIHubPlugin.print_err("Response: %s" % _llm.get_full_response(body))
 			_add_to_chat("An error occurred while processing your last request. Review the details in Godot's Output tab.", Caller.System)
 		else:
 			if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
@@ -284,9 +309,11 @@ func _on_http_request_completed(result: int, response_code: int, headers: Packed
 			_conversation.add_assistant_response(text_answer)
 			_bot_answer_handler.handle(text_answer, _last_quick_prompt)
 	else:
+		AIHubPlugin.print_msg("Chat HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
+		)
 		if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
 			error_sound.play()
-		push_error("HTTP response: Result: %s, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
 		_add_to_chat("An error occurred while communicating with the assistant. Review the details in Godot's Output tab.", Caller.System)
 
 
@@ -364,14 +391,16 @@ func _on_models_http_request_request_completed(result: int, response_code: int, 
 	if result == 0:
 		var models_returned: Array = _llm.read_models_response(body)
 		if models_returned.size() == 0:
-			push_error("No models found. Download at least one model and try again.")
+			AIHubPlugin.print_err("No models found. Download at least one model and try again.")
 		else:
 			if models_returned[0] == LLMInterface.INVALID_RESPONSE:
-				push_error("Error while trying to get the models list. Response: %s" % _llm.get_full_response(body))
+				AIHubPlugin.print_err("Error while trying to get the models list. Response: %s" % _llm.get_full_response(body))
 			else:
 				_load_models(models_returned)
 	else:
-		push_error("HTTP response: Result: %s, Response Code: %d, Headers: %s, Body: %s" % [result, response_code, headers, body])
+		AIHubPlugin.print_msg("(Chat) Models HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
+		)
 
 
 func _load_models(models: Array[String]) -> void:
@@ -406,6 +435,10 @@ func _on_model_options_btn_item_selected(index: int) -> void:
 
 func _on_temperature_slider_value_changed(value: float) -> void:
 	_llm.temperature = snappedf(temperature_slider.value, 0.001)
+
+
+func _on_reasoning_options_btn_item_selected(index: int) -> void:
+	_llm.reasoning = reasoning_options_btn.text
 
 
 # Scroll the output window by one page

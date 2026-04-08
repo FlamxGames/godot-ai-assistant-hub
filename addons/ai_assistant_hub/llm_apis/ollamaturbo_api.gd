@@ -19,7 +19,7 @@ func _initialize() -> void:
 func send_get_models_request(http_request:HTTPRequest) -> bool:
 	var error = http_request.request(_models_url, _headers, HTTPClient.METHOD_GET)
 	if error != OK:
-		push_error("Something went wrong with last AI API call: %s" % _models_url)
+		AIHubPlugin.print_err("Something went wrong with last AI API call: %s" % _models_url)
 		return false
 	return true
 
@@ -40,7 +40,7 @@ func read_models_response(body:PackedByteArray) -> Array[String]:
 
 func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 	if model.is_empty():
-		push_error("ERROR: You need to set an AI model for this assistant type.")
+		AIHubPlugin.print_err("ERROR: You need to set an AI model for this assistant type.")
 		return false
 	
 	var body_dict := {
@@ -56,7 +56,7 @@ func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 	
 	var error = http_request.request(_chat_url, _headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
-		push_error("Something went wrong with last AI API call.\nURL: %s\nBody:\n%s" % [_chat_url, body])
+		AIHubPlugin.print_err("Something went wrong with last AI API call.\nURL: %s\nBody:\n%s" % [_chat_url, body])
 		return false
 	return true
 
@@ -66,6 +66,6 @@ func read_response(body) -> String:
 	json.parse(body.get_string_from_utf8())
 	var response := json.get_data()
 	if response.has("message"):
-		return ResponseCleaner.clean(response.message.content)
+		return _msg_cleaner.clean(response.message.content)
 	else:
 		return LLMInterface.INVALID_RESPONSE
