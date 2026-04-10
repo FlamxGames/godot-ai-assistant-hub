@@ -36,19 +36,19 @@ func load_key() -> String:
 
 
 func _save_string_property(property:String, value:String) -> void:
-	if not _api_id.is_empty() and not value.is_empty():
+	if not _api_id.is_empty():
 		var config = ConfigFile.new()
 		var load_response := config.load(_llm_settings_path)
 		var current_value := ""
 		if load_response == OK:
 			current_value = config.get_value(_api_id, property, "")
 		if current_value != value:
-			config.set_value(_api_id, property, value)
+			config.set_value(_api_id, property, value if not value.is_empty() else null)
 			var save_response := config.save(_llm_settings_path)
 			if save_response != OK:
 				AIHubPlugin.print_err("Error when saving API configuration. Error: %d" % save_response)
 	else:
-		AIHubPlugin.print_err("Cannot save API configuration, API ID or %s value is null" % property)
+		AIHubPlugin.print_err("Cannot save API configuration, API ID is null")
 
 
 func _load_string_property(property:String) -> String:

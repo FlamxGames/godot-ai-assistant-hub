@@ -24,6 +24,11 @@ unique_name_in_owner = true
 accept_gzip = false
 timeout = 10.0
 
+[node name="CapabilitiesHTTPRequest" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+accept_gzip = false
+timeout = 10.0
+
 [node name="StatsHTTPRequest" type="HTTPRequest" parent="."]
 unique_name_in_owner = true
 accept_gzip = false
@@ -225,7 +230,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The URL of the host that runs your LLMs.
 
-The default value is for the local host using Ollama's default port."
+The default value is for the usual configuration for the LLM Provider you select."
 placeholder_text = "e.g. http://127.0.0.1:11434"
 
 [node name="APIKeyTxt" type="LineEdit" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]

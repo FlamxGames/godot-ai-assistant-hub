@@ -68,7 +68,11 @@ func _init(llm_provider:LLMProviderResource) -> void:
 func load_llm_parameters() -> void:
 	var config = LLMConfigManager.new(_llm_provider.api_id)
 	if _llm_provider.fix_url.is_empty():
-		_base_url = config.load_url()
+		var custom_url := config.load_url()
+		if custom_url.is_empty():
+			_base_url = _llm_provider.default_url
+		else:
+			_base_url = custom_url 
 	else:
 		_base_url = _llm_provider.fix_url
 	_models_url = _base_url + _llm_provider.models_url_postfix

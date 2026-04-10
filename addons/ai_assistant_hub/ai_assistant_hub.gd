@@ -7,6 +7,7 @@ const NEW_AI_ASSISTANT_TYPE_WINDOW = preload("res://addons/ai_assistant_hub/new_
 const AI_CHAT = preload("res://addons/ai_assistant_hub/ai_chat.tscn")
 
 @onready var models_http_request: HTTPRequest = %ModelsHTTPRequest
+@onready var capabilities_http_request: HTTPRequest = %CapabilitiesHTTPRequest
 @onready var url_txt: LineEdit = %UrlTxt
 @onready var models_list: ItemList = %ModelsList
 @onready var models_list_error: Label = %ModelsListError
@@ -135,7 +136,7 @@ func _on_settings_changed(_x) -> void:
 	var config = LLMConfigManager.new(llm_provider.api_id)
 	if not api_key_txt.text.is_empty():
 		config.save_key(api_key_txt.text)
-	if llm_provider.fix_url.is_empty() and not url_txt.text.is_empty():
+	if llm_provider.fix_url.is_empty():
 		config.save_url(url_txt.text)
 	_models_llm.load_llm_parameters()
 
@@ -143,15 +144,10 @@ func _on_settings_changed(_x) -> void:
 func _on_refresh_models_btn_pressed() -> void:
 	var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
 	AIHubPlugin.print_msg("Requesting list of models for %s" % llm_provider.name)
-	if not url_txt.text.is_empty():
-		models_list.deselect_all()
-		models_list.visible = false
-		models_list_error.visible = false
-		_models_llm.send_get_models_request(models_http_request)
-	else:
-		models_list_error.text = "Configure the Server URL below to get the list of available models."
-		models_list_error.visible = true
-		models_list.visible = false
+	models_list.deselect_all()
+	models_list.visible = false
+	models_list_error.visible = false
+	_models_llm.send_get_models_request(models_http_request)
 
 
 func _on_models_http_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -241,6 +237,7 @@ func _on_llm_provider_option_item_selected(index: int) -> void:
 	var llm_provider:LLMProviderResource = llm_provider_option.get_item_metadata(index)
 	AIHubPlugin.print_msg("Switching to API %s" % llm_provider.name)
 	_current_api_id = llm_provider.api_id
+	url_txt.placeholder_text = llm_provider.default_url
 	var new_llm:LLMInterface = _plugin.new_llm(llm_provider)
 	if new_llm == null:
 		AIHubPlugin.print_err("Invalid LLM API")
