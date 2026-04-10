@@ -9,7 +9,8 @@ func _rebuild_headers() -> void:
 	_headers = ["Content-Type: application/json",
 				"Authorization: Bearer %s" % _api_key,  # Include the key in the headers
 	]
-	
+
+
 func _initialize() -> void:
 	_rebuild_headers()
 	llm_config_changed.connect(_rebuild_headers)

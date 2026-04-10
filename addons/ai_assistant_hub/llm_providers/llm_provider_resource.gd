@@ -14,6 +14,7 @@ extends Resource
 @export var fix_url: String ## Used for services with a specific URL that won't change from user to user, e.g. Google Gemini. For LLMs that allow local or custom URL, keep this empty, otherwise the URL won't be editable from the UI.
 @export var models_url_postfix: String ## Concatenated at the end of the server URL to produce the endpoint to get the models list. E.g. "/api/tags" for Ollama.
 @export var chat_url_postfix: String ## Concatenated at the end of the server URL to produce the endpoint to chat. E.g. "/api/chat" for Ollama.
+@export var max_context_url_postfix: String ## Concatenated at the end of the server URL to produce the endpoint to find the max context. E.g. "/api/ps" for Ollama.
 
 @export_group("Chat setup")
 @export var system_role_name:String = "system" # Chat role name for system.

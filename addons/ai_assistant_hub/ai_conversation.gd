@@ -9,6 +9,7 @@ var _system_msg: String
 var _system_role_name:String
 var _user_role_name:String
 var _assistant_role_name:String
+var _estimated_token_size:int
 
 
 func _init(system_role_name:String, user_role_name:String, assistant_role_name:String):
@@ -64,6 +65,7 @@ func build() -> Array:
 		}
 	)
 	messages.append_array(_chat_history)
+	_estimated_token_size = JSON.stringify(messages).length() / 4
 	return messages
 
 
@@ -79,3 +81,7 @@ func clone_chat() -> Array:
 func overwrite_chat(new_chat:Array) -> void:
 	_chat_history = new_chat
 	chat_edited.emit(_chat_history)
+
+
+func get_estimated_token_size() -> int:
+	return _estimated_token_size

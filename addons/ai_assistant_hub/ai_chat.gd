@@ -13,9 +13,12 @@ enum Caller {
 
 const CHAT_HISTORY_EDITOR = preload("res://addons/ai_assistant_hub/chat_history_editor.tscn")
 const SAVE_PATH := "user://ai_assistant_hub/saved_chats/"
+const COLOR_SICK:Color = 0x89a232ff
+const COLOR_NORMAL:Color = 0xc6b7beff
 
 @onready var http_request: HTTPRequest = %HTTPRequest
 @onready var models_http_request: HTTPRequest = %ModelsHTTPRequest
+@onready var max_context_http_request: HTTPRequest = %MaxContextHTTPRequest
 @onready var output_window: RichTextLabel = %OutputWindow
 @onready var prompt_txt: TextEdit = %PromptTxt
 @onready var bot_portrait: BotPortrait = %BotPortrait
@@ -31,6 +34,8 @@ const SAVE_PATH := "user://ai_assistant_hub/saved_chats/"
 @onready var save_check_button: CheckButton = %SaveCheckButton
 @onready var reasoning_section: HBoxContainer = %ReasoningSection
 @onready var reasoning_options_btn: OptionButton = %ReasoningOptionsBtn
+@onready var context_progress_bar: TextureProgressBar = %ContextProgressBar
+@onready var context_warning_icon: TextureRect = %ContextWarningIcon
 
 
 var _plugin:AIHubPlugin
@@ -210,11 +215,27 @@ func _load_conversation_to_chat(chat_history:Array) -> void:
 func _load_api(llm_provider:LLMProviderResource) -> void:
 	_llm = _plugin.new_llm(llm_provider)
 	if _llm:
+		_llm.context_usage_updated.connect(_refresh_context_usage)
 		_llm.model = _assistant_settings.ai_model
 		_llm.override_temperature = _assistant_settings.use_custom_temperature
 		_llm.temperature = _assistant_settings.custom_temperature
 	else:
 		AIHubPlugin.print_err("LLM provider failed to initialize. Check the LLM API configuration for it.")
+
+
+func _refresh_context_usage(max:int, current:int) -> void:
+	if max > 0:
+		context_progress_bar.visible = true
+		context_progress_bar.value = int((float(current) / max) * 100)
+		context_progress_bar.tooltip_text = "Context used %d%% (%d/%d)" % [context_progress_bar.value, current, max]
+		var estimated_tokens = _conversation.get_estimated_token_size()
+		var estimated_current_ratio := float(estimated_tokens) / current
+		AIHubPlugin.print_msg("Estimated context tokens %d. Ratio to real: %f" % [estimated_tokens, estimated_current_ratio])
+		var warn:bool = current >= max or (estimated_current_ratio >= 1.5 and estimated_tokens > max * 0.8)
+		context_warning_icon.visible = warn
+		context_progress_bar.tint_progress = COLOR_SICK if warn else COLOR_NORMAL
+	else:
+		context_progress_bar.visible = false
 
 
 func _greet() -> void:
@@ -308,8 +329,9 @@ func _on_http_request_completed(result: int, response_code: int, headers: Packed
 				reply_sound.play()
 			_conversation.add_assistant_response(text_answer)
 			_bot_answer_handler.handle(text_answer, _last_quick_prompt)
+			_llm.check_context_usage(max_context_http_request)
 	else:
-		AIHubPlugin.print_msg("Chat HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+		AIHubPlugin.print_err("Chat HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
 			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
 		)
 		if ProjectSettings.get_setting(AIHubPlugin.PREF_AUDIO_HINTS, true):
@@ -398,7 +420,7 @@ func _on_models_http_request_request_completed(result: int, response_code: int, 
 			else:
 				_load_models(models_returned)
 	else:
-		AIHubPlugin.print_msg("(Chat) Models HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+		AIHubPlugin.print_err("(Chat) Models HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
 			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
 		)
 
@@ -485,3 +507,12 @@ func _on_conversation_chat_appended(new_entry:Dictionary) -> void:
 
 func focus_prompt() -> void:
 	prompt_txt.grab_focus()
+
+
+func _on_max_context_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	if result == 0 and response_code == 200:
+		_llm.read_max_context_http_response(body)
+	else:
+		AIHubPlugin.print_err("(Chat) Max context HTTP response:\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
+		)

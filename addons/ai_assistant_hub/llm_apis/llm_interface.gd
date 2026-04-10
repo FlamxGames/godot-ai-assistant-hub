@@ -9,12 +9,15 @@ signal override_temperature_changed(value:bool)
 signal temperature_changed(temperature:float)
 signal reasoning_changed(reasoning:String)
 signal llm_config_changed
+signal context_usage_updated(max:int, current:int)
 
 const INVALID_RESPONSE := "[INVALID_RESPONSE]"
 
 # Public properties can be modified from the chat tab, you can subscribe to their change events
 var model: String:
 	set(value):
+		_max_context = 0
+		context_usage_updated.emit(0,0)
 		model = value
 		model_changed.emit(value)
 	get:
@@ -46,8 +49,11 @@ var _msg_cleaner:= ResponseCleaner.new()
 var _base_url:String
 var _models_url:String
 var _chat_url:String
+var _max_context_url:String
 var _api_key:String
 var _llm_provider:LLMProviderResource
+var _max_context:int
+var _current_context:int
 
 
 func _init(llm_provider:LLMProviderResource) -> void:
@@ -67,6 +73,7 @@ func load_llm_parameters() -> void:
 		_base_url = _llm_provider.fix_url
 	_models_url = _base_url + _llm_provider.models_url_postfix
 	_chat_url = _base_url + _llm_provider.chat_url_postfix
+	_max_context_url = _base_url + _llm_provider.max_context_url_postfix
 	_api_key = config.load_key()
 	llm_config_changed.emit()
 
@@ -83,6 +90,24 @@ func get_full_response(body: PackedByteArray) -> Variant:
 	else:
 		AIHubPlugin.print_err("Parsed JSON is not a Dictionary in get_full_response.")
 		return body.get_string_from_utf8()
+
+
+func handle_thinking(thought:String) -> String:
+	var think_target:AIHubPlugin.ThinkingTargets = ProjectSettings.get_setting(AIHubPlugin.PREF_REMOVE_THINK, AIHubPlugin.ThinkingTargets.Output)
+	var think_content := "[Think start]:\n%s\n[Think end]" % thought
+	match think_target:
+		AIHubPlugin.ThinkingTargets.Chat:
+			return _msg_cleaner.clean(think_content) + "\n\n"
+		AIHubPlugin.ThinkingTargets.Output:
+			print(think_content)
+	return ""
+
+
+func check_context_usage(http_request:HTTPRequest) -> void:
+	if _max_context > 0:
+		context_usage_updated.emit(_max_context, _current_context)
+	else:
+		detect_max_context(http_request)
 
 
 #--- All methods below should be overriden by child classes, see for example OllamaAPI ---
@@ -103,15 +128,12 @@ func read_response(body:PackedByteArray) -> String:
 	return INVALID_RESPONSE
 
 
-func handle_thinking(thought:String) -> String:
-	var think_target:AIHubPlugin.ThinkingTargets = ProjectSettings.get_setting(AIHubPlugin.PREF_REMOVE_THINK, AIHubPlugin.ThinkingTargets.Output)
-	var think_content := "[Think start]:\n%s\n[Think end]" % thought
-	match think_target:
-		AIHubPlugin.ThinkingTargets.Chat:
-			return _msg_cleaner.clean(think_content) + "\n\n"
-		AIHubPlugin.ThinkingTargets.Output:
-			print(think_content)
-	return ""
+func detect_max_context(http_request:HTTPRequest) -> void:
+	return
+
+
+func read_max_context_http_response(body: PackedByteArray) -> void:
+	return
 
 
 ## This is an optional method to override, only if you need to perform any logic

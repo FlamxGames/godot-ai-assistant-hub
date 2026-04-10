@@ -1,11 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://c5d12f133cpv7"]
+[gd_scene load_steps=12 format=3 uid="uid://c5d12f133cpv7"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_chat.gd" id="1_v0kvm"]
 [ext_resource type="Texture2D" uid="uid://beq5nk70uk8v4" path="res://addons/ai_assistant_hub/graphics/icons/edit_chat_icon.png" id="2_8urns"]
 [ext_resource type="PackedScene" uid="uid://dxr0f1xqsje6b" path="res://addons/ai_assistant_hub/bot_portrait.tscn" id="3_lcoap"]
 [ext_resource type="AudioStream" uid="uid://dk1yumltykf6x" path="res://addons/ai_assistant_hub/sounds/ai_replied.wav" id="4_7y76u"]
 [ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="4_11xim"]
+[ext_resource type="Texture2D" uid="uid://1re70eglp28m" path="res://addons/ai_assistant_hub/graphics/icons/triangle_down.svg" id="4_ncmp3"]
+[ext_resource type="Texture2D" uid="uid://xnf7te8005al" path="res://addons/ai_assistant_hub/graphics/icons/brain_empty.svg" id="5_0xd1f"]
+[ext_resource type="Texture2D" uid="uid://dxe878r4qkjua" path="res://addons/ai_assistant_hub/graphics/icons/warning.svg" id="5_8kmkl"]
 [ext_resource type="AudioStream" uid="uid://b2lftlbs848c4" path="res://addons/ai_assistant_hub/sounds/ai_error_cancel.wav" id="5_mmsii"]
+[ext_resource type="Texture2D" uid="uid://gd668pxamb0i" path="res://addons/ai_assistant_hub/graphics/icons/brain.svg" id="5_t34yd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_glvco"]
 atlas = ExtResource("4_11xim")
@@ -28,6 +32,9 @@ script = ExtResource("1_v0kvm")
 unique_name_in_owner = true
 
 [node name="ModelsHTTPRequest" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+
+[node name="MaxContextHTTPRequest" type="HTTPRequest" parent="."]
 unique_name_in_owner = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -76,17 +83,61 @@ deselect_on_focus_loss_enabled = false
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 
-[node name="EditHistory" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer"]
+[node name="ContextProgressBar" type="TextureProgressBar" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -12.0
+offset_right = 12.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+fill_mode = 3
+texture_under = ExtResource("5_t34yd")
+texture_over = ExtResource("5_0xd1f")
+texture_progress = ExtResource("5_t34yd")
+tint_under = Color(0.337255, 0.352941, 0.458824, 1)
+tint_progress = Color(0.776471, 0.717647, 0.745098, 1)
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/ContextProgressBar"]
+self_modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_right = 8.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("4_ncmp3")
+
+[node name="ContextWarningIcon" type="TextureRect" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/ContextProgressBar"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -48.0
-offset_bottom = 48.0
+offset_top = 8.0
+offset_right = 13.0
 grow_horizontal = 0
-size_flags_vertical = 0
-icon = ExtResource("2_8urns")
-icon_alignment = 1
+tooltip_text = "This assistant is overloaded, chances are it won’t remember earlier parts of your conversation.
+Even if the context usage isn’t close to 100%, it could be because the assistant is already discarding earlier parts of the conversation.
+
+Things you can try:
+- Edit the conversation history to remove large sections.
+- Start a new conversation with another assistant and copy the important parts of this conversation.
+
+If you edit this conversation, the context status will be updated only after the next chat response."
+texture = ExtResource("5_8kmkl")
+stretch_mode = 2
 
 [node name="BotPortrait" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer" instance=ExtResource("3_lcoap")]
 unique_name_in_owner = true
@@ -143,6 +194,23 @@ text = "Initializing..."
 placeholder_text = "Ask something, press ENTER to send. Use CTRL + ENTER or SHIFT + ENTER for adding new lines."
 editable = false
 wrap_mode = 1
+
+[node name="EditHistory" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 0
+tooltip_text = "Edit conversation history"
+mouse_default_cursor_shape = 2
+theme_override_colors/icon_hover_color = Color(0.7, 0.8, 1, 1)
+icon = ExtResource("2_8urns")
+flat = true
+icon_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2/EditHistory"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 4.0
+grow_horizontal = 2
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -238,8 +306,9 @@ stream = ExtResource("5_mmsii")
 
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_completed"]
 [connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_request_completed"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/EditHistory" to="." method="_on_edit_history_pressed"]
+[connection signal="request_completed" from="MaxContextHTTPRequest" to="." method="_on_max_context_http_request_request_completed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/BotCancel" to="." method="_abandon_request"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2/EditHistory" to="." method="_on_edit_history_pressed"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/SaveCheckButton" to="." method="_on_save_check_button_toggled"]
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/HBoxContainer/ReasoningSection/ReasoningOptionsBtn" to="." method="_on_reasoning_options_btn_item_selected"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureOverrideCheckbox" to="." method="_on_temperature_override_checkbox_toggled"]
