@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AIToolOption" load_steps=2 format=3 uid="uid://i7mm5i0joybr"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_o22p7"]
+
+[resource]
+script = ExtResource("1_o22p7")
+id = "prohibited_paths"
+name = "Prohibited paths"
+description = "If used, these paths cannot be used by the tool. It takes precedence over \"Allowed paths\"."
+type = 5
+allow_null = true

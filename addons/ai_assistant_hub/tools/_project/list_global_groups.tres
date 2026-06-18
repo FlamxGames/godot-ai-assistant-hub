@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=7 format=3 uid="uid://chofputvo0bec"]
+
+[ext_resource type="Resource" uid="uid://lh2xe6mgm3tu" path="res://addons/ai_assistant_hub/tools/tool_categories/project.tres" id="1_6qu31"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_xkidr"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_tlfpm"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_4jdcq"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_w2xw0"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="5_t4mmd"]
+
+[resource]
+script = ExtResource("3_w2xw0")
+id = "list_global_groups"
+title = "List global groups for nodes"
+description = "** Purpose **
+Lists the Global groups registered in the project."
+category = ExtResource("1_6qu31")
+parameters = Array[ExtResource("2_tlfpm")]([ExtResource("5_t4mmd")])
+options = Array[ExtResource("1_xkidr")]([ExtResource("3_4jdcq")])

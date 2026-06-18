@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=13 format=3 uid="uid://cwgmfg5pt0hxy"]
+
+[ext_resource type="Resource" uid="uid://clgp527sdbpm" path="res://addons/ai_assistant_hub/tools/tool_categories/resource.tres" id="1_knmyb"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="2_8ropy"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_h6lmc"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_ohoxe"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_dujly"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="6_0cecx"]
+[ext_resource type="Resource" uid="uid://n7ex8vtnmr8x" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_properties.tres" id="6_kupfe"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="7_cwl2b"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="8_lwdew"]
+
+[sub_resource type="Resource" id="Resource_6c3c5"]
+script = ExtResource("6_0cecx")
+type = 3
+name = "resource_path"
+description = "Path to the resource."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_xcc0j"]
+script = ExtResource("6_0cecx")
+type = 5
+name = "mode"
+description = "Indicates the tool execution mode."
+required = false
+string_enum_valid_values = Array[String](["Simple", "Detailed"])
+
+[sub_resource type="Resource" id="Resource_gr0qv"]
+script = ExtResource("6_0cecx")
+type = 3
+name = "filter"
+description = "Filter to indicate the specific property or group of properties to return."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("8_lwdew")
+id = "get_resource_properties"
+title = "Get resource properties"
+description = "**Purpose**
+- Retrieve properties of a Godot resource, either in a plain list or a structured JSON format.
+- Includes properties of nested resources by using notation \"<nested resource>.<internal property>\". E.g. \"shape.size\".
+
+**Use Cases**
+- *Simple mode*: Overview of all properties and their values in plain text. Useful to get property names and values. Has minimal grouping information.
+- *Detailed mode*: JSON-like output with details like properties types, class, hints, valid values, and more. Useful when you need to edit properties. This is very verbose, it is recommended to use with `filter` after getting the property name from Simple mode.
+
+**Usage**
+- Provide `resource_path`: Path to the resource.
+- Provide `mode` (optional): Output format - \"Simple\" (property-value list) or \"Detailed\" (structured JSON). Defaults to \"Simple\".
+- Provide `filter` (optional): Narrow down properties by name using wildcards (*). E.g. \"anchor*\".
+
+**Output**
+- In Simple mode: list of properties and their values.
+- In Detailed mode: structured JSON with type, value, hints, and other metadata."
+category = ExtResource("1_knmyb")
+parameters = Array[ExtResource("6_0cecx")]([SubResource("Resource_6c3c5"), SubResource("Resource_xcc0j"), SubResource("Resource_gr0qv"), ExtResource("7_cwl2b")])
+options = Array[ExtResource("2_8ropy")]([ExtResource("3_h6lmc"), ExtResource("4_ohoxe"), ExtResource("5_dujly"), ExtResource("6_kupfe")])

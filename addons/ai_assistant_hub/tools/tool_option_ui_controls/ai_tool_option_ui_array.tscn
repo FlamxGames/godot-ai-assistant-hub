@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://dr6qd0xfhynt5"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/tool_option_ui_controls/ai_tool_option_ui_array.gd" id="1_lcf77"]
+[ext_resource type="Texture2D" uid="uid://dxe878r4qkjua" path="res://addons/ai_assistant_hub/graphics/icons/warning_16.svg" id="2_cndpj"]
+
+[node name="Array" type="HBoxContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_lcf77")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="InvalidMark" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+tooltip_text = "Invalid or missing value."
+texture = ExtResource("2_cndpj")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 0
+text = "OptionName"
+
+[node name="AddBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add"
+
+[node name="RemoveBtn" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemList" type="ItemList" parent="VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+select_mode = 1
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/AddBtn" to="." method="_on_add_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/RemoveBtn" to="." method="_on_remove_btn_pressed"]

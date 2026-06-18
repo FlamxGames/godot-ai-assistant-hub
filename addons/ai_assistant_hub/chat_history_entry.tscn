@@ -4,8 +4,8 @@
 
 [node name="ChatHistoryEntry" type="HBoxContainer"]
 auto_translate_mode = 1
-offset_right = 162.0
-offset_bottom = 24.0
+offset_right = 1148.0
+offset_bottom = 31.0
 size_flags_horizontal = 3
 script = ExtResource("1_rl68l")
 
@@ -13,11 +13,14 @@ script = ExtResource("1_rl68l")
 unique_name_in_owner = true
 auto_translate_mode = 1
 layout_mode = 2
+size_flags_vertical = 0
 selected = 0
-item_count = 2
+item_count = 3
 popup/item_0/text = "user"
 popup/item_1/text = "assistant"
 popup/item_1/id = 1
+popup/item_2/text = "tool"
+popup/item_2/id = 2
 
 [node name="ContentTxt" type="TextEdit" parent="."]
 unique_name_in_owner = true
@@ -31,6 +34,7 @@ scroll_fit_content_height = true
 [node name="ForgetCheckBox" type="CheckBox" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 0
 tooltip_text = "This entry will be deleted on save."
 text = "Forget"
 

@@ -1,0 +1,137 @@
+[gd_scene load_steps=5 format=3 uid="uid://c1x86gglbnl0x"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tools_access_window.gd" id="1_e6jfh"]
+[ext_resource type="Texture2D" uid="uid://dmhon7f4rm01o" path="res://addons/ai_assistant_hub/graphics/icons/gear_16.svg" id="2_8byfl"]
+[ext_resource type="Texture2D" uid="uid://tvel41eepthx" path="res://addons/ai_assistant_hub/graphics/icons/Reload.svg" id="2_25304"]
+[ext_resource type="Texture2D" uid="uid://dxe878r4qkjua" path="res://addons/ai_assistant_hub/graphics/icons/warning_16.svg" id="3_jgwyq"]
+
+[node name="AIToolsAccessSetup" type="Window"]
+title = "Tools Access Setup"
+initial_position = 2
+size = Vector2i(600, 600)
+transient = true
+exclusive = true
+script = ExtResource("1_e6jfh")
+
+[node name="Background" type="TabContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "Select which tools the assistant can use. [b]Use caution, have backups, and use at your own risk.[/b]"
+fit_content = true
+
+[node name="GlobalOptionsBtn" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Global options"
+icon = ExtResource("2_8byfl")
+
+[node name="Tree" type="Tree" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+columns = 6
+column_titles_visible = true
+hide_root = true
+select_mode = 1
+scroll_horizontal_enabled = false
+
+[node name="AdvancedCheckbox" type="CheckBox" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Advanced setup"
+
+[node name="AdvancedSetupContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/AdvancedSetupContainer"]
+layout_mode = 2
+text = "Resource"
+
+[node name="ResourcePlaceholder" type="MarginContainer" parent="MarginContainer/VBoxContainer/AdvancedSetupContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/AdvancedSetupContainer"]
+layout_mode = 2
+
+[node name="ResetBtn" type="Button" parent="MarginContainer/VBoxContainer/AdvancedSetupContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reset all to default"
+icon = ExtResource("2_25304")
+
+[node name="SaveDefaultBtn" type="Button" parent="MarginContainer/VBoxContainer/AdvancedSetupContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Save as global default access"
+icon = ExtResource("3_jgwyq")
+
+[node name="SaveDefaultConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+auto_translate_mode = 1
+title = "Overwriting default access"
+initial_position = 4
+size = Vector2i(600, 340)
+popup_window = true
+ok_button_text = "Save"
+dialog_text = "You are about to set the current access settings as the new global default for all assistants.  
+
+- Any custom access you’ve defined for individual assistants or quick prompts will still override this default.  
+
+- The new default will be stored in:
+res://addons/ai_assistant_hub/tools/access_profiles/custom_access.tres
+
+If you later want to revert to the plugin’s original default access, simply delete this file."
+dialog_autowrap = true
+
+[node name="ResetAllConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+auto_translate_mode = 1
+title = "Loading default access"
+initial_position = 4
+size = Vector2i(400, 106)
+popup_window = true
+ok_button_text = "Reset"
+dialog_text = "Do you want to reset the access configuration of all tools to the default values?"
+dialog_autowrap = true
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/GlobalOptionsBtn" to="." method="_on_global_options_btn_pressed"]
+[connection signal="button_clicked" from="MarginContainer/VBoxContainer/Tree" to="." method="_on_tree_button_clicked"]
+[connection signal="item_edited" from="MarginContainer/VBoxContainer/Tree" to="." method="_on_tree_item_edited"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/AdvancedCheckbox" to="." method="_on_advanced_checkbox_toggled"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/AdvancedSetupContainer/ResetBtn" to="." method="_on_reset_btn_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/AdvancedSetupContainer/SaveDefaultBtn" to="." method="_on_save_default_btn_pressed"]
+[connection signal="confirmed" from="SaveDefaultConfirmationDialog" to="." method="_on_save_default_confirmation_dialog_confirmed"]
+[connection signal="confirmed" from="ResetAllConfirmationDialog" to="." method="_on_reset_all_confirmation_dialog_confirmed"]

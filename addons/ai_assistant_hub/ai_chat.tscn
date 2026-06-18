@@ -1,15 +1,18 @@
-[gd_scene load_steps=12 format=3 uid="uid://c5d12f133cpv7"]
+[gd_scene load_steps=15 format=3 uid="uid://c5d12f133cpv7"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_chat.gd" id="1_v0kvm"]
+[ext_resource type="Texture2D" uid="uid://u5bg2h66aw1g" path="res://addons/ai_assistant_hub/graphics/icons/capabilities/tools.svg" id="2_3sgyj"]
 [ext_resource type="Texture2D" uid="uid://beq5nk70uk8v4" path="res://addons/ai_assistant_hub/graphics/icons/edit_chat_icon.png" id="2_8urns"]
 [ext_resource type="PackedScene" uid="uid://dxr0f1xqsje6b" path="res://addons/ai_assistant_hub/bot_portrait.tscn" id="3_lcoap"]
 [ext_resource type="AudioStream" uid="uid://dk1yumltykf6x" path="res://addons/ai_assistant_hub/sounds/ai_replied.wav" id="4_7y76u"]
 [ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="4_11xim"]
-[ext_resource type="Texture2D" uid="uid://1re70eglp28m" path="res://addons/ai_assistant_hub/graphics/icons/triangle_down.svg" id="4_ncmp3"]
-[ext_resource type="Texture2D" uid="uid://xnf7te8005al" path="res://addons/ai_assistant_hub/graphics/icons/brain_empty.svg" id="5_0xd1f"]
-[ext_resource type="Texture2D" uid="uid://dxe878r4qkjua" path="res://addons/ai_assistant_hub/graphics/icons/warning.svg" id="5_8kmkl"]
+[ext_resource type="Texture2D" uid="uid://1re70eglp28m" path="res://addons/ai_assistant_hub/graphics/icons/triangle_down_16.svg" id="4_ncmp3"]
+[ext_resource type="Texture2D" uid="uid://xnf7te8005al" path="res://addons/ai_assistant_hub/graphics/icons/brain_empty_24.svg" id="5_0xd1f"]
+[ext_resource type="Texture2D" uid="uid://dxe878r4qkjua" path="res://addons/ai_assistant_hub/graphics/icons/warning_16.svg" id="5_8kmkl"]
 [ext_resource type="AudioStream" uid="uid://b2lftlbs848c4" path="res://addons/ai_assistant_hub/sounds/ai_error_cancel.wav" id="5_mmsii"]
-[ext_resource type="Texture2D" uid="uid://gd668pxamb0i" path="res://addons/ai_assistant_hub/graphics/icons/brain.svg" id="5_t34yd"]
+[ext_resource type="Texture2D" uid="uid://gd668pxamb0i" path="res://addons/ai_assistant_hub/graphics/icons/brain_fill_24.svg" id="5_t34yd"]
+[ext_resource type="Texture2D" uid="uid://tvel41eepthx" path="res://addons/ai_assistant_hub/graphics/icons/Reload.svg" id="9_44u71"]
+[ext_resource type="Texture2D" uid="uid://do5vwegdjlpno" path="res://addons/ai_assistant_hub/graphics/icons/capabilities/reasoning_levels.svg" id="11_4d846"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_glvco"]
 atlas = ExtResource("4_11xim")
@@ -45,11 +48,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="QuickPromptsPanel" type="VBoxContainer" parent="HBoxContainer/ScrollContainer"]
+[node name="QuickPromptsPanel" type="VBoxContainer" parent="HBoxContainer/VBoxContainer2/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -76,6 +83,7 @@ size_flags_vertical = 3
 focus_mode = 2
 bbcode_enabled = true
 scroll_following = true
+context_menu_enabled = true
 selection_enabled = true
 deselect_on_focus_loss_enabled = false
 
@@ -177,15 +185,16 @@ icon = SubResource("AtlasTexture_glvco")
 flat = true
 icon_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer"]
+[node name="RegularChatInputContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/RegularChatInputContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderLarge"
 text = ">"
 
-[node name="PromptTxt" type="TextEdit" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2"]
+[node name="PromptTxt" type="TextEdit" parent="HBoxContainer/VBoxContainer/VSplitContainer/RegularChatInputContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
@@ -195,7 +204,7 @@ placeholder_text = "Ask something, press ENTER to send. Use CTRL + ENTER or SHIF
 editable = false
 wrap_mode = 1
 
-[node name="EditHistory" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2"]
+[node name="EditHistory" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/RegularChatInputContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 tooltip_text = "Edit conversation history"
@@ -205,12 +214,71 @@ icon = ExtResource("2_8urns")
 flat = true
 icon_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2/EditHistory"]
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer/VSplitContainer/RegularChatInputContainer/EditHistory"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 4.0
 grow_horizontal = 2
+
+[node name="ToolApprovalInputContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+layout_mode = 2
+text = "Execute tool?"
+
+[node name="ToolApproveBtn" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Yes"
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+layout_mode = 2
+
+[node name="ToolRejectBtn" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "No"
+
+[node name="RejectReasonTxt" type="TextEdit" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Reason to not execute it."
+wrap_mode = 1
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+layout_mode = 2
+
+[node name="ToolCancelBtn" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Cancel and edit request"
+
+[node name="ErrorLoadingModelContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/VSplitContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/VSplitContainer/ErrorLoadingModelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 5
+text = "An error occurred while loading the LLM model. Is the server up?"
+metadata/_edit_group_ = true
+
+[node name="RetryReadModelBtn" type="Button" parent="HBoxContainer/VBoxContainer/VSplitContainer/ErrorLoadingModelContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 5
+text = "Retry"
+icon = ExtResource("9_44u71")
 
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
@@ -228,19 +296,35 @@ text = "Save"
 [node name="VSeparator2" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
+[node name="ToolToggleSection" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ToolsToggle" type="CheckButton" parent="HBoxContainer/VBoxContainer/HBoxContainer/ToolToggleSection"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Enable / Disable tools usage."
+theme_override_constants/h_separation = 2
+icon = ExtResource("2_3sgyj")
+icon_alignment = 2
+
+[node name="VSeparator3" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer/ToolToggleSection"]
+layout_mode = 2
+
 [node name="ReasoningSection" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ReasoningLabel" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer/ReasoningSection"]
-auto_translate_mode = 1
+[node name="Reasoning" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer/ReasoningSection"]
 layout_mode = 2
-text = "Reasoning"
-vertical_alignment = 1
+tooltip_text = "Reasoning level"
+texture = ExtResource("11_4d846")
+stretch_mode = 3
 
 [node name="ReasoningOptionsBtn" type="OptionButton" parent="HBoxContainer/VBoxContainer/HBoxContainer/ReasoningSection"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Reasoning level"
 
 [node name="VSeparator3" type="VSeparator" parent="HBoxContainer/VBoxContainer/HBoxContainer/ReasoningSection"]
 layout_mode = 2
@@ -248,7 +332,7 @@ layout_mode = 2
 [node name="TemperatureOverrideCheckbox" type="CheckBox" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Override creativity"
+text = "Alter creativity"
 
 [node name="TemperatureSliderContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
@@ -287,6 +371,7 @@ vertical_alignment = 1
 
 [node name="Label3" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 text = "Model"
 vertical_alignment = 1
@@ -308,8 +393,13 @@ stream = ExtResource("5_mmsii")
 [connection signal="request_completed" from="ModelsHTTPRequest" to="." method="_on_models_http_request_request_completed"]
 [connection signal="request_completed" from="MaxContextHTTPRequest" to="." method="_on_max_context_http_request_request_completed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer/MarginContainer/BotCancel" to="." method="_abandon_request"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/HBoxContainer2/EditHistory" to="." method="_on_edit_history_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/RegularChatInputContainer/EditHistory" to="." method="_on_edit_history_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer/ToolApproveBtn" to="." method="_on_tool_approve_btn_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer/ToolRejectBtn" to="." method="_on_tool_reject_btn_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/ToolApprovalInputContainer/ToolCancelBtn" to="." method="_on_tool_cancel_btn_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/VSplitContainer/ErrorLoadingModelContainer/RetryReadModelBtn" to="." method="_on_retry_read_model_btn_pressed"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/SaveCheckButton" to="." method="_on_save_check_button_toggled"]
+[connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/ToolToggleSection/ToolsToggle" to="." method="_on_tools_toggle_toggled"]
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/HBoxContainer/ReasoningSection/ReasoningOptionsBtn" to="." method="_on_reasoning_options_btn_item_selected"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureOverrideCheckbox" to="." method="_on_temperature_override_checkbox_toggled"]
 [connection signal="value_changed" from="HBoxContainer/VBoxContainer/HBoxContainer/TemperatureSliderContainer/TemperatureSlider" to="." method="_on_temperature_slider_value_changed"]

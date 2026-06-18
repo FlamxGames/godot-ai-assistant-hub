@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://cm5caogtf6in4"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/tool_option_ui_controls/ai_tool_option_ui_simple_value.gd" id="1_6xni0"]
+[ext_resource type="Texture2D" uid="uid://dxe878r4qkjua" path="res://addons/ai_assistant_hub/graphics/icons/warning_16.svg" id="2_ar04c"]
+
+[node name="SimpleValue" type="HBoxContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("1_6xni0")
+
+[node name="InvalidMark" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+tooltip_text = "Invalid or missing value."
+texture = ExtResource("2_ar04c")
+stretch_mode = 3
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 0
+text = "OptionName"
+
+[node name="LineEdit" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[connection signal="text_changed" from="LineEdit" to="." method="_on_line_edit_text_changed"]

@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=15 format=3 uid="uid://chlv1ans1c3kg"]
+
+[ext_resource type="Resource" uid="uid://baavfnrxbjpxf" path="res://addons/ai_assistant_hub/tools/tool_categories/code.tres" id="1_chhsi"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_posmw"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_fyoef"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="2_yq1ms"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_u4jsj"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="3_x17d6"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="4_qjrq1"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="5_fewwd"]
+[ext_resource type="Resource" uid="uid://dbyvt74q1qucq" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_banned_code.tres" id="6_5od60"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_jx8e4"]
+
+[sub_resource type="Resource" id="Resource_rjsy2"]
+script = ExtResource("2_fyoef")
+type = 3
+name = "file_path"
+description = "Path to the target file."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_7kl8u"]
+script = ExtResource("2_fyoef")
+type = 4
+name = "new_content"
+description = "Code to insert."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_vxab5"]
+script = ExtResource("2_fyoef")
+type = 0
+name = "replace_start_line"
+description = "1‑based line number that indicates the first line to replace (inclusive)."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_cvml7"]
+script = ExtResource("2_fyoef")
+type = 0
+name = "replace_end_line"
+description = "1‑based line number that indicates the last line to replace (inclusive). It must be greater or equal to `replace_start_line`."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_u4jsj")
+id = "replace_code"
+title = "Replace code"
+description = "** Purpose **
+Replaces a block of lines in a Godot script specified by `file_path` from `replace_start_line` (inclusive) to `replace_end_line` (inclusive) with the supplied `new_content`.
+The file is opened in Godot’s code editor to perform the operation.
+
+** Expected result **
+- Returns a trimmed snippet of the file for quick sanity‑check. For example, if you replace lines 100‑140 with 50 new lines, the tool will return context from line 95 to 155, with lines 106‑144 omitted.
+- If the returned snippet looks incorrect, you can revert the change using the `undo` tool (if available).
+
+** Usage notes **
+- Always inspect the file around the target range before performing the replacement to confirm the current state of the file."
+category = ExtResource("1_chhsi")
+parameters = Array[ExtResource("2_fyoef")]([SubResource("Resource_rjsy2"), SubResource("Resource_7kl8u"), SubResource("Resource_vxab5"), SubResource("Resource_cvml7"), ExtResource("8_jx8e4")])
+options = Array[ExtResource("1_posmw")]([ExtResource("2_yq1ms"), ExtResource("3_x17d6"), ExtResource("4_qjrq1"), ExtResource("5_fewwd"), ExtResource("6_5od60")])

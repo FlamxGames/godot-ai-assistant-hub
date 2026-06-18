@@ -1,6 +1,15 @@
 **Version history**
 --------------------
 
+**2.0.0**
+* Tools support (Ollama).
+* Context usage indicator (Ollama).
+* Set context length (Ollama).
+* Editing assistants definition propagates to existing chats.
+* Configure icon and Quick Prompts from the assistant editor itself (no need to edit the resource manually anymore).
+
+--------------------
+
 **1.8.3**
 * Added reasoning level support for Ollama (help wanted to add it to other LLM Providers!)
 * "Make floating" option (by right-click to the plugin tab) is now enabled in Godot 4.6 without need to do any manual code changes (closes #64).

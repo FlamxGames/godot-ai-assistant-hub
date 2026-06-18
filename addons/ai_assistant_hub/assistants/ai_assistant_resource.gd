@@ -28,3 +28,9 @@ extends Resource
 ## Quick Prompts available for a model are displayed in the chat window as buttons.
 ## These allow to create prompt templates, as well as read and write to the code editor.
 @export var quick_prompts: Array[AIQuickPromptResource]
+
+## The custom tool access for this assistant type. Tools not listed here will use default access.
+@export var tool_access: AIToolAccessProfile
+
+## If greater than zero, this will be the value used as the max context length.
+@export var context_length: int

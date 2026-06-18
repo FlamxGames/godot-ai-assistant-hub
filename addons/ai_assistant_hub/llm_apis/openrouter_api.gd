@@ -80,17 +80,18 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 
 
 # Parse chat response
-func read_response(body: PackedByteArray) -> String:
+func read_response(body: PackedByteArray) -> AIAssistantResponse:
 	var json := JSON.new()
 	json.parse(body.get_string_from_utf8())
-	var response := json.get_data()
+	var json_response := json.get_data()
 	
-	if response.has("choices") and response.choices.size() > 0:
-		if response.choices[0].has("message") and response.choices[0].message.has("content"):
-			return _msg_cleaner.clean(response.choices[0].message.content)
-	
-	AIHubPlugin.print_err("Failed to parse OpenRouter response: %s" % JSON.stringify(response))
-	return INVALID_RESPONSE
+	if json_response.has("choices") and json_response.choices.size() > 0:
+		if json_response.choices[0].has("message") and json_response.choices[0].message.has("content"):
+			var response:= AIAssistantResponse.new()
+			response.text_content = _msg_cleaner.clean(json_response.choices[0].message.content)
+			return response
+	AIHubPlugin.print_err("Failed to parse OpenRouter response: %s" % JSON.stringify(json_response))
+	return null
 
 
 # ----- Deprecated section - used to read the key to migrate to user settings file -----

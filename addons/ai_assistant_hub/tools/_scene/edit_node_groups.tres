@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=14 format=3 uid="uid://brnv6sqvsgqh4"]
+
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_4w1va"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_gqpul"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_yujwi"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_6ofpd"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_urwc2"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_tkfhf"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_r4qnu"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_wbfwp"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_fabhq"]
+
+[sub_resource type="Resource" id="Resource_qpkge"]
+script = ExtResource("2_yujwi")
+type = 3
+name = "scene_path"
+description = "Path to the scene file containing the node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_uxmrb"]
+script = ExtResource("2_yujwi")
+type = 3
+name = "node_path"
+description = "Scene-tree path to the target node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_axh1i"]
+script = ExtResource("2_yujwi")
+type = 3
+name = "group_name"
+description = "The target group."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_phjvg"]
+script = ExtResource("2_yujwi")
+type = 5
+name = "action"
+description = "Select action: Add or Remove."
+required = true
+string_enum_valid_values = Array[String](["Add", "Remove"])
+
+[resource]
+script = ExtResource("3_urwc2")
+id = "edit_node_groups"
+title = "Edit node groups"
+description = "**Purpose**
+Modify the groups to which a node in a Godot scene belongs.
+
+**Usage**
+- Provide `scene_path`: Path to the scene file containing the node.
+- Provide `node_path`: Scene-tree path to the target node (e.g., \"Node/SubNode/ChildNode\"). Scene root node is always \".\".
+- Provide `group_name`: The target group.
+- Provide `action`: \"Add\" to include the node in the group, or \"Remove\" to remove it from the group.
+
+**Effect**
+- Opens the specified scene in Godot's editor.
+- Alters the groups the node belongs to. Note that the Godot UI will only reflect the change to the user, as a work-around they can move to another scene and come back.
+- If needed, you can revert the change using the `undo` tool (if available)."
+category = ExtResource("1_4w1va")
+parameters = Array[ExtResource("2_yujwi")]([SubResource("Resource_qpkge"), SubResource("Resource_uxmrb"), SubResource("Resource_axh1i"), SubResource("Resource_phjvg"), ExtResource("8_fabhq")])
+options = Array[ExtResource("1_gqpul")]([ExtResource("3_6ofpd"), ExtResource("4_tkfhf"), ExtResource("5_r4qnu"), ExtResource("6_wbfwp")])

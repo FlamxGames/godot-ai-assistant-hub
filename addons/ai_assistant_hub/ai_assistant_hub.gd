@@ -7,7 +7,7 @@ const NEW_AI_ASSISTANT_TYPE_WINDOW = preload("res://addons/ai_assistant_hub/new_
 const AI_CHAT = preload("res://addons/ai_assistant_hub/ai_chat.tscn")
 
 @onready var models_http_request: HTTPRequest = %ModelsHTTPRequest
-@onready var capabilities_http_request: HTTPRequest = %CapabilitiesHTTPRequest
+@onready var model_info_fetcher: AIModelInfoFetcher = %ModelInfoFetcher
 @onready var url_txt: LineEdit = %UrlTxt
 @onready var models_list: ItemList = %ModelsList
 @onready var models_list_error: Label = %ModelsListError
@@ -23,6 +23,9 @@ const AI_CHAT = preload("res://addons/ai_assistant_hub/ai_chat.tscn")
 @onready var version_label: Label = %VersionLabel
 @onready var upgrade_btn: Button = %UpgradeBtn
 @onready var stats_http_request: AIHubStats = %StatsHTTPRequest
+#Capabilities icons
+@onready var capability_tools: TextureRect = %CapabilityTools
+@onready var capability_reasoning: TextureRect = %CapabilityReasoning
 
 
 var _plugin:AIHubPlugin
@@ -97,7 +100,7 @@ func _initialize_llm_provider_options() -> void:
 				_on_llm_provider_option_item_selected(i)
 			i += 1
 		else:
-			AIHubPlugin.print_msg("File %s is not an LLMProviderResource." % provider_file)
+			AIHubPlugin.print_err("File %s is not an LLMProviderResource." % provider_file)
 
 
 # Update UI based on current provider selection
@@ -190,15 +193,16 @@ func _on_assistants_refresh_btn_pressed() -> void:
 	
 	for assistant_file in files:
 		AIHubPlugin.print_msg("Loading %s" % assistant_file)
-		var assistant = load(assistant_file)
-		if assistant is AIAssistantResource:
+		var assistant_type = load(assistant_file)
+		if assistant_type is AIAssistantResource:
 			found = true
 			var new_bot_btn:NewAIAssistantButton= NEW_AI_ASSISTANT_BUTTON.instantiate()
-			new_bot_btn.initialize(_plugin, assistant, assistant_file)
+			new_bot_btn.initialize(_plugin, assistant_type, assistant_file, model_info_fetcher)
 			new_bot_btn.chat_created.connect(_on_new_bot_btn_chat_created)
 			new_bot_btn.deleted.connect(_on_assistants_refresh_btn_pressed)
+			new_bot_btn.assistant_type_edit_request.connect(_on_assistant_type_edit_request)
 			assistant_types_container.add_child(new_bot_btn)
-			_apis_used[assistant.llm_provider.api_id] = true
+			_apis_used[assistant_type.llm_provider.api_id] = true
 		else:
 			AIHubPlugin.print_msg("Not an AIAssistantResource, skipping.")
 	
@@ -217,18 +221,47 @@ func _on_new_bot_btn_chat_created(chat:AIChat) -> void:
 	tab_container.set_tab_icon(tab_container.get_child_count() - 1, chat.get_assistant_settings().type_icon)
 	tab_container.current_tab = chat.get_index()
 	chat.save_changed.connect(_on_chat_save_changed)
+	chat.assistant_type_modified.connect(_on_chat_assistant_type_modified)
+
+
+func _on_chat_assistant_type_modified(assistant_type:AIAssistantResource) -> void:
+	for chat in tab_container.get_children():
+		if chat is AIChat and chat.get_assistant_settings() == assistant_type:
+			chat.load_assistant_type_resource(false)
+
+
+func _on_assistant_type_edit_request(assistant_type:AIAssistantResource) -> void:
+	if assistant_type.llm_provider != _models_llm.get_llm_provider():
+		var llm_index = _find_assistant_type_llm_provider_in_ui(assistant_type)
+		if llm_index == -1:
+			return
+		else:
+			_on_llm_provider_option_item_selected(llm_index)
+	var can_read_capabilities := await model_info_fetcher.detect_model_capabilities(_models_llm, assistant_type.ai_model)
+	if can_read_capabilities:
+		var capabilities := model_info_fetcher.get_model_capabilities(_models_llm, assistant_type.ai_model)
+		var new_assistant_type_window:NewAIAssistantTypeWindow = NEW_AI_ASSISTANT_TYPE_WINDOW.instantiate()
+		new_assistant_type_window.initialize_to_edit(assistant_type, capabilities)
+		new_assistant_type_window.assistant_type_edited.connect(_on_assistants_refresh_btn_pressed)
+		new_assistant_type_window.assistant_type_edited.connect(_on_chat_assistant_type_modified.bind(assistant_type))
+		add_child(new_assistant_type_window)
+		new_assistant_type_window.popup()
 
 
 func _get_all_resources(path: String) -> Array[String]:  
 	var file_paths: Array[String] = []  
 	var dir = DirAccess.open(path)  
-	dir.list_dir_begin()  
-	var file_name = dir.get_next()  
-	while not file_name.is_empty():  
-		if file_name.ends_with(".tres"):
-			var file_path = path + "/" + file_name
-			file_paths.append(file_path)  
-		file_name = dir.get_next()
+	if dir:
+		dir.list_dir_begin()  
+		var file_name = dir.get_next()  
+		while not file_name.is_empty():  
+			if file_name.ends_with(".tres"):
+				var file_path = path + "/" + file_name
+				file_paths.append(file_path)  
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	else:
+		AIHubPlugin.print_err("Error reading %s. Error: %s" % [ path, str(DirAccess.get_open_error())] )
 	return file_paths
 
 
@@ -248,32 +281,66 @@ func _on_llm_provider_option_item_selected(index: int) -> void:
 	_update_provider_ui()
 
 
+func _find_assistant_type_llm_provider_in_ui(assistant_type:AIAssistantResource) -> int:
+	for i in llm_provider_option.item_count:
+		var llm_provider:LLMProviderResource = llm_provider_option.get_item_metadata(i)
+		if assistant_type.llm_provider == llm_provider:
+			return i
+	AIHubPlugin.print_err("LLM provider %s for assistant type %s not found." % [ assistant_type.llm_provider.name, assistant_type.type_name ])
+	return -1
+
+
 func get_selected_llm_resource() -> LLMProviderResource:
 	return llm_provider_option.get_selected_metadata()
 
 
 func _on_new_assistant_type_button_pressed() -> void:
 	if models_list.is_anything_selected():
-		var new_assistant_type_window:NewAIAssistantTypeWindow = NEW_AI_ASSISTANT_TYPE_WINDOW.instantiate()
-		var api_class :String = _current_api_id
 		var model_name :String = models_list.get_item_text(models_list.get_selected_items()[0])
-		var assistants_path = "%s/assistants" % self.scene_file_path.get_base_dir()
-		var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
-		new_assistant_type_window.initialize(llm_provider, model_name, assistants_path)
-		new_assistant_type_window.assistant_type_created.connect(_on_assistants_refresh_btn_pressed)
-		add_child(new_assistant_type_window)
-		new_assistant_type_window.popup()
+		var can_read_capabilities := await model_info_fetcher.detect_model_capabilities(_models_llm, model_name)
+		if can_read_capabilities:
+			var capabilities := model_info_fetcher.get_model_capabilities(_models_llm, model_name)
+			var new_assistant_type_window:NewAIAssistantTypeWindow = NEW_AI_ASSISTANT_TYPE_WINDOW.instantiate()
+			var api_class :String = _current_api_id
+			var assistants_path = "%s/assistants" % self.scene_file_path.get_base_dir()
+			var llm_provider:LLMProviderResource = llm_provider_option.get_selected_metadata()
+			new_assistant_type_window.initialize(llm_provider, model_name, capabilities, assistants_path)
+			new_assistant_type_window.assistant_type_created.connect(_on_assistants_refresh_btn_pressed)
+			add_child(new_assistant_type_window)
+			new_assistant_type_window.popup()
 	else:
 		new_assistant_type_button.disabled = true
 
 
 func _on_models_list_item_selected(index: int) -> void:
-	new_assistant_type_button.disabled = false
+	_reset_capabilities_icons()
+	var selected_model:String = models_list.get_item_text(models_list.get_selected_items()[0])
+	new_assistant_type_button.disabled = true
+	models_list.set_process_input(false)
+	models_list.modulate.a = 0.5
+	var can_read_capabilities := await model_info_fetcher.detect_model_capabilities(_models_llm, selected_model)
+	if can_read_capabilities:
+		var capabilities := model_info_fetcher.get_model_capabilities(_models_llm, selected_model)
+		for c in capabilities:
+			match c:
+				LLMInterface.Capabilities.ReasoningLevels:
+					capability_reasoning.visible = true
+				LLMInterface.Capabilities.Tools:
+					capability_tools.visible = true
+		new_assistant_type_button.disabled = false
+		models_list.set_process_input(true)
+		models_list.modulate.a = 1
 
 
 func _on_models_list_empty_clicked(at_position: Vector2, mouse_button_index: int) -> void:
+	_reset_capabilities_icons()
 	models_list.deselect_all()
 	new_assistant_type_button.disabled = true
+
+
+func _reset_capabilities_icons() -> void:
+	capability_tools.visible = false
+	capability_reasoning.visible = false
 
 
 func _load_saved_chats() -> void:
@@ -293,7 +360,7 @@ func _load_saved_chats() -> void:
 
 func _load_chat(file_path:String) -> void:
 	var chat = AI_CHAT.instantiate()
-	chat.initialize_from_file(_plugin, file_path)
+	chat.initialize_from_file(_plugin, file_path, model_info_fetcher)
 	_on_new_bot_btn_chat_created(chat)
 
 
@@ -318,7 +385,10 @@ func _on_version_http_request_request_completed(result: int, response_code: int,
 				upgrade_btn.tooltip_text = "Version available %s. Click here to know more." % latest_version
 			error = false
 	if error:
-		AIHubPlugin.print_msg("It was not possible to check the latest version for Godot AI Assistant Hub, you may want to check GitHub manually: https://github.com/FlamxGames/godot-ai-assistant-hub. The response was: %s " % body)
+		AIHubPlugin.print_msg("It was not possible to check the latest version for Godot AI Assistant Hub, you may want to check GitHub manually: https://github.com/FlamxGames/godot-ai-assistant-hub.
+			\n\tResult: %d,\n\tResponse Code: %d,\n\tHeaders: %s,\n\tBody: %s" %
+			[result, response_code, headers, body.get_string_from_utf8() if body != null else "null"]
+		)
 
 
 func _on_support_btn_pressed() -> void:

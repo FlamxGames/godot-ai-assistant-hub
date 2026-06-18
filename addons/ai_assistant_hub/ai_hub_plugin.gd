@@ -4,11 +4,13 @@ extends EditorPlugin
 
 enum ThinkingTargets { Output, Chat, Discard }
 enum DebugOption { Disabled, Console, ConsoleAndLog }
+
 const PREF_REMOVE_THINK:= "plugins/ai_assistant_hub/preferences/thinking_target"
 const PREF_SCROLL_BOTTOM:= "plugins/ai_assistant_hub/preferences/always_scroll_to_bottom"
 const PREF_SKIP_GREETING:= "plugins/ai_assistant_hub/preferences/skip_greeting"
 const PREF_AUDIO_HINTS:= "plugins/ai_assistant_hub/preferences/audio_hints"
 const OPT_DEBUG:= "plugins/ai_assistant_hub/options/debug_mode"
+const OPT_DEBUG_HTTP_CONTENT:= "plugins/ai_assistant_hub/options/debug_http_content"
 
 const CONFIG_LLM_API:= "plugins/ai_assistant_hub/llm_api"
 
@@ -24,6 +26,9 @@ var _hub_dock:AIAssistantHub
 var _dock #Not giving type EditorDock to keep this compatible with versions older than 4.6
 
 # Static area start ----
+static var instance:AIHubPlugin:
+	get: return instance
+
 
 static func print_msg(message, is_error:=false, hide_from_log:String = "") -> void:
 	var str_msg:= str(message)
@@ -63,6 +68,7 @@ static func print_hidding(message, hide_from_log:String) -> void:
 # Static area end ----
 
 func _enter_tree() -> void:
+	instance = self
 	initialize_project_settings()
 	_hub_dock = load("res://addons/ai_assistant_hub/ai_assistant_hub.tscn").instantiate()
 	_hub_dock.initialize(self)
@@ -99,9 +105,9 @@ func initialize_project_settings() -> void:
 		"hint": PROPERTY_HINT_ENUM,
 		"hint_string": "Disabled,Debug messages to Console,Debug messages to Console and log file"
 	}
+	ProjectSettings.add_property_info(debug_property_info)
 	print_msg("Version: %s" % get_version())
 	print_msg("Godot version: %s" % Engine.get_version_info().string)
-	ProjectSettings.add_property_info(debug_property_info)
 	
 	var last_ver:= "1.0.0"
 	var plugin_data = ConfigFile.new()
@@ -138,6 +144,10 @@ func initialize_project_settings() -> void:
 	
 	if not ProjectSettings.has_setting(PREF_AUDIO_HINTS):
 		ProjectSettings.set_setting(PREF_AUDIO_HINTS, true)
+		ProjectSettings.save()
+	
+	if not ProjectSettings.has_setting(OPT_DEBUG_HTTP_CONTENT):
+		ProjectSettings.set_setting(OPT_DEBUG_HTTP_CONTENT, false)
 		ProjectSettings.save()
 	
 	plugin_data.set_value("general","last_used_version",get_version())

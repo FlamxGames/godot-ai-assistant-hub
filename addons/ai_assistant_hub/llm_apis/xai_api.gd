@@ -105,7 +105,7 @@ func send_chat_request(http_request: HTTPRequest, message_list: Array) -> bool:
 	return true
 
 
-func read_response(body: PackedByteArray) -> String:
+func read_response(body: PackedByteArray) -> AIAssistantResponse:
 	# example response data
 	#{"id":"2a2db6ed-6e92-e80e-6bc5-0db5e4b3deba","object":"chat.completion","created":1770680490,"model":"grok-4-0709","choices":[{"index":0,"message":{"role":"assistant","content":"101 × 3 = 303.","refusal":null},"finish_reason":"stop"}],"usage":
 	#{"prompt_tokens":706,"completion_tokens":8,"total_tokens":783,"prompt_tokens_details":{"text_tokens":706,"audio_tokens":0,"image_tokens":0,"cached_tokens":689},"completion_tokens_details":
@@ -119,18 +119,20 @@ func read_response(body: PackedByteArray) -> String:
 	#print("HTTP Response body: ", body.get_string_from_utf8())
 	if parse_result != OK:
 		AIHubPlugin.print_err("Failed to parse xAI response JSON: %s" % json.get_error_message())
-		return INVALID_RESPONSE
-	var response := json.get_data()
-	if response == null:
+		return null
+	var json_response := json.get_data()
+	if json_response == null:
 		AIHubPlugin.print_err("xAI response is null after parsing.")
-		return INVALID_RESPONSE
+		return null
 	# Print and handle xAI errors
-	if response.has("error"):
+	if json_response.has("error"):
 		#print("xAI API Error: ", JSON.stringify(response.error))
-		AIHubPlugin.print_err("xAI API Error: " + str(response.error))
-		return INVALID_RESPONSE
-	if response.has("choices") and response.choices.size() > 0:
-		if response.choices[0].has("message") and response.choices[0].message.has("content"):
-			return _msg_cleaner.clean(response.choices[0].message.content)
-	AIHubPlugin.print_err("Failed to parse xAI response: %s" % JSON.stringify(response))
-	return INVALID_RESPONSE
+		AIHubPlugin.print_err("xAI API Error: " + str(json_response.error))
+		return null
+	if json_response.has("choices") and json_response.choices.size() > 0:
+		if json_response.choices[0].has("message") and json_response.choices[0].message.has("content"):
+			var response:= AIAssistantResponse.new()
+			response.text_content = _msg_cleaner.clean(json_response.choices[0].message.content)
+			return response
+	AIHubPlugin.print_err("Failed to parse xAI response: %s" % JSON.stringify(json_response))
+	return null

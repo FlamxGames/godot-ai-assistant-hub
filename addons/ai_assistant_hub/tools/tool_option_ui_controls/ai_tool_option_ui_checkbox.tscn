@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://8t1bc22s085s"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/tool_option_ui_controls/ai_tool_option_ui_checkbox.gd" id="1_4eo3t"]
+
+[node name="Checkbox" type="HBoxContainer"]
+theme_override_constants/separation = 10
+script = ExtResource("1_4eo3t")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 0
+text = "OptionName"
+
+[node name="CheckBox" type="CheckBox" parent="."]
+unique_name_in_owner = true
+layout_mode = 2

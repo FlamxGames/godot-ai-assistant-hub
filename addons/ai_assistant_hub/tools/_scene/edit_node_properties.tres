@@ -1,0 +1,73 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=14 format=3 uid="uid://csm3x4mhgl877"]
+
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_eiv6i"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="2_m5nif"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_o3y0e"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_5m4au"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_nio5m"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_4q6pp"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="7_18wn3"]
+[ext_resource type="Resource" uid="uid://n7ex8vtnmr8x" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_properties.tres" id="7_x03vr"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_po22i"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="9_ut8pu"]
+
+[sub_resource type="Resource" id="Resource_t0633"]
+script = ExtResource("7_18wn3")
+type = 3
+name = "scene_path"
+description = "Path to the scene file containing the node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_vgep3"]
+script = ExtResource("7_18wn3")
+type = 3
+name = "node_path"
+description = "Scene-tree path to the target node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_xu4er"]
+script = ExtResource("7_18wn3")
+type = 6
+name = "property_values"
+description = "Array of properties to update and their respective values in format \"<property name> = <value>\"."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("9_ut8pu")
+id = "edit_node_properties"
+title = "Edit node properties"
+description = "**Purpose**
+- Edit property values of nodes in a scene.
+- Supports editing multiple properties for a single node in a single execution.
+- Supports creating embedded resources.
+- Supports editing embedded resources' properties.
+
+**Usage**
+- Provide `scene_path`: Path to the scene file containing the node.
+- Provide `node_path`: Scene-tree path to the target node (e.g., \"Node/SubNode/ChildNode\"). Scene root node is always \".\".
+- Provide `property_values`: Array of properties and values to assign to them. Values are converted automatically to the type of the property.
+  - Each entry must follow format: \"property-name = value\", e.g. \"anchor-left = 10\"
+  - You can know the expected value format by reading its value first.
+  - Example `property_values` entries for different use cases:
+    - Assign string: \"text = Hello world\"
+    - Assign null: \"icon = <NULL>\"
+    - Assign Vector3: \"position = (10, 0, 20)\"
+    - Assign an external resource: \"shape = res://some_shape.tres\"
+    - Assign a new embedded resource: \"shape = NEW:CircleShape2D\"
+    - Edit embedded resource property: \"shape.radius = 10\"
+
+**Limitations**
+1. Properties of type array and dictionary must be provided as JSON, this may support basic types, but most classes won't work.
+2. You can't create a new embedded resource and assign properties to it in the same call. Use separate tool calls. 
+
+**Effects**
+- Opens the specified scene in Godot's editor.
+- Modifies the properties using the provided values.
+- Returns the property values after setting them for you to review.
+- If needed, you can revert the change using the `undo` tool (if available)."
+category = ExtResource("1_eiv6i")
+parameters = Array[ExtResource("7_18wn3")]([SubResource("Resource_t0633"), SubResource("Resource_vgep3"), SubResource("Resource_xu4er"), ExtResource("8_po22i")])
+options = Array[ExtResource("2_m5nif")]([ExtResource("3_o3y0e"), ExtResource("4_5m4au"), ExtResource("5_nio5m"), ExtResource("6_4q6pp"), ExtResource("7_x03vr")])

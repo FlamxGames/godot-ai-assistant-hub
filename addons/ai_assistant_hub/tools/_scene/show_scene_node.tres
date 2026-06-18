@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=11 format=3 uid="uid://byookgeneiey1"]
+
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_68bu8"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_jhfwf"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_yy3x5"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_4fvds"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_pyrsl"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_2h44v"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="4_p2ci0"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_j4ai1"]
+
+[sub_resource type="Resource" id="Resource_pffxo"]
+script = ExtResource("2_yy3x5")
+type = 3
+name = "scene_path"
+description = "Path to the scene file to open. If omitted the current scene will be used."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_wgjuk"]
+script = ExtResource("2_yy3x5")
+type = 3
+name = "node_path"
+description = "Optional scene‑tree path of the node to select after opening the scene."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_4fvds")
+id = "show_scene_node"
+title = "Open scene and select node"
+description = "**Purpose**  
+Open a Godot scene file in the editor and optionally select a node inside that scene.
+
+**Usage**
+- If the `scene_path` is provided, the scene will be open in Godot's editor. Leave it blank if you want to stay in the current scene and select some node.
+- If the `node_path` is provided, the corresponding node will be selected. If omitted, the scene will simply open.
+- You must never omit both `scene_path` and `node_path`.
+- Provide both `scene_path` and `node_path` to open the scene and select the node.
+
+**Effect**
+The scene will be loaded, the editor will switch to it and the node will be highlighted in the Scene panel."
+category = ExtResource("1_68bu8")
+parameters = Array[ExtResource("2_yy3x5")]([SubResource("Resource_pffxo"), SubResource("Resource_wgjuk"), ExtResource("4_p2ci0")])
+options = Array[ExtResource("1_jhfwf")]([ExtResource("3_pyrsl"), ExtResource("4_2h44v"), ExtResource("5_j4ai1")])

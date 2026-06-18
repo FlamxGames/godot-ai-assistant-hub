@@ -9,13 +9,15 @@ var _system_msg: String
 var _system_role_name:String
 var _user_role_name:String
 var _assistant_role_name:String
+var _tool_role_name:String
 var _estimated_token_size:int
 
 
-func _init(system_role_name:String, user_role_name:String, assistant_role_name:String):
+func _init(system_role_name:String, user_role_name:String, assistant_role_name:String, tool_role_name:String):
 	_system_role_name = system_role_name
 	_user_role_name = user_role_name
 	_assistant_role_name = assistant_role_name
+	_tool_role_name = tool_role_name
 
 
 func get_system_role_name() -> String:
@@ -47,11 +49,23 @@ func add_user_prompt(prompt:String) -> void:
 	chat_appended.emit(entry)
 
 
-func add_assistant_response(response:String) -> void:
+func add_tool_feedback(feedback:String) -> void:
 	var entry := {
-		"role": _assistant_role_name,
-		"content": response
+		"role": _tool_role_name,
+		"content": feedback
 	}
+	_chat_history.append(entry)
+	chat_appended.emit(entry)
+
+
+func add_assistant_response(response:AIAssistantResponse) -> void:
+	var entry := {
+		"role": _assistant_role_name
+	}
+	if not response.text_content.is_empty():
+		entry["content"] = response.text_content
+	if response.tool_calls and not response.tool_calls.is_empty() and response.tool_calls_raw:
+		entry["tool_calls"] = response.tool_calls_raw
 	_chat_history.append(entry)
 	chat_appended.emit(entry)
 
@@ -65,13 +79,13 @@ func build() -> Array:
 		}
 	)
 	messages.append_array(_chat_history)
-	_estimated_token_size = JSON.stringify(messages).length() / 4
+	_estimated_token_size = JSON.stringify(messages).length() / 4 # basic heuristic
 	return messages
 
 
-func forget_last_prompt() -> void:
-	_chat_history.pop_back()
-	chat_edited.emit(_chat_history)
+#func forget_last_prompt() -> void: #This needs more polishing
+	#_chat_history.pop_back()
+	#chat_edited.emit(_chat_history)
 
 
 func clone_chat() -> Array:

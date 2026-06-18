@@ -1,10 +1,200 @@
-[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=7 format=3 uid="uid://cww4cpbs85bid"]
+[gd_resource type="Resource" script_class="AIAssistantResource" load_steps=62 format=3 uid="uid://cww4cpbs85bid"]
 
-[ext_resource type="Resource" uid="uid://cemsmflvcbq84" path="res://examples/quick_prompts/ai_qp_spell_check.tres" id="1_2r7fe"]
+[ext_resource type="Resource" uid="uid://cemsmflvcbq84" path="res://examples/quick_prompts_no_tools/ai_qp_spell_check.tres" id="1_2r7fe"]
 [ext_resource type="Resource" uid="uid://c0xq2vafep0gu" path="res://addons/ai_assistant_hub/llm_providers/ollama.tres" id="1_61gss"]
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_erpnk"]
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/assistants/ai_assistant_resource.gd" id="2_ggkub"]
 [ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="3_320ix"]
+[ext_resource type="Resource" uid="uid://c43hdnlmuq7pr" path="res://addons/ai_assistant_hub/tools/_code/append_code.tres" id="5_eo80y"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access.gd" id="6_ivulg"]
+[ext_resource type="Resource" uid="uid://dh1gr7k1ad6tp" path="res://addons/ai_assistant_hub/tools/_code/create_script.tres" id="7_6fa14"]
+[ext_resource type="Resource" uid="uid://deoehr0oonua0" path="res://addons/ai_assistant_hub/tools/_code/delete_code.tres" id="8_7n2jc"]
+[ext_resource type="Resource" uid="uid://rgp4wqqyxqtc" path="res://addons/ai_assistant_hub/tools/_code/show_code.tres" id="9_2yvt1"]
+[ext_resource type="Resource" uid="uid://chlv1ans1c3kg" path="res://addons/ai_assistant_hub/tools/_code/replace_code.tres" id="10_520kw"]
+[ext_resource type="Resource" uid="uid://dfcpa84lh8jww" path="res://addons/ai_assistant_hub/tools/_scene/add_node_from_class.tres" id="11_viw07"]
+[ext_resource type="Resource" uid="uid://b08uslbbanarn" path="res://addons/ai_assistant_hub/tools/_scene/add_node_from_scene.tres" id="12_uskui"]
+[ext_resource type="Resource" uid="uid://cg7kynoqk4hwm" path="res://addons/ai_assistant_hub/tools/_scene/create_scene.tres" id="13_m0iop"]
+[ext_resource type="Resource" uid="uid://brnv6sqvsgqh4" path="res://addons/ai_assistant_hub/tools/_scene/edit_node_groups.tres" id="14_136mg"]
+[ext_resource type="Resource" uid="uid://dm1ndjq8flavc" path="res://addons/ai_assistant_hub/tools/_scene/delete_node.tres" id="15_ggnu6"]
+[ext_resource type="Resource" uid="uid://csm3x4mhgl877" path="res://addons/ai_assistant_hub/tools/_scene/edit_node_properties.tres" id="16_7txd0"]
+[ext_resource type="Resource" uid="uid://haj1msfwmesa" path="res://addons/ai_assistant_hub/tools/_scene/edit_node_signals.tres" id="17_hymjx"]
+[ext_resource type="Resource" uid="uid://ba8cto16wtmbc" path="res://addons/ai_assistant_hub/tools/_scene/get_node_groups.tres" id="18_hg6vc"]
+[ext_resource type="Resource" uid="uid://degjy1vdp60nt" path="res://addons/ai_assistant_hub/tools/_scene/get_node_properties.tres" id="19_ceg76"]
+[ext_resource type="Resource" uid="uid://dj8sfjv1l8wpx" path="res://addons/ai_assistant_hub/tools/_scene/get_node_signals.tres" id="20_by7bc"]
+[ext_resource type="Resource" uid="uid://byookgeneiey1" path="res://addons/ai_assistant_hub/tools/_scene/show_scene_node.tres" id="21_4rhrh"]
+[ext_resource type="Resource" uid="uid://c8dhogprgeaul" path="res://addons/ai_assistant_hub/tools/_scene/scan_scene_node_tree.tres" id="22_bibiv"]
+[ext_resource type="Resource" uid="uid://bp2syqikgietr" path="res://addons/ai_assistant_hub/tools/_resource/create_external_resource.tres" id="23_vg0d2"]
+[ext_resource type="Resource" uid="uid://beq1yo303ejlb" path="res://addons/ai_assistant_hub/tools/_resource/edit_resource_properties.tres" id="24_hswin"]
+[ext_resource type="Resource" uid="uid://cwgmfg5pt0hxy" path="res://addons/ai_assistant_hub/tools/_resource/get_resource_properties.tres" id="25_ktatq"]
+[ext_resource type="Resource" uid="uid://ddxmjlosyymta" path="res://addons/ai_assistant_hub/tools/_file/create_directory.tres" id="26_b14jf"]
+[ext_resource type="Resource" uid="uid://cfjre8o1pj6he" path="res://addons/ai_assistant_hub/tools/_file/create_text_file.tres" id="27_dgwxo"]
+[ext_resource type="Resource" uid="uid://chofputvo0bec" path="res://addons/ai_assistant_hub/tools/_project/list_global_groups.tres" id="28_bpie6"]
+[ext_resource type="Resource" uid="uid://dp8y32ir8wi3b" path="res://addons/ai_assistant_hub/tools/_project/manage_global_groups.tres" id="29_sgysu"]
+[ext_resource type="Resource" uid="uid://dsfljbcka5l84" path="res://addons/ai_assistant_hub/tools/_general/save_all.tres" id="30_n6mfs"]
+[ext_resource type="Resource" uid="uid://dp0w6b0vfqxn1" path="res://addons/ai_assistant_hub/tools/_general/undo.tres" id="31_wtlgi"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access_profile.gd" id="32_4yo0e"]
+
+[sub_resource type="Resource" id="Resource_cpw7n"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_bhlsq"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_55dke"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_16qg8"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_lsnpi"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_xaul8"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_ypn5i"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_bpa0b"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_tdpen"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_eco3w"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_x8ip0"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_7l2i3"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_3idxo"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_thk0j"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_wrpdk"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_xmg1i"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_nnyvr"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_vibyx"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_nt28t"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_u4oxp"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_kvl0b"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_ndiyc"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_1igyi"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_up0fb"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_lpj5a"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_ehl48"]
+script = ExtResource("6_ivulg")
+usage_permission = 0
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_4mg2d"]
+script = ExtResource("32_4yo0e")
+permissions = {
+ExtResource("31_wtlgi"): SubResource("Resource_ehl48"),
+ExtResource("30_n6mfs"): SubResource("Resource_lpj5a"),
+ExtResource("29_sgysu"): SubResource("Resource_up0fb"),
+ExtResource("28_bpie6"): SubResource("Resource_1igyi"),
+ExtResource("27_dgwxo"): SubResource("Resource_ndiyc"),
+ExtResource("26_b14jf"): SubResource("Resource_kvl0b"),
+ExtResource("25_ktatq"): SubResource("Resource_u4oxp"),
+ExtResource("24_hswin"): SubResource("Resource_nt28t"),
+ExtResource("23_vg0d2"): SubResource("Resource_vibyx"),
+ExtResource("22_bibiv"): SubResource("Resource_nnyvr"),
+ExtResource("21_4rhrh"): SubResource("Resource_xmg1i"),
+ExtResource("20_by7bc"): SubResource("Resource_wrpdk"),
+ExtResource("19_ceg76"): SubResource("Resource_thk0j"),
+ExtResource("18_hg6vc"): SubResource("Resource_3idxo"),
+ExtResource("17_hymjx"): SubResource("Resource_7l2i3"),
+ExtResource("16_7txd0"): SubResource("Resource_x8ip0"),
+ExtResource("15_ggnu6"): SubResource("Resource_eco3w"),
+ExtResource("14_136mg"): SubResource("Resource_tdpen"),
+ExtResource("13_m0iop"): SubResource("Resource_bpa0b"),
+ExtResource("12_uskui"): SubResource("Resource_ypn5i"),
+ExtResource("11_viw07"): SubResource("Resource_xaul8"),
+ExtResource("10_520kw"): SubResource("Resource_lsnpi"),
+ExtResource("9_2yvt1"): SubResource("Resource_16qg8"),
+ExtResource("8_7n2jc"): SubResource("Resource_55dke"),
+ExtResource("7_6fa14"): SubResource("Resource_bhlsq"),
+ExtResource("5_eo80y"): SubResource("Resource_cpw7n")
+}
+global_option_values = {}
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k04jb"]
 atlas = ExtResource("3_320ix")
@@ -16,7 +206,10 @@ type_name = "Writer"
 type_icon = SubResource("AtlasTexture_k04jb")
 ai_model = "llama3.2:latest"
 llm_provider = ExtResource("1_61gss")
-ai_description = "You are a writing assistant embedded in the Godot engine. You are very creative and very good at writing and help with wording and style correction."
+ai_description = "You are a writing assistant integrated into the Godot engine.  
+You are creative, skilled at writing, and adept at helping with wording and style corrections."
 use_custom_temperature = false
 custom_temperature = 0.5
 quick_prompts = Array[ExtResource("2_erpnk")]([ExtResource("1_2r7fe")])
+tool_access = SubResource("Resource_4mg2d")
+context_length = 0

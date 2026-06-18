@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="AIQuickPromptResource" load_steps=6 format=3 uid="uid://bsn3twnsske1o"]
+
+[ext_resource type="Texture2D" uid="uid://r7njmupyi7w4" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_flatmsicons.png" id="1_6ene6"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_fg1l6"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access_profile.gd" id="3_euhx6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fj21g"]
+atlas = ExtResource("1_6ene6")
+region = Rect2(769, 672, 32, 32)
+
+[sub_resource type="Resource" id="Resource_tnv0k"]
+script = ExtResource("3_euhx6")
+permissions = {}
+global_option_values = {}
+
+[resource]
+script = ExtResource("2_fg1l6")
+action_name = "Code it (no tools)"
+action_prompt = "Return this code replacing the comment starting with `#CODE_IT` with the corresponding implementation:
+```gdscript
+{CODE}
+```
+Don't modify any other parts of the code."
+icon = SubResource("AtlasTexture_fj21g")
+limit_tool_access = true
+tool_access = SubResource("Resource_tnv0k")
+response_target = 2
+code_placement = 2
+format_response_as_comment = false

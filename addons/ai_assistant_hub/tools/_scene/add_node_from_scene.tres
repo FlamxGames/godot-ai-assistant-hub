@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=14 format=3 uid="uid://b08uslbbanarn"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_07yyd"]
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_dainj"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_4xwyj"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_clyxb"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_gqyqw"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_mxkqq"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_d14rt"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_3gw6d"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_1d3cw"]
+
+[sub_resource type="Resource" id="Resource_cle7k"]
+script = ExtResource("2_4xwyj")
+type = 3
+name = "scene_path"
+description = "Path to the target scene where the node will be added."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_yxdym"]
+script = ExtResource("2_4xwyj")
+type = 3
+name = "source_scene_path"
+description = "Path to the .tscn file to load as a node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_lwjn3"]
+script = ExtResource("2_4xwyj")
+type = 3
+name = "node_name"
+description = "The name for the new node instance."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_fkj0v"]
+script = ExtResource("2_4xwyj")
+type = 3
+name = "parent_path"
+description = "Scene-tree path to the parent node. If omitted the scene root is used."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_clyxb")
+id = "add_node_from_scene"
+title = "Add node from scene"
+description = "**Purpose**
+Add a new node instance to an existing Godot scene by loading a scene file.
+
+**Usage notes**
+- The `scene_path` parameter specifies which scene to modify.
+- The `source_scene_path` parameter specifies the .tscn file to load and instantiate as a node.
+- The `node_name` parameter sets the name for the new node instance.
+- The `parent_path` parameter specifies where in the scene hierarchy to add the node. The scene root node path is \".\". For example:
+  - Node2D (path \".\")
+    - Child1 (path \"Child1\")
+      - Grandchild1 (path \"Child1/Grandchild1\")
+    - Child2 (path \"Child2\")
+- If `parent_path` is omitted, the node will be added to the scene root.
+
+**Example**
+scene_path: res://scenes/main_scene.tscn
+source_scene_path: res://scenes/enemies/monster.tscn
+node_name: Monster01
+parent_path: Main/EnemyLayer"
+category = ExtResource("1_dainj")
+parameters = Array[ExtResource("2_4xwyj")]([SubResource("Resource_cle7k"), SubResource("Resource_yxdym"), SubResource("Resource_lwjn3"), SubResource("Resource_fkj0v"), ExtResource("8_1d3cw")])
+options = Array[ExtResource("1_07yyd")]([ExtResource("3_gqyqw"), ExtResource("4_mxkqq"), ExtResource("5_d14rt"), ExtResource("6_3gw6d")])

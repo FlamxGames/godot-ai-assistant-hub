@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=12 format=3 uid="uid://rgp4wqqyxqtc"]
+
+[ext_resource type="Resource" uid="uid://baavfnrxbjpxf" path="res://addons/ai_assistant_hub/tools/tool_categories/code.tres" id="1_dcugv"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="2_863ba"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_f6i5o"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="4_usiio"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_yt5gj"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_3k7fa"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="5_ma8bb"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="5_nd7o8"]
+
+[sub_resource type="Resource" id="Resource_6tirh"]
+script = ExtResource("4_usiio")
+type = 3
+name = "file_path"
+description = "Path to the target file."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_k85n3"]
+script = ExtResource("4_usiio")
+type = 0
+name = "from_line"
+description = "Optional 1‑based line number to start reading from. If omitted 1 will be used."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_bl2d8"]
+script = ExtResource("4_usiio")
+type = 0
+name = "to_line"
+description = "Optional 1‑based line number to indicate the last line to read. If omitted the file will be read until the end."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("5_nd7o8")
+id = "show_code"
+title = "Open and highlight code"
+description = "**Purpose**
+Show the user a script file, optionally with a specific range of lines highlighted.
+
+**Effect**
+The file will be opened in Godot's code editor. If a range of lines is provided those will be selected and the editor will scroll to that position.
+
+**Usage rules**
+1. If you want to show a specific section of the file, do **not** use this tool if you don't know the exact line numbers. Read the file first with another tool if possible.
+2. If you omit both `from_line` and `to_line`, the file will open with no selection.
+3. If you want to select only one line, use that line number in both `from_line` and `to_line`.
+
+**Response rules**
+1. The tool will respond with the highlighted code, do **NOT** include the code in your response. A normal response would be \"I have highlighted the code in the editor for you.\"
+2. If the highlighted code is wrong, try reading the file with another tool to identify the correct line numbers."
+category = ExtResource("1_dcugv")
+parameters = Array[ExtResource("4_usiio")]([SubResource("Resource_6tirh"), SubResource("Resource_k85n3"), SubResource("Resource_bl2d8"), ExtResource("5_ma8bb")])
+options = Array[ExtResource("2_863ba")]([ExtResource("3_f6i5o"), ExtResource("4_yt5gj"), ExtResource("5_3k7fa")])

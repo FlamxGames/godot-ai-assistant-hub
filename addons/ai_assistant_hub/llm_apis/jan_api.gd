@@ -67,13 +67,15 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 	return true
 
 
-func read_response(body: PackedByteArray) -> String:
+func read_response(body: PackedByteArray) -> AIAssistantResponse:
 	var j := JSON.new()
 	j.parse(body.get_string_from_utf8())
 	var data := j.get_data()
 	if data.has("choices") and data.choices.size() > 0:
 		var c = data.choices[0]
 		if c.has("message") and c.message.has("content"):
-			return _msg_cleaner.clean(c.message.content)
-	return INVALID_RESPONSE
+			var response:= AIAssistantResponse.new()
+			response.text_content = _msg_cleaner.clean(c.message.content)
+			return response
+	return null
  
