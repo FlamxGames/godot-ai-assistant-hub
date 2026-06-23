@@ -26,34 +26,42 @@ func execute() -> bool:
 	if _end_line != -1 and _end_line < _start_line:
 		_errors.append("The selected to_line is less than from_line.")
 		return false
-
-	# Decide source: editor or disk
-	var numbered_code := PackedStringArray()
-	var script_editor := EditorInterface.get_script_editor()
+	
 	var read_from_editor:= false
-	if script_editor != null:
-		var open_script_editors := script_editor.get_open_script_editors()
-		var target_script_editor : ScriptEditorBase = null
-		for editor in open_script_editors:
-			if editor.has_meta(&"_edit_res_path"):
-				var editor_path = editor.get_meta(&"_edit_res_path")
-				if editor_path == _file_path:
-					target_script_editor = editor
-					break
+	var numbered_code := PackedStringArray()
+	
+	# Decide source: editor or disk
+	var config = ConfigFile.new()
+	config.load("res://.godot/editor/editor_layout.cfg") # No API to get the path for open script editors, so we need to use this
+	var arr_paths:Array = config.get_value("ScriptEditor", "open_scripts")
+	var editor_index = arr_paths.find(_file_path)
+
+	if editor_index != -1:
+		var script_editor := EditorInterface.get_script_editor()
 		
-		if target_script_editor:
-			var content = target_script_editor.get_base_editor().text.split("\n")
+		if script_editor != null:
+			var open_script_editors := script_editor.get_open_script_editors()
+			#var target_script_editor : ScriptEditorBase = null
+			#for editor in open_script_editors: # This stopped working in Godot 4.4
+				#if editor.has_meta(&"_edit_res_path"):
+					#var editor_path = editor.get_meta(&"_edit_res_path")
+					#if editor_path == _file_path:
+						#target_script_editor = editor
+						#break
+			var target_script_editor : ScriptEditorBase = script_editor.get_open_script_editors()[editor_index]
+			if target_script_editor:
+				var content = target_script_editor.get_base_editor().text.split("\n")
 
-			var line_count = content.size()
-			if _end_line == -1:
-				_end_line = line_count
-			if _end_line > line_count:
-				_end_line = line_count
+				var line_count = content.size()
+				if _end_line == -1:
+					_end_line = line_count
+				if _end_line > line_count:
+					_end_line = line_count
 
-			for line_num in range(_start_line - 1, _end_line):
-				numbered_code.append("%d\t\t|%s" % [ line_num + 1, content[line_num] ])
-			read_from_editor = true
-			AIHubPlugin.print_msg("Read %s from editor." % _file_path)
+				for line_num in range(_start_line - 1, _end_line):
+					numbered_code.append("%d\t\t|%s" % [ line_num + 1, content[line_num] ])
+				read_from_editor = true
+				AIHubPlugin.print_msg("Read %s from editor." % _file_path)
 	
 	if not read_from_editor:
 		var file := FileAccess.open(_file_path, FileAccess.READ)

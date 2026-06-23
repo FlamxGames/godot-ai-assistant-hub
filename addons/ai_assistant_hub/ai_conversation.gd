@@ -65,9 +65,27 @@ func add_assistant_response(response:AIAssistantResponse) -> void:
 	if not response.text_content.is_empty():
 		entry["content"] = response.text_content
 	if response.tool_calls and not response.tool_calls.is_empty() and response.tool_calls_raw:
-		entry["tool_calls"] = response.tool_calls_raw
+		entry["tool_calls"] = clean_json_types(response.tool_calls_raw)
 	_chat_history.append(entry)
 	chat_appended.emit(entry)
+
+
+## Recursive function to fix whole numbers in JSON
+## JSON spec dpes not have concept of integer or float, so Godot converts ints
+## to floats when the JSON is parsed, and this causes issues when including this
+## information in the chat history.
+func clean_json_types(data):
+	if data is Dictionary:
+		var new_dict = {}
+		for key in data:
+			new_dict[key] = clean_json_types(data[key])
+		return new_dict
+	elif data is Array:
+		return data.map(clean_json_types)
+	elif data is float and fmod(data, 1.0) == 0.0:
+		# If the float has no decimal remainder, make it an int
+		return int(data)
+	return data
 
 
 func build() -> Array:

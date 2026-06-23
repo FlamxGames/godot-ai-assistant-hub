@@ -39,14 +39,15 @@ id = "read_file"
 title = "Read files as plain text"
 description = "**Purpose**
 - Read the contents of a file from `from_line` to `to_line` (inclusive). Use this tool when you need to know the contents of a file and corresponding line numbers.
-- When reading scripts it will read the in-memory version loaded in the editor if the script is open. If not open the file will be read from disk.
-- Note that this should not be used to read Godot resource or scene files, there are specific tools optimized for that.
+- This should not be used to read Godot resource or scene files, there are specific tools optimized for that.
 
 **Usage**
 If line number parameters are omitted, the full file will be read.
 
-**Response**
-Returns the content prefixing each line with its number (`<line number>|<line content>`)."
+**Effect**
+- If the file is already open in the code editor, it will be read from there. This allows to read changes not yet saved.
+- Files incompatible with the code editor will be read from disk.
+- Returns the content prefixing each line with its number and a pipe character (`<line number>|<line content>`)."
 category = ExtResource("1_4v78y")
 parameters = Array[ExtResource("3_x7oad")]([SubResource("Resource_03trx"), SubResource("Resource_3nthf"), SubResource("Resource_bgnwp"), ExtResource("5_tjicc")])
 options = Array[ExtResource("2_jed0m")]([ExtResource("3_goj6q"), ExtResource("4_rx1s1"), ExtResource("5_w6h3o")])
