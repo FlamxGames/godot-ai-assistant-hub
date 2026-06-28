@@ -208,6 +208,8 @@ func _set_system_prompt() -> void:
 				code_selection = GD_CTX_KEY_CODE_SELECTION,
 				tools_status = GD_CTX_KEY_TOOLS_STATUS
 			})
+		else:
+			sys_msg += "\nYour tools are toggled off, the user can change this using the toggle with the hammer icon."
 	else:
 		sys_msg += """
 - The user can configure Quick Prompts to allow you to read and write code to the editor. You don't have the information about how to do this. If asked about it, direct the user to learn more on https://github.com/FlamxGames/godot-ai-assistant-hub

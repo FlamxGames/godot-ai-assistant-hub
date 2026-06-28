@@ -29,7 +29,7 @@ string_enum_valid_values = Array[String]([])
 [resource]
 script = ExtResource("3_5ktal")
 id = "delete_node"
-title = "Delete node from scene"
+title = "Delete node"
 description = "**Purpose**
 Delete a node instance from an existing Godot scene.
 
