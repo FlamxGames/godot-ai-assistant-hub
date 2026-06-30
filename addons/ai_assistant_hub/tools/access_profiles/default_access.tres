@@ -32,9 +32,139 @@
 [ext_resource type="Resource" uid="uid://chofputvo0bec" path="res://addons/ai_assistant_hub/tools/_project/list_global_groups.tres" id="19_jq28s"]
 [ext_resource type="Resource" uid="uid://dp8y32ir8wi3b" path="res://addons/ai_assistant_hub/tools/_project/manage_global_groups.tres" id="20_alfkv"]
 
-[sub_resource type="Resource" id="Resource_lddt6"]
+[sub_resource type="Resource" id="Resource_j2k8t"]
 script = ExtResource("2_etmry")
 usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_38p1t"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_v4l0r"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_wssc0"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_3bhar"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_gedg2"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_4m25p"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_onk5i"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_7t7dp"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_7l3hc"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_h21se"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_snbrn"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_6es22"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_0wgqt"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_mxbtv"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_qpydj"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_10wc2"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_bj8a7"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_m85el"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_2jl0e"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_h6u3r"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_ssosy"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_477ag"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_b6xbu"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_7e0bb"]
+script = ExtResource("2_etmry")
+usage_permission = 1
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_wggwo"]
+script = ExtResource("2_etmry")
+usage_permission = 2
+option_values = {}
+
+[sub_resource type="Resource" id="Resource_rwep4"]
+script = ExtResource("2_etmry")
+usage_permission = 2
 option_values = {}
 
 [sub_resource type="Resource" id="Resource_6id2i"]
@@ -46,137 +176,7 @@ option_values = {
 "prohibited_paths": []
 }
 
-[sub_resource type="Resource" id="Resource_rwep4"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_wggwo"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_7e0bb"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_b6xbu"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_477ag"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_ssosy"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_h6u3r"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_2jl0e"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_m85el"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_bj8a7"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_10wc2"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_qpydj"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_mxbtv"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_0wgqt"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_6es22"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_snbrn"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_h21se"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_7l3hc"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_7t7dp"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_onk5i"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_4m25p"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_gedg2"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_3bhar"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_wssc0"]
-script = ExtResource("2_etmry")
-usage_permission = 1
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_v4l0r"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_38p1t"]
-script = ExtResource("2_etmry")
-usage_permission = 2
-option_values = {}
-
-[sub_resource type="Resource" id="Resource_j2k8t"]
+[sub_resource type="Resource" id="Resource_lddt6"]
 script = ExtResource("2_etmry")
 usage_permission = 1
 option_values = {}
@@ -184,34 +184,34 @@ option_values = {}
 [resource]
 script = ExtResource("1_ox7td")
 permissions = {
-ExtResource("1_a30u1"): SubResource("Resource_j2k8t"),
-ExtResource("3_6hdo3"): SubResource("Resource_38p1t"),
-ExtResource("4_xooxf"): SubResource("Resource_v4l0r"),
-ExtResource("5_6n064"): SubResource("Resource_wssc0"),
-ExtResource("6_aorhx"): SubResource("Resource_3bhar"),
-ExtResource("7_dj81m"): SubResource("Resource_gedg2"),
-ExtResource("8_ttf7m"): SubResource("Resource_4m25p"),
-ExtResource("9_tr67v"): SubResource("Resource_onk5i"),
-ExtResource("10_ddux5"): SubResource("Resource_7t7dp"),
-ExtResource("11_itam5"): SubResource("Resource_7l3hc"),
-ExtResource("12_vflfk"): SubResource("Resource_h21se"),
-ExtResource("13_326ce"): SubResource("Resource_snbrn"),
-ExtResource("14_bdkpu"): SubResource("Resource_6es22"),
-ExtResource("15_3kxwo"): SubResource("Resource_0wgqt"),
-ExtResource("16_qv7s6"): SubResource("Resource_mxbtv"),
-ExtResource("17_xom15"): SubResource("Resource_qpydj"),
-ExtResource("18_dh7ym"): SubResource("Resource_10wc2"),
-ExtResource("19_jq28s"): SubResource("Resource_bj8a7"),
-ExtResource("20_alfkv"): SubResource("Resource_m85el"),
-ExtResource("10_n5fpy"): SubResource("Resource_2jl0e"),
-ExtResource("9_ib8ey"): SubResource("Resource_h6u3r"),
-ExtResource("8_7xr7h"): SubResource("Resource_ssosy"),
-ExtResource("7_v03pj"): SubResource("Resource_477ag"),
-ExtResource("6_m7oey"): SubResource("Resource_b6xbu"),
-ExtResource("5_kjj06"): SubResource("Resource_7e0bb"),
-ExtResource("4_3w3rd"): SubResource("Resource_wggwo"),
-ExtResource("4_lpix3"): SubResource("Resource_rwep4"),
+ExtResource("1_jr2ym"): SubResource("Resource_lddt6"),
 ExtResource("3_gburq"): SubResource("Resource_6id2i"),
-ExtResource("1_jr2ym"): SubResource("Resource_lddt6")
+ExtResource("4_lpix3"): SubResource("Resource_rwep4"),
+ExtResource("4_3w3rd"): SubResource("Resource_wggwo"),
+ExtResource("5_kjj06"): SubResource("Resource_7e0bb"),
+ExtResource("6_m7oey"): SubResource("Resource_b6xbu"),
+ExtResource("7_v03pj"): SubResource("Resource_477ag"),
+ExtResource("8_7xr7h"): SubResource("Resource_ssosy"),
+ExtResource("9_ib8ey"): SubResource("Resource_h6u3r"),
+ExtResource("10_n5fpy"): SubResource("Resource_2jl0e"),
+ExtResource("20_alfkv"): SubResource("Resource_m85el"),
+ExtResource("19_jq28s"): SubResource("Resource_bj8a7"),
+ExtResource("18_dh7ym"): SubResource("Resource_10wc2"),
+ExtResource("17_xom15"): SubResource("Resource_qpydj"),
+ExtResource("16_qv7s6"): SubResource("Resource_mxbtv"),
+ExtResource("15_3kxwo"): SubResource("Resource_0wgqt"),
+ExtResource("14_bdkpu"): SubResource("Resource_6es22"),
+ExtResource("13_326ce"): SubResource("Resource_snbrn"),
+ExtResource("12_vflfk"): SubResource("Resource_h21se"),
+ExtResource("11_itam5"): SubResource("Resource_7l3hc"),
+ExtResource("10_ddux5"): SubResource("Resource_7t7dp"),
+ExtResource("9_tr67v"): SubResource("Resource_onk5i"),
+ExtResource("8_ttf7m"): SubResource("Resource_4m25p"),
+ExtResource("7_dj81m"): SubResource("Resource_gedg2"),
+ExtResource("6_aorhx"): SubResource("Resource_3bhar"),
+ExtResource("5_6n064"): SubResource("Resource_wssc0"),
+ExtResource("4_xooxf"): SubResource("Resource_v4l0r"),
+ExtResource("3_6hdo3"): SubResource("Resource_38p1t"),
+ExtResource("1_a30u1"): SubResource("Resource_j2k8t")
 }
 global_option_values = {}

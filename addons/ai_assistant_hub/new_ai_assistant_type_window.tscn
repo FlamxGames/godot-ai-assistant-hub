@@ -6,7 +6,7 @@
 
 [node name="NewAIAssistantTypeWindow" type="Window"]
 title = "New AI Assistant Type"
-initial_position = 2
+position = Vector2i(100, 100)
 size = Vector2i(900, 500)
 exclusive = true
 script = ExtResource("1_iekrh")

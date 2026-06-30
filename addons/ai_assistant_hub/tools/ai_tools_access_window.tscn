@@ -7,7 +7,7 @@
 
 [node name="AIToolsAccessSetup" type="Window"]
 title = "Tools Access Setup"
-initial_position = 2
+position = Vector2i(100, 100)
 size = Vector2i(600, 600)
 transient = true
 exclusive = true
