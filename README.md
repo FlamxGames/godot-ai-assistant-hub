@@ -113,20 +113,19 @@ This plugin was designed to be API agnostic and could be extended to support oth
 
 The only reason Ollama was selected as the "officially maintained" LLM provider is because its relative popularity, easy installation, and ease of use for non-advanced users. This could change in the future (but not planned as of now).
 
-Tutorial Playlist (outdated)
+V2 Tutorial
 -----------------------------------------
+[![YouTube Video](http://i.ytimg.com/vi/lLTO_fFqa6Q/hqdefault.jpg)](https://youtu.be/lLTO_fFqa6Q)
+
+### V1 Tutorial Playlist (outdated)
 **These videos are for version 1.0.0, they are missing all the tools-related features. But may still be helpful if you are looking to learn about Quick Prompts and the basics of this plugin.**
-I plan to create newer videos once I have the time.
 
 [Click here to go to the tutorial playlist](https://www.youtube.com/playlist?list=PL2PLLTlAI2ogvgcY8mG-QsMI1dDUDPyF2)
 
-First Video 👇
-
-[![YouTube Video](http://i.ytimg.com/vi/3PDKJYp-upU/hqdefault.jpg)](https://www.youtube.com/watch?v=3PDKJYp-upU&list=PL2PLLTlAI2ogvgcY8mG-QsMI1dDUDPyF2&index=1)
-
 Compatible Godot Versions
 -----------------------
-Supported in Godot 4.3 to 4.6. Tested in stable versions only.
+Supported in Godot 4.3 to 4.7. Tested in stable versions only.
+After version 2.0 I will test only in 4.7, but it will probably work in previous versions.
 
 Setup steps
 --------------------
