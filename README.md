@@ -192,20 +192,18 @@ The following keywords are used to allow the prompt to pull data from the Code E
 
 Experiment and build the right type of assistants for your workflow.
 
+### Compatible Godot Versions
+
+Godot 4.7 is recommended, as this is tested in 4.7 stable.
+
+However, most of it was made compatible with earlier versions, so it is likely to work as well.
+
 ### Not sure what models to use?
 
 I found it is not a good idea to give advice here, as models change all the time. My suggestion is to search “Best coding local LLM models in (current year) that fit (insert your setup here).”
 For example, “Best coding local LLM models in 2026 that fit 8 GB of VRAM.”
 
 The rule of thumb I follow is to check the output speed by chatting with it. If it is slow, the model is not being loaded onto my GPU; it is using RAM/CPU. You probably only want to do that if the results the model produces are remarkably better, or simply if you don’t have a GPU capable of loading any models.
-
-
-## Compatible Godot Versions
-
-Godot 4.7 is recommended, as this is tested in 4.7 stable.
-
-However, most of it was made compatible with earlier versions, so it is likely to work as well.
-
 
 ---
 
