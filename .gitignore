@@ -13,3 +13,7 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+test/
+addons/ai_assistant_hub/assistants/*.tres
+addons/ai_assistant_hub/quick_prompts/*.tres

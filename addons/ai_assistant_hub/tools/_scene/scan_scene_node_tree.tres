@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=11 format=3 uid="uid://c8dhogprgeaul"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_1iipj"]
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_436ui"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_1h8sy"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_dauae"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_x6tvk"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_r0h2s"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_dhlfl"]
+
+[sub_resource type="Resource" id="Resource_0jdaj"]
+script = ExtResource("2_1h8sy")
+type = 3
+name = "scene_path"
+description = "Path to the scene file to scan."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_d0mem"]
+script = ExtResource("2_1h8sy")
+type = 3
+name = "node_path"
+description = "Optional scene-tree path of the node to start scanning from."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_vf8gn"]
+script = ExtResource("2_1h8sy")
+type = 0
+name = "max_depth"
+description = "Optional maximum depth to explore. If omitted it will scan to leaf nodes."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_dauae")
+id = "scan_scene_node_tree"
+title = "Scan scene node tree"
+description = "**Purpose**
+Retrieve a scene's hierarchy details optionally starting from a specific node.
+
+**Usage**
+- Provide the required `scene_path` parameter pointing to the scene file you want to scan.
+- Optionally specify a `node_path` to start scanning from a specific node in the scene.
+- Optionally set a `max_depth` value to limit how many levels deep to explore (omit to scan to leaf nodes).
+
+**Effect**
+- Loads the specified scene in the editor.
+- Outputs a hierarchical view of all nodes in the tree with their paths and types.
+- Provides a detailed JSON object containing node properties including:
+  * name: Node name and type.
+  * path: Full path to the node from root.
+  * script: Attached script path.
+  * subnodes_count: Number of subnodes.
+  * subnodes: Nested subnodes structure with their properties.
+  * scene_file_path: File path when the subnode is a standalone scene (with no subnodes information).
+- Some properties may not be present when null.
+- The output includes both a visual hierarchy and structured JSON data."
+category = ExtResource("1_436ui")
+parameters = Array[ExtResource("2_1h8sy")]([SubResource("Resource_0jdaj"), SubResource("Resource_d0mem"), SubResource("Resource_vf8gn")])
+options = Array[ExtResource("1_1iipj")]([ExtResource("3_x6tvk"), ExtResource("4_r0h2s"), ExtResource("5_dhlfl")])

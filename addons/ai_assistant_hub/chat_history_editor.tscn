@@ -6,8 +6,8 @@
 bg_color = Color(0.21, 0.24, 0.29, 1)
 
 [node name="ChatHistoryEditor" type="Window"]
-title = "Chat history editor"
-initial_position = 2
+title = "Chat History Editor"
+position = Vector2i(100, 100)
 size = Vector2i(800, 600)
 exclusive = true
 script = ExtResource("1_n0n5m")

@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3 uid="uid://usnlmslctj5w"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompts_window.gd" id="1_t5828"]
+[ext_resource type="Texture2D" uid="uid://cb745elrh1ukv" path="res://addons/ai_assistant_hub/graphics/icons/Add.svg" id="2_737tf"]
+
+[node name="AIQuickPromptsWindow" type="Window"]
+title = "Quick Prompts editor"
+position = Vector2i(100, 100)
+size = Vector2i(800, 600)
+transient = true
+exclusive = true
+script = ExtResource("1_t5828")
+
+[node name="Background" type="TabContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Main" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Main"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="Instructions" type="Label" parent="MarginContainer/Main/HBoxContainer"]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create predefined prompts for this assistant type, each with its own set of tool access."
+autowrap_mode = 3
+
+[node name="AddNewBtn" type="Button" parent="MarginContainer/Main/HBoxContainer"]
+layout_mode = 2
+text = "Add new Quick Prompt"
+icon = ExtResource("2_737tf")
+
+[node name="CreateSeparator" type="HSeparator" parent="MarginContainer/Main"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/Main"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="ScrollContentContainer" type="VBoxContainer" parent="MarginContainer/Main/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/Main/HBoxContainer/AddNewBtn" to="." method="_on_add_new_btn_pressed"]

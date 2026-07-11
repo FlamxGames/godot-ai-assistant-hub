@@ -16,6 +16,12 @@ enum CodePlacement { BeforeSelection, AfterSelection, ReplaceSelection }
 ## Optional icon for the button displayed in the chat window for this Quick Prompt.
 @export var icon: Texture2D
 
+## Is set to true, when this Quick Prompt is used the assistant will only be able to access the tools set in tool_access.
+@export var limit_tool_access:bool
+
+## The custom tool access for this prompt. When limit_tool_access is set to true, tools not listed here will not be available for the assistant when using this Quick Prompt.
+@export var tool_access:AIToolAccessProfile
+
 ## Indicates if the answer should be written in the chat or in the code editor.
 @export var response_target: ResponseTarget
 

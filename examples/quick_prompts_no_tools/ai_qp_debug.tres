@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AIQuickPromptResource" load_steps=6 format=3 uid="uid://cbr2h1op2c7q0"]
+
+[ext_resource type="Texture2D" uid="uid://qjvopjqelt0m" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_3dmsicons.png" id="1_bcej2"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_p0k8h"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access_profile.gd" id="3_xetf1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_svy3b"]
+atlas = ExtResource("1_bcej2")
+region = Rect2(352, 64, 32, 32)
+
+[sub_resource type="Resource" id="Resource_18dsa"]
+script = ExtResource("3_xetf1")
+permissions = {}
+global_option_values = {}
+
+[resource]
+script = ExtResource("2_p0k8h")
+action_name = "Debug (no tools)"
+action_prompt = "What is wrong with this GDScript code?
+```gdscript
+{CODE}
+```"
+icon = SubResource("AtlasTexture_svy3b")
+limit_tool_access = true
+tool_access = SubResource("Resource_18dsa")
+response_target = 0
+code_placement = 0
+format_response_as_comment = false

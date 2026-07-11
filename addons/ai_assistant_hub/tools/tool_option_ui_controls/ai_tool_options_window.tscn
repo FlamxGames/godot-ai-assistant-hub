@@ -1,0 +1,92 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8842aybur2gf"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/tool_option_ui_controls/ai_tool_options_window.gd" id="1_le381"]
+
+[node name="OptionsWindow" type="Window"]
+auto_translate_mode = 1
+title = "Tool Options"
+position = Vector2i(100, 100)
+size = Vector2i(650, 500)
+wrap_controls = true
+transient = true
+exclusive = true
+script = ExtResource("1_le381")
+
+[node name="Background" type="TabContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="LabelGlobal" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+text = "Set options for all applicable tools. You can extend this for each tool individually.
+Put the cursor over an option's name to read its description."
+autowrap_mode = 2
+
+[node name="LabelIndividual" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+text = "Set options for this tool. This will be applied in addition to global options. For options that allow a single value, this value will be used instead.
+Put the cursor over an option's name to read its description."
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ItemsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CancelBtn" type="Button" parent="MarginContainer/VBoxContainer/HBoxButtons"]
+layout_mode = 2
+text = "  Cancel  "
+
+[node name="Control" type="Control" parent="MarginContainer/VBoxContainer/HBoxButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SaveBtn" type="Button" parent="MarginContainer/VBoxContainer/HBoxButtons"]
+layout_mode = 2
+text = "            Save            "
+
+[node name="InvalidAlertDialog" type="AcceptDialog" parent="."]
+unique_name_in_owner = true
+auto_translate_mode = 1
+title = "Invalid values"
+initial_position = 2
+size = Vector2i(310, 100)
+dialog_text = "Some values are invalid, please check."
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxButtons/CancelBtn" to="." method="_on_close_requested"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxButtons/SaveBtn" to="." method="_on_save_btn_pressed"]

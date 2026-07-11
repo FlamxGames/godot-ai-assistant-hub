@@ -8,11 +8,40 @@ api_id = "ollama_api"
 name = "Ollama"
 description = "Locally run open source LLM (requires Ollama software)"
 reasoning_levels = Array[String](["Default", "Disabled | In supported models, generates the answer without a reasoning step", "Enabled | In supported models, generates the answer using reasoning", "Low | Thinks less. If not supported by the model, the chat will error out", "Medium | Does some thinking. If not supported by the model, the chat will error out", "High | Thinks more. If not supported by the model, the chat will error out"])
+supports_context_size_override = true
 requires_key = false
 get_key_url = ""
 fix_url = ""
+default_url = "http://127.0.0.1:11434"
 models_url_postfix = "/api/tags"
 chat_url_postfix = "/api/chat"
+max_context_url_postfix = "/api/ps"
+capabilities_url_postfix = "/api/show"
 system_role_name = "system"
 user_role_name = "user"
 assistant_role_name = "assistant"
+tool_role_name = "tool"
+tool_payload_template = "{
+	\"type\": \"function\",
+	\"function\": {
+		\"name\": \"{<:NAME:>}\",
+		\"description\": \"{<:DESC:>}\",
+		\"parameters\": {
+			\"type\": \"object\",
+			\"properties\": {
+				{<:PARAM:>}
+			},
+		\"required\": {<:REQP:>}
+		}
+	}
+}"
+tool_param_payload_template = "\"{<:NAME:>}\": {
+	\"enum\": {<:ENUM:>},
+	\"type\": \"{<:TYPE:>}\",
+	\"description\": \"{<:DESC:>}\"
+}"
+tool_param_type_int = "integer"
+tool_param_type_float = "number"
+tool_param_type_boolean = "boolean"
+tool_param_type_string = "string"
+tool_param_type_array = "array"

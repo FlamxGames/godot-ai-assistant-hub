@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=11 format=3 uid="uid://bp2syqikgietr"]
+
+[ext_resource type="Resource" uid="uid://clgp527sdbpm" path="res://addons/ai_assistant_hub/tools/tool_categories/resource.tres" id="1_f3tws"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_rnfby"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_2mou1"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_4x5xo"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_x6aa3"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_1r5p2"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_pxdw5"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="7_e7oa3"]
+
+[sub_resource type="Resource" id="Resource_edr3s"]
+script = ExtResource("2_2mou1")
+type = 3
+name = "file_path"
+description = "Path to the target resource file."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_r2kgk"]
+script = ExtResource("2_2mou1")
+type = 3
+name = "base_class"
+description = "The resource class."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_x6aa3")
+id = "create_external_resource"
+title = "Create external resource"
+description = "**Purpose**
+Create a new resource file (.tres) based on a specified class. This is useful when a resource needs to be reused.
+
+**Usage notes**
+- The `file_path` parameter specifies where the resource will be created.
+- The `base_class` parameter determines the type of the resource.
+- The file must not exist at the specified path.
+- The resource will be created with default properties.
+- Missing directories in the `file_path` will be created.
+
+**Example**
+file_path: res://resources/enemy_area.tres
+base_class: RectnagleShape2D"
+category = ExtResource("1_f3tws")
+parameters = Array[ExtResource("2_2mou1")]([SubResource("Resource_edr3s"), SubResource("Resource_r2kgk"), ExtResource("7_e7oa3")])
+options = Array[ExtResource("1_rnfby")]([ExtResource("3_4x5xo"), ExtResource("4_1r5p2"), ExtResource("5_pxdw5")])

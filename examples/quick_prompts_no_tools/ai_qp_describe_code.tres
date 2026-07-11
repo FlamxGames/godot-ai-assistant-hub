@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AIQuickPromptResource" load_steps=6 format=3 uid="uid://cpjaosxq42axt"]
+
+[ext_resource type="Texture2D" uid="uid://r7njmupyi7w4" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_flatmsicons.png" id="1_xmc26"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_57agh"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access_profile.gd" id="3_8dyiv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hsph0"]
+atlas = ExtResource("1_xmc26")
+region = Rect2(64, 448, 32, 32)
+
+[sub_resource type="Resource" id="Resource_fnjqm"]
+script = ExtResource("3_8dyiv")
+permissions = {}
+global_option_values = {}
+
+[resource]
+script = ExtResource("2_57agh")
+action_name = "Describe (no tools)"
+action_prompt = "Write a very short summary of this code:
+```gdscript
+{CODE}
+```"
+icon = SubResource("AtlasTexture_hsph0")
+limit_tool_access = true
+tool_access = SubResource("Resource_fnjqm")
+response_target = 1
+code_placement = 0
+format_response_as_comment = true

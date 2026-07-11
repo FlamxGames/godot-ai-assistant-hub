@@ -1,4 +1,5 @@
 @tool
+## Legacy tool, still useful for models that don't support tool calling.
 class_name AssistantToolSelection
 
 var _plugin:EditorPlugin

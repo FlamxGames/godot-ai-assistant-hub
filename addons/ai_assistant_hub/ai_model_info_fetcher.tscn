@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnsj2n6wo63yv"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_model_info_fetcher.gd" id="1_t46v4"]
+
+[node name="ModelInfoFetcher" type="Node"]
+script = ExtResource("1_t46v4")
+
+[node name="CapabilitiesHTTPRequest" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+accept_gzip = false
+timeout = 10.0
+
+[connection signal="request_completed" from="CapabilitiesHTTPRequest" to="." method="_on_capabilities_http_request_request_completed"]

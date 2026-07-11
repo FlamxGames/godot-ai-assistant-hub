@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=7 format=3 uid="uid://dsfljbcka5l84"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_f1yxe"]
+[ext_resource type="Resource" uid="uid://k1xgjboclqo1" path="res://addons/ai_assistant_hub/tools/tool_categories/general.tres" id="1_jxv3k"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_ju8oi"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_kr712"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_n0jfk"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="4_3c5jq"]
+
+[resource]
+script = ExtResource("3_kr712")
+id = "save_all"
+title = "Save all changes in scripts and scenes"
+description = "Allow to save all changes in scripts and scenes."
+category = ExtResource("1_jxv3k")
+parameters = Array[ExtResource("2_ju8oi")]([ExtResource("4_3c5jq")])
+options = Array[ExtResource("1_f1yxe")]([ExtResource("3_n0jfk")])

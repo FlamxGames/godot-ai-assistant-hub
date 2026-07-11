@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AIQuickPromptResource" load_steps=6 format=3 uid="uid://cemsmflvcbq84"]
+
+[ext_resource type="Texture2D" uid="uid://r7njmupyi7w4" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_flatmsicons.png" id="1_1blw1"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_7g0wg"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access_profile.gd" id="3_odb6k"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kveuu"]
+atlas = ExtResource("1_1blw1")
+region = Rect2(32, 544, 32, 32)
+
+[sub_resource type="Resource" id="Resource_x5l5y"]
+script = ExtResource("3_odb6k")
+permissions = {}
+global_option_values = {}
+
+[resource]
+script = ExtResource("2_7g0wg")
+action_name = "Spell check (no tools)"
+action_prompt = "Spell check this: {CHAT}"
+icon = SubResource("AtlasTexture_kveuu")
+limit_tool_access = true
+tool_access = SubResource("Resource_x5l5y")
+response_target = 0
+code_placement = 0
+format_response_as_comment = false

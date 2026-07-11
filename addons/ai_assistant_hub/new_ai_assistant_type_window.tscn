@@ -1,24 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3wrcre1ryiin"]
+[gd_scene load_steps=4 format=3 uid="uid://c3wrcre1ryiin"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/new_ai_assistant_type_window.gd" id="1_iekrh"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a3a21"]
-bg_color = Color(0.21, 0.24, 0.29, 1)
+[ext_resource type="Texture2D" uid="uid://bgx6p40pmnnvw" path="res://addons/ai_assistant_hub/graphics/icons/tools_window.svg" id="2_j8gdo"]
+[ext_resource type="Texture2D" uid="uid://ctfqdge0lpago" path="res://addons/ai_assistant_hub/graphics/icons/quick_prompts_window.svg" id="3_nhdl8"]
 
 [node name="NewAIAssistantTypeWindow" type="Window"]
 title = "New AI Assistant Type"
-initial_position = 2
-size = Vector2i(900, 600)
+position = Vector2i(100, 100)
+size = Vector2i(900, 500)
+exclusive = true
 script = ExtResource("1_iekrh")
 
-[node name="Background" type="Panel" parent="."]
-unique_name_in_owner = true
+[node name="Background" type="TabContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_a3a21")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -26,12 +24,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Disclaimer" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+text = "Create a new assistant type. You will be able to update this later."
+autowrap_mode = 3
+
+[node name="CreateSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
@@ -42,18 +50,39 @@ columns = 2
 
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Assistant type name"
+text = "Type name"
 horizontal_alignment = 2
 
 [node name="NameLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "The assistant type, e.g. Coder, Writer..."
+placeholder_text = "A role or category, for example: Coder, Writer..."
+
+[node name="IconLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Icon"
+horizontal_alignment = 2
+
+[node name="IconPlaceholder" type="MarginContainer" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="ModelLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "LLM Model"
+horizontal_alignment = 2
+
+[node name="ModelAPIValueLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Loading..."
 
 [node name="PromptLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Assistant description
+text = "Description
 (prompt)"
 horizontal_alignment = 2
 
@@ -67,41 +96,52 @@ placeholder_text = "Give a description for the assistant. This will dictate its 
 \"You are a useful assistant for game development, expert in the Godot engine\"."
 wrap_mode = 1
 
-[node name="ModelLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+[node name="ToolsLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "AI Model"
+text = "Tools"
 horizontal_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ModelLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "AI model used by this assistant type"
 
-[node name="APILabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+[node name="ToolsButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "API"
+tooltip_text = "Configure tools access"
+text = "  Set tool access"
+icon = ExtResource("2_j8gdo")
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+[node name="QuickPromptsButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Configure tools access"
+text = "Quick Prompts"
+icon = ExtResource("3_nhdl8")
+
+[node name="ContextLabel" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Max context"
+
+[node name="ContextLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Override the default context size, which depends on your LLM provider.
+It must be a numeric value. Leave it empty to use the default."
+placeholder_text = "Default"
+virtual_keyboard_type = 2
+
+[node name="CreateSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="VBoxCreateButton" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
-
-[node name="CreateNoteLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxCreateButton"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "NOTE: This will create a resource under %s using the name below.
-- You will see a new button in the AI Hub tab, click it to start a new chat with your assistant.
-- The resource will open in the Inspector editor, there you can add an icon, Quick Prompts, and other optional properties."
-autowrap_mode = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxCreateButton"]
 layout_mode = 2
@@ -122,7 +162,19 @@ layout_mode = 2
 disabled = true
 text = "Create"
 
+[node name="CloseConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "WARNING!"
+initial_position = 4
+ok_button_text = "Yes, discard changes"
+dialog_text = "You have unsaved changes. Close without saving?"
+
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/GridContainer/NameLineEdit" to="." method="_on_name_line_edit_text_changed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/GridContainer/PromptTextEdit" to="." method="_on_prompt_text_edit_text_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/HBoxContainer/ToolsButton" to="." method="_on_tools_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/GridContainer/HBoxContainer/QuickPromptsButton" to="." method="_on_quick_prompts_button_pressed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/GridContainer/ContextLineEdit" to="." method="_on_context_line_edit_text_changed"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/VBoxCreateButton/HBoxContainer/ResNameLineEdit" to="." method="_on_res_name_line_edit_text_changed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxCreateButton/HBoxContainer/CreateButton" to="." method="_on_create_button_pressed"]
+[connection signal="confirmed" from="CloseConfirmationDialog" to="." method="_on_close_confirmation_dialog_confirmed"]

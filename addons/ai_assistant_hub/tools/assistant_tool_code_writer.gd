@@ -1,4 +1,5 @@
 @tool
+## Legacy tool, still useful for models that don't support tool calling.
 class_name AssistantToolCodeWriter
 
 var _plugin:EditorPlugin
@@ -20,11 +21,11 @@ func write_to_code_editor(text_answer:String, code_placement:AIQuickPromptResour
 		match code_placement:
 			AIQuickPromptResource.CodePlacement.BeforeSelection:
 				code_editor.set_caret_line(start_line)
-				text_answer = strip_empty_surrounding_lines(text_answer)
+				text_answer = _strip_empty_surrounding_lines(text_answer)
 				code_editor.insert_line_at(start_line, text_answer)
 			AIQuickPromptResource.CodePlacement.AfterSelection:
 				code_editor.set_caret_line(start_line)
-				text_answer = strip_empty_surrounding_lines(text_answer)
+				text_answer = _strip_empty_surrounding_lines(text_answer)
 				if end_line == code_editor.get_line_count() - 1: #it is at the end of the editor
 					code_editor.text += "\n%s" % text_answer
 				else:
@@ -32,7 +33,7 @@ func write_to_code_editor(text_answer:String, code_placement:AIQuickPromptResour
 			AIQuickPromptResource.CodePlacement.ReplaceSelection:
 				var column = code_editor.get_selection_from_column()
 				code_editor.delete_selection()
-				text_answer = strip_empty_surrounding_lines(text_answer)
+				text_answer = _strip_empty_surrounding_lines(text_answer)
 				code_editor.insert_text_at_caret(text_answer)
 			_:
 				AIHubPlugin.print_err("Unexpected Quick Prompt code placement value: %s" % code_placement)
@@ -42,7 +43,7 @@ func write_to_code_editor(text_answer:String, code_placement:AIQuickPromptResour
 	return false
 
 
-func strip_empty_surrounding_lines(text:String) -> String:
+func _strip_empty_surrounding_lines(text:String) -> String:
 	var lines:PackedStringArray = text.split("\n")
 	while not lines.is_empty() and lines[0].is_empty():
 		lines.remove_at(0)

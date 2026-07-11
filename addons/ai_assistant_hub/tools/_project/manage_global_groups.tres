@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=10 format=3 uid="uid://dp8y32ir8wi3b"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_26nfu"]
+[ext_resource type="Resource" uid="uid://lh2xe6mgm3tu" path="res://addons/ai_assistant_hub/tools/tool_categories/project.tres" id="1_rtw56"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_c7fkw"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_7svuf"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_dm202"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="5_d73fc"]
+
+[sub_resource type="Resource" id="Resource_6oq01"]
+script = ExtResource("2_c7fkw")
+type = 5
+name = "action"
+description = "Action to perform with the group."
+required = true
+string_enum_valid_values = Array[String](["Create", "Delete"])
+
+[sub_resource type="Resource" id="Resource_jb0bt"]
+script = ExtResource("2_c7fkw")
+type = 3
+name = "group_name"
+description = "The group name to add or delete."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_pcgus"]
+script = ExtResource("2_c7fkw")
+type = 3
+name = "group_description"
+description = "Optional description when adding a group."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_dm202")
+id = "manage_global_groups"
+title = "Manage global groups for nodes"
+description = "** Purpose **
+Manage Global groups in the project.
+Note: Groups are tags that can be set to nodes. Nodes can be added to a group without need to declare a Global group. Global groups are simply a quality-of-life feature that gives a handy dictionary of Group names to developers to avoid writing typos when setting a node's group in another scene.
+  - Rule of thumb:
+    - Create a Global group when a group can be used in many different scenes.
+    - Don't create Global groups for groups that will be used in a single scene or in very few scenes.
+
+** Usage notes **
+- Send `action` Create or Delete.
+- Send the desired `group_name`.
+- Optionally send `group_description` if adding a new group. This is ignored for Delete action.
+
+** Effect **
+- The Godot project will be modified depending on the action. Note that the Godot UI will only reflect the change to the user, as a work-around they can move to another scene and come back.
+- If adding a group that already exists, the description will be updated."
+category = ExtResource("1_rtw56")
+parameters = Array[ExtResource("2_c7fkw")]([SubResource("Resource_6oq01"), SubResource("Resource_jb0bt"), SubResource("Resource_pcgus"), ExtResource("5_d73fc")])
+options = Array[ExtResource("1_26nfu")]([ExtResource("3_7svuf")])

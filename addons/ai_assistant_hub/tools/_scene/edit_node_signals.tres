@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=16 format=3 uid="uid://haj1msfwmesa"]
+
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_mua86"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_xggig"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_wat7j"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_3vr5q"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_660c2"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_04bs3"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_f6w4d"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_2s0wi"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_tpmcq"]
+
+[sub_resource type="Resource" id="Resource_1xjf7"]
+script = ExtResource("2_wat7j")
+type = 3
+name = "scene_path"
+description = "Path to the scene file containing the nodes"
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_nedmk"]
+script = ExtResource("2_wat7j")
+type = 3
+name = "emitter_node"
+description = "Scene-tree path to the node that emits the signal"
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_dy04k"]
+script = ExtResource("2_wat7j")
+type = 3
+name = "signal_name"
+description = "Name of the signal to connect (e.g., \"pressed\", \"timeout\")"
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_bd6lv"]
+script = ExtResource("2_wat7j")
+type = 3
+name = "target_node"
+description = "Scene-tree path to the node that will receive the signal. If omitted the emmiter is used."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_405b0"]
+script = ExtResource("2_wat7j")
+type = 3
+name = "target_method"
+description = "Name of the method to call on the target node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_hormc"]
+script = ExtResource("2_wat7j")
+type = 5
+name = "mode"
+description = "Allows to indicate the action to perform."
+required = true
+string_enum_valid_values = Array[String](["Connect", "Disconnect"])
+
+[resource]
+script = ExtResource("3_3vr5q")
+id = "edit_node_signals"
+title = "Edit node signals"
+description = "**Purpose**
+Connect or disconnect a signal from one node in a Godot scene to a function on itself or on another node.
+
+**Usage**
+- Provide `scene_path`: Path to the scene file containing the nodes
+- Provide `emitter_node`: Scene-tree path to the node that emits the signal
+- Provide `signal_name`: Name of the signal to connect (e.g., \"pressed\", \"timeout\")
+- Optionally provide `target_node`: Scene-tree path to the node that will receive the signal. If omitted the emmiter is used.
+- Provide `target_method`: Name of the method to call on the target node.
+- Provide `mode`: Use `Connect` or `Disconnect` accordingly.
+
+**Effect**
+- Opens the specified scene in Godot's editor.
+- Connects the signal and notifies the editor the scene has changed.
+- If needed, you can revert the change using the `undo` tool (if available)."
+category = ExtResource("1_mua86")
+parameters = Array[ExtResource("2_wat7j")]([SubResource("Resource_1xjf7"), SubResource("Resource_nedmk"), SubResource("Resource_dy04k"), SubResource("Resource_bd6lv"), SubResource("Resource_405b0"), SubResource("Resource_hormc"), ExtResource("8_tpmcq")])
+options = Array[ExtResource("1_xggig")]([ExtResource("3_660c2"), ExtResource("4_04bs3"), ExtResource("5_f6w4d"), ExtResource("6_2s0wi")])

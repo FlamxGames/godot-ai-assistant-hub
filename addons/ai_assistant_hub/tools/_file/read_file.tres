@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=12 format=3 uid="uid://b7nvbu8m0k8no"]
+
+[ext_resource type="Resource" uid="uid://uj4kej0yuryh" path="res://addons/ai_assistant_hub/tools/tool_categories/file.tres" id="1_4v78y"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="2_jed0m"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_goj6q"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="3_x7oad"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_rx1s1"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="4_sawvp"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="5_tjicc"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_w6h3o"]
+
+[sub_resource type="Resource" id="Resource_03trx"]
+script = ExtResource("3_x7oad")
+type = 3
+name = "file_path"
+description = "Path to the target file."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_3nthf"]
+script = ExtResource("3_x7oad")
+type = 0
+name = "from_line"
+description = "Optional 1‑based line number to start reading from. If omitted 1 will be used."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_bgnwp"]
+script = ExtResource("3_x7oad")
+type = 0
+name = "to_line"
+description = "Optional 1‑based line number to indicate the last line to read. If omitted the file will be read until the end."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("4_sawvp")
+id = "read_file"
+title = "Read files as plain text"
+description = "**Purpose**
+- Read the contents of a file from `from_line` to `to_line` (inclusive). Use this tool when you need to know the contents of a file and corresponding line numbers.
+- This should not be used to read Godot resource or scene files, there are specific tools optimized for that.
+
+**Usage**
+If line number parameters are omitted, the full file will be read.
+
+**Effect**
+- If the file is already open in the code editor, it will be read from there. This allows to read changes not yet saved.
+- Files incompatible with the code editor will be read from disk.
+- Returns the content prefixing each line with its number and a pipe character (`<line number>|<line content>`)."
+category = ExtResource("1_4v78y")
+parameters = Array[ExtResource("3_x7oad")]([SubResource("Resource_03trx"), SubResource("Resource_3nthf"), SubResource("Resource_bgnwp"), ExtResource("5_tjicc")])
+options = Array[ExtResource("2_jed0m")]([ExtResource("3_goj6q"), ExtResource("4_rx1s1"), ExtResource("5_w6h3o")])

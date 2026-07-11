@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=12 format=3 uid="uid://dm1ndjq8flavc"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_258yj"]
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_yorl0"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_83bdl"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_5ktal"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_7juj8"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_bmsf7"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_47hag"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_x040a"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_8dmcy"]
+
+[sub_resource type="Resource" id="Resource_q3wrl"]
+script = ExtResource("2_83bdl")
+type = 3
+name = "scene_path"
+description = "Path to the target scene."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_7l1sm"]
+script = ExtResource("2_83bdl")
+type = 3
+name = "node_path"
+description = "The path for the node to delete."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_5ktal")
+id = "delete_node"
+title = "Delete node"
+description = "**Purpose**
+Delete a node instance from an existing Godot scene.
+
+**Usage notes**
+- The `scene_path` parameter specifies which scene to modify.
+- The `node_path` parameter specifies the scene-tree path of the node to delete.
+
+**Example**
+scene_path: res://scenes/main_scene.tscn
+node_path: Main/CharacterLayer/Player"
+category = ExtResource("1_yorl0")
+parameters = Array[ExtResource("2_83bdl")]([SubResource("Resource_q3wrl"), SubResource("Resource_7l1sm"), ExtResource("8_8dmcy")])
+options = Array[ExtResource("1_258yj")]([ExtResource("3_7juj8"), ExtResource("4_bmsf7"), ExtResource("5_47hag"), ExtResource("6_x040a")])

@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=12 format=3 uid="uid://cg7kynoqk4hwm"]
+
+[ext_resource type="Resource" uid="uid://dc15aoi5lri2p" path="res://addons/ai_assistant_hub/tools/tool_categories/scene.tres" id="1_m1fdn"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="2_11jbr"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_asy7v"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_v07w4"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_0ef0w"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="6_n04br"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="7_g4hxb"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="8_riieh"]
+
+[sub_resource type="Resource" id="Resource_lm6dm"]
+script = ExtResource("6_n04br")
+type = 3
+name = "file_path"
+description = "Path to the target scene file."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_rjxom"]
+script = ExtResource("6_n04br")
+type = 3
+name = "base_class"
+description = "The Godot class name for the scene root node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_7tjv0"]
+script = ExtResource("6_n04br")
+type = 3
+name = "scene_root_name"
+description = "The name for the scene root node."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("8_riieh")
+id = "create_scene"
+title = "Create new scene"
+description = "**Purpose**
+Create a new scene file with a root node based on a specified class.
+
+**Usage notes**
+- The `file_path` parameter specifies where the scene will be created.
+- The `base_class` parameter determines the type of the scene root node.
+- The `scene_root_name` parameter sets the name for the scene root node.
+- The file must not exist at the specified path.
+- The scene will be created with an empty node hierarchy.
+- Missing directories in the `file_path` will be created.
+
+**Example**
+file_path: res://scenes/player/Player.tscn
+base_class: Node2D
+scene_root_name: Player"
+category = ExtResource("1_m1fdn")
+parameters = Array[ExtResource("6_n04br")]([SubResource("Resource_lm6dm"), SubResource("Resource_rjxom"), SubResource("Resource_7tjv0"), ExtResource("7_g4hxb")])
+options = Array[ExtResource("2_11jbr")]([ExtResource("3_asy7v"), ExtResource("4_v07w4"), ExtResource("5_0ef0w")])

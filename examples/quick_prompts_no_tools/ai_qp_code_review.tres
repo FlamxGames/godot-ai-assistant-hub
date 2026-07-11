@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AIQuickPromptResource" load_steps=6 format=3 uid="uid://b6s6jrt6e5jah"]
+
+[ext_resource type="Texture2D" uid="uid://r7njmupyi7w4" path="res://addons/ai_assistant_hub/graphics/icons/linear_32_flatmsicons.png" id="1_fvq7y"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/quick_prompts/ai_quick_prompt_resource.gd" id="2_c1k6h"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_access_profile.gd" id="3_4g2oj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lcg8b"]
+atlas = ExtResource("1_fvq7y")
+region = Rect2(896, 160, 32, 32)
+
+[sub_resource type="Resource" id="Resource_wg0se"]
+script = ExtResource("3_4g2oj")
+permissions = {}
+global_option_values = {}
+
+[resource]
+script = ExtResource("2_c1k6h")
+action_name = "Review (no tools)"
+action_prompt = "Review this GDScript code, do you see any bugs?
+```gdscript
+{CODE}
+```"
+icon = SubResource("AtlasTexture_lcg8b")
+limit_tool_access = true
+tool_access = SubResource("Resource_wg0se")
+response_target = 0
+code_placement = 0
+format_response_as_comment = false

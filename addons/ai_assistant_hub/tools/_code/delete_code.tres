@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=13 format=3 uid="uid://deoehr0oonua0"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_3271n"]
+[ext_resource type="Resource" uid="uid://baavfnrxbjpxf" path="res://addons/ai_assistant_hub/tools/tool_categories/code.tres" id="1_o6p5h"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_sp2vn"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_6dag3"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_txsud"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_kugtq"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="4_ti7ut"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_t0cf8"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_vo6ip"]
+
+[sub_resource type="Resource" id="Resource_y8ryb"]
+script = ExtResource("2_sp2vn")
+type = 3
+name = "file_path"
+description = "Path to the target file."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_cw0pm"]
+script = ExtResource("2_sp2vn")
+type = 0
+name = "delete_start_line"
+description = "1‑based line number that indicates the first line to delete."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_h2i7g"]
+script = ExtResource("2_sp2vn")
+type = 0
+name = "delete_end_line"
+description = "1‑based line number that indicates the last line to delete (inclusive). It must be greater or equal to `delete_start_line`."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_6dag3")
+id = "delete_code"
+title = "Delete code"
+description = "** Purpose **
+Deletes a block of lines in a Godot script specified by `file_path` from `delete_start_line` to `delete_end_line`.  
+The file is opened in Godot’s code editor to perform the operation.
+
+** Expected result **
+- Returns a trimmed snippet of the file for quick sanity‑check. For example, if you delete lines 100‑140, the tool will return context from line 95 to 105 after removal.
+- If the returned snippet looks incorrect, you can revert the change using the `undo` tool (if available).
+
+** Usage notes **
+- Always inspect the file around the target range before performing the deletion to confirm the current state of the file."
+category = ExtResource("1_o6p5h")
+parameters = Array[ExtResource("2_sp2vn")]([SubResource("Resource_y8ryb"), SubResource("Resource_cw0pm"), SubResource("Resource_h2i7g"), ExtResource("4_ti7ut")])
+options = Array[ExtResource("1_3271n")]([ExtResource("3_txsud"), ExtResource("4_kugtq"), ExtResource("5_t0cf8"), ExtResource("6_vo6ip")])

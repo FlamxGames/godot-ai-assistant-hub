@@ -1,0 +1,65 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=13 format=3 uid="uid://beq1yo303ejlb"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_00ieh"]
+[ext_resource type="Resource" uid="uid://clgp527sdbpm" path="res://addons/ai_assistant_hub/tools/tool_categories/resource.tres" id="1_qvy8c"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_f06vq"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_6vad0"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_n25iq"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_vcme7"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_ryqgh"]
+[ext_resource type="Resource" uid="uid://cj8a0dghga2yf" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_files.tres" id="6_ybeli"]
+[ext_resource type="Resource" uid="uid://n7ex8vtnmr8x" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_properties.tres" id="7_460i6"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="8_x54ej"]
+
+[sub_resource type="Resource" id="Resource_d5u5j"]
+script = ExtResource("2_f06vq")
+type = 3
+name = "resource_path"
+description = "Path to the resource to edit."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_inyt1"]
+script = ExtResource("2_f06vq")
+type = 6
+name = "property_values"
+description = "Array of properties to update and their respective values in format \"<property name> = <value>\"."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_6vad0")
+id = "edit_resource_properties"
+title = "Edit resource properties"
+description = "**Purpose**
+Edit Godot resource properties. Any resource with a path assigned can be edited (unsaved embedded resources don't have a path).
+This tool can't edit node properties, but it allows to edit properties of resources used in nodes.
+
+**Usage**
+- Provide `resource_path`: Path to the resource.
+- Provide `property_value_map`: This is a JSON containing a list of properties to update. Example:
+```
+{
+  \"property1\": \"abc\",
+  \"property2\": \"(1, 0, 1)\",
+  \"another_resource_property1\": \"res://some_resource.tres\"
+  \"another_resource_property2\": \"NEW:MyResourceClass\"
+}
+```
+
+Notes:
+1. To remove the value of a property send value \"<NULL>\". For properties that don't accept null values, e.g. int, send the appropriate type.
+2. About loading resources into properties of resource type:
+  - Syntax \"NEW:<ClassName>\" allows to create embedded resources for resource properties.
+  - To load external resources the input must be a path to the resource file only.
+
+**Limitations**
+Array and dictionary are parsed as JSON, it may support basic types, but most classes won't work.
+
+**Effects**
+- Modifies the properties using the provided values.
+- Returns the property values after setting them for you to review.
+- If needed, you can revert the change using the `undo` tool (if available)."
+category = ExtResource("1_qvy8c")
+parameters = Array[ExtResource("2_f06vq")]([SubResource("Resource_d5u5j"), SubResource("Resource_inyt1"), ExtResource("8_x54ej")])
+options = Array[ExtResource("1_00ieh")]([ExtResource("3_n25iq"), ExtResource("4_vcme7"), ExtResource("5_ryqgh"), ExtResource("6_ybeli"), ExtResource("7_460i6")])

@@ -1,11 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://w1f4dho35qy2"]
+[gd_scene load_steps=11 format=3 uid="uid://w1f4dho35qy2"]
 
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_assistant_hub.gd" id="1_x668t"]
 [ext_resource type="Texture2D" uid="uid://tvel41eepthx" path="res://addons/ai_assistant_hub/graphics/icons/Reload.svg" id="2_6xner"]
 [ext_resource type="Script" path="res://addons/ai_assistant_hub/ai_hub_stats.gd" id="2_62yhg"]
+[ext_resource type="PackedScene" uid="uid://cnsj2n6wo63yv" path="res://addons/ai_assistant_hub/ai_model_info_fetcher.tscn" id="2_dgro8"]
 [ext_resource type="Texture2D" uid="uid://cb745elrh1ukv" path="res://addons/ai_assistant_hub/graphics/icons/Add.svg" id="3_57y2f"]
 [ext_resource type="Texture2D" uid="uid://dctfmdvk5w5dk" path="res://addons/ai_assistant_hub/graphics/icons/upgrade_notif.svg" id="4_77wrn"]
 [ext_resource type="Texture2D" uid="uid://c1ab17qlptks6" path="res://addons/ai_assistant_hub/graphics/icons/heart.svg" id="4_mwqwj"]
+[ext_resource type="Texture2D" uid="uid://u5bg2h66aw1g" path="res://addons/ai_assistant_hub/graphics/icons/capabilities/tools.svg" id="5_54ub3"]
+[ext_resource type="Texture2D" uid="uid://do5vwegdjlpno" path="res://addons/ai_assistant_hub/graphics/icons/capabilities/reasoning_levels.svg" id="5_rqjel"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_541qc"]
 
@@ -23,6 +26,9 @@ script = ExtResource("1_x668t")
 unique_name_in_owner = true
 accept_gzip = false
 timeout = 10.0
+
+[node name="ModelInfoFetcher" parent="." instance=ExtResource("2_dgro8")]
+unique_name_in_owner = true
 
 [node name="StatsHTTPRequest" type="HTTPRequest" parent="."]
 unique_name_in_owner = true
@@ -141,7 +147,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="PanelContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -154,16 +159,6 @@ size_flags_vertical = 3
 text = "Something went wrong querying for models, is the Server URL correct? Something went wrong querying for models, is the Server URL correct?"
 autowrap_mode = 3
 
-[node name="ModelsListOld" type="RichTextLabel" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/PanelContainer"]
-visible = false
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-focus_mode = 2
-autowrap_mode = 2
-selection_enabled = true
-
 [node name="ModelsList" type="ItemList" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/PanelContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -172,6 +167,34 @@ size_flags_vertical = 3
 theme_override_styles/focus = SubResource("StyleBoxEmpty_541qc")
 max_text_lines = 10
 auto_height = true
+
+[node name="ModelDetailsContainer" type="MarginContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="VFlowContainer" type="VFlowContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/ModelDetailsContainer"]
+modulate = Color(1, 1, 1, 0.75)
+layout_mode = 2
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+
+[node name="CapabilityTools" type="TextureRect" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/ModelDetailsContainer/VFlowContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+tooltip_text = "This model can use tools."
+texture = ExtResource("5_54ub3")
+stretch_mode = 3
+
+[node name="CapabilityReasoning" type="TextureRect" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer/ModelDetailsContainer/VFlowContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+tooltip_text = "This model supports adjusting its reasoning level."
+texture = ExtResource("5_rqjel")
+stretch_mode = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/VBoxContainer"]
 layout_mode = 2
@@ -225,7 +248,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The URL of the host that runs your LLMs.
 
-The default value is for the local host using Ollama's default port."
+The default value is for the usual configuration for the LLM Provider you select."
 placeholder_text = "e.g. http://127.0.0.1:11434"
 
 [node name="APIKeyTxt" type="LineEdit" parent="VBoxContainer/TabContainer/AI Hub/VBoxContainer/GridContainer/AdvancedSettings"]

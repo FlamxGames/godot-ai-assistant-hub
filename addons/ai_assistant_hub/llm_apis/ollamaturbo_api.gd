@@ -61,11 +61,13 @@ func send_chat_request(http_request:HTTPRequest, content:Array) -> bool:
 	return true
 
 
-func read_response(body) -> String:
+func read_response(body) -> AIAssistantResponse:
 	var json := JSON.new()
 	json.parse(body.get_string_from_utf8())
-	var response := json.get_data()
-	if response.has("message"):
-		return _msg_cleaner.clean(response.message.content)
+	var json_response := json.get_data()
+	if json_response.has("message"):
+		var response:= AIAssistantResponse.new()
+		response.text_content = _msg_cleaner.clean(json_response.message.content)
+		return response
 	else:
-		return LLMInterface.INVALID_RESPONSE
+		return null

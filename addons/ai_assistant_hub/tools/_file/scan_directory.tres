@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="AIToolResource" load_steps=12 format=3 uid="uid://d30rt3uehw4mt"]
+
+[ext_resource type="Resource" uid="uid://uj4kej0yuryh" path="res://addons/ai_assistant_hub/tools/tool_categories/file.tres" id="1_5st00"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_option.gd" id="1_kcv71"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_parameter.gd" id="2_frex3"]
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/ai_tool_resource.gd" id="3_7nl0u"]
+[ext_resource type="Resource" uid="uid://8fxmxbtqcwmb" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_extended_prompt.tres" id="3_rehkb"]
+[ext_resource type="Resource" uid="uid://dspt4k4gqei7c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_allowed_paths.tres" id="4_p7q3q"]
+[ext_resource type="Resource" uid="uid://i7mm5i0joybr" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_option_prohibited_paths.tres" id="5_ksy2m"]
+[ext_resource type="Resource" uid="uid://ce6bugsk1fj5c" path="res://addons/ai_assistant_hub/tools/general_params_and_options/ai_tool_param_rationale.tres" id="5_wo1qm"]
+
+[sub_resource type="Resource" id="Resource_t85t4"]
+script = ExtResource("2_frex3")
+type = 3
+name = "path"
+description = "Path to the target directory."
+required = true
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_m67pl"]
+script = ExtResource("2_frex3")
+type = 3
+name = "file_filter"
+description = "Optional filter to limit the file results to those matching this pattern. Supports * and ?. This filter is applied to file names only, it does *NOT* affect directories scanned. If omitted all files are returned."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[sub_resource type="Resource" id="Resource_66cj8"]
+script = ExtResource("2_frex3")
+type = 0
+name = "max_depth"
+description = "Optional number of subdirectory levels to explore. Use 0 to only scan the `path` directory. If omitted it will scan all available levels.."
+required = false
+string_enum_valid_values = Array[String]([])
+
+[resource]
+script = ExtResource("3_7nl0u")
+id = "scan_directory"
+title = "Scan directories"
+description = "**Purpose**
+Scan directory `path` to get a list of files and subdirectories.
+
+**Usage notes**
+- The root of a Godot project is \"res://\".
+- The `path` parameter does not support glob expressions."
+category = ExtResource("1_5st00")
+parameters = Array[ExtResource("2_frex3")]([SubResource("Resource_t85t4"), SubResource("Resource_m67pl"), SubResource("Resource_66cj8"), ExtResource("5_wo1qm")])
+options = Array[ExtResource("1_kcv71")]([ExtResource("3_rehkb"), ExtResource("4_p7q3q"), ExtResource("5_ksy2m")])

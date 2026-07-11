@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="AIToolCategory" load_steps=2 format=3 uid="uid://baavfnrxbjpxf"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/tools/tool_categories/ai_tool_category.gd" id="1_s4nk7"]
+
+[resource]
+script = ExtResource("1_s4nk7")
+name = "1. Code"
