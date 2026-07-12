@@ -12,9 +12,16 @@ Embed AI assistants in Godot to help you code, edit scenes, and more.
 
 [![YouTube Video](http://i.ytimg.com/vi/lLTO_fFqa6Q/hqdefault.jpg)](https://youtu.be/lLTO_fFqa6Q) 👈 Click to watch the full tutorial
 
-- Designed for **developers who still want to drive their game's creative and development processes**, but want AI help to augment their capacity.
-- Designed for local LLMs first, but capable of using remote options.
-- With a unique take on LLMs centered around the idea of having different assistant types for different tasks.
+|Highlights||
+|---|---|
+| 🫵 **Own your game**| Designed for developers who still want to drive their game's creative and development processes, but want AI help to augment their capacity. |
+| 💰 **Forget about subscriptions (if you want)**| Designed for local LLMs first, but capable of using remote options. |
+| 🤖 **Small focused assistants**| With a unique take on LLMs centered around the idea of having different assistant types for different tasks.|
+| 🛡️ **Secure**| Designed to give you control over what your assistants can or cannot do.|
+| 🪶 **Lightweight**| Designed to have the least amount of dependencies, you only need to have a program to run LLMs like Ollama, don't worry about installing a bunch of other things.|
+| 🔧 **Extensible**| Designed in a way you can build new tools or enable new LLM providers.|
+
+Please note:
 
 This plugin does not run LLM models directly, but acts as an interface between Godot and your LLM provider. There are plenty of options to run LLMs locally. Thanks to the community, this tool supports the following:
 
@@ -45,6 +52,9 @@ Before reviewing the available features, you need to understand there are *two m
 ---
 
 ## Available Tools
+
+When using tools, the assistants can perform any of these actions. You have the control on what they can or cannot do.
+
 | Category | Tool | Introduced in Version | Last Update |
 |----------|------|-----------------------|-------------|
 | **Code** | Create Script | 2.0.0 | 2.0.0 |
