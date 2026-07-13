@@ -1,6 +1,6 @@
 # Support this project
 Ways to support this project:
-### 1. Star it in GitHub
+### 1. Star it in GitHub & give it a thumbs up in Godot Asset Store
   Helps to give this tool visibility.
 ### 2. Vote for what you care
   Check the [Issues section](https://github.com/FlamxGames/godot-ai-assistant-hub/issues) and vote up or down to give your opinion on them.
