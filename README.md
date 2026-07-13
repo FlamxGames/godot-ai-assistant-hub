@@ -8,7 +8,7 @@
 A Flexible Godot Plugin for AI Assistants
 -----------------------------------------
 
-Embed AI assistants in Godot to help you code, edit scenes, and more.
+Embed AI assistants in Godot to help you code, edit scenes, and more. Do you really need super-powerful AI? Challenge that idea by creating small LLMs tailored to your game. 
 
 [![YouTube Video](http://i.ytimg.com/vi/lLTO_fFqa6Q/hqdefault.jpg)](https://youtu.be/lLTO_fFqa6Q) 👈 Click to watch the full tutorial
 
