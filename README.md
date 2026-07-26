@@ -26,7 +26,7 @@ Please note:
 This plugin does not run LLM models directly, but acts as an interface between Godot and your LLM provider. There are plenty of options to run LLMs locally. Thanks to the community, this tool supports the following:
 
 * [Ollama](https://ollama.com/)*
-* [llama.cpp](LLAMA_CPP_SETUP.md)
+* [llama.cpp](https://github.com/ggml-org/llama.cpp)
 * Google Gemini
 * Jan
 * Ollama Turbo
@@ -125,9 +125,9 @@ Missing features in LLM providers different to Ollama may be added by the commun
 | OpenWebUI     |   ✅   |       |       ✅       |                  |                         |                    |
 | xAI           |   ✅   |       |       ✅       |                  |                         |                    |
 
-**llama.cpp Reasoning note:** Levels require a compatible model, chat template, and recent llama.cpp build.
+**\* llama.cpp Reasoning note:** Levels require a compatible model, chat template, and recent llama.cpp build.
 
-**llama.cpp Context note:** Stock llama-server fixes the physical context at startup; AI Hub reads it from `/props` and uses the assistant setting as a lower warning threshold. See [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP.md).
+**\*\* llama.cpp Context note:** Stock llama-server fixes the physical context at startup; AI Hub reads it from `/props` and uses the assistant setting as a lower warning threshold. See [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP.md).
 
 This plugin was designed to be API agnostic and could be extended to support other LLM providers.
 
