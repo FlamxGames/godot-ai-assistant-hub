@@ -12,21 +12,21 @@ Embed AI assistants in Godot to help you code, edit scenes, and more. Do you rea
 
 [![YouTube Video](http://i.ytimg.com/vi/lLTO_fFqa6Q/hqdefault.jpg)](https://youtu.be/lLTO_fFqa6Q) 👈 Click to watch the full tutorial
 
-|Highlights||
-|---|---|
-| 🫵 **Own your game**| Designed for developers who still want to drive their game's creative and development processes, but want AI help to augment their capacity. |
-| 💰 **Forget about subscriptions (if you want)**| Designed for local LLMs first, but capable of using remote options. |
-| 🤖 **Small focused assistants**| With a unique take on LLMs centered around the idea of having different assistant types for different tasks.|
-| 🛡️ **Secure**| Designed to give you control over what your assistants can or cannot do.|
-| 🪶 **Lightweight**| Designed to have the least amount of dependencies, you only need to have a program to run LLMs like Ollama, don't worry about installing a bunch of other things.|
-| 🔧 **Extensible**| Designed in a way you can build new tools or enable new LLM providers.|
+| Highlights                                     |                                                                                                                                                                   |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🫵 **Own your game**                            | Designed for developers who still want to drive their game's creative and development processes, but want AI help to augment their capacity.                      |
+| 💰 **Forget about subscriptions (if you want)** | Designed for local LLMs first, but capable of using remote options.                                                                                               |
+| 🤖 **Small focused assistants**                 | With a unique take on LLMs centered around the idea of having different assistant types for different tasks.                                                      |
+| 🛡️ **Secure**                                   | Designed to give you control over what your assistants can or cannot do.                                                                                          |
+| 🪶 **Lightweight**                              | Designed to have the least amount of dependencies, you only need to have a program to run LLMs like Ollama, don't worry about installing a bunch of other things. |
+| 🔧 **Extensible**                               | Designed in a way you can build new tools or enable new LLM providers.                                                                                            |
 
 Please note:
 
 This plugin does not run LLM models directly, but acts as an interface between Godot and your LLM provider. There are plenty of options to run LLMs locally. Thanks to the community, this tool supports the following:
 
 * [Ollama](https://ollama.com/)*
-* [llama.cpp llama-server](LLAMA_CPP_SETUP.md)
+* [llama.cpp](LLAMA_CPP_SETUP.md)
 * Google Gemini
 * Jan
 * Ollama Turbo
@@ -38,15 +38,15 @@ This plugin does not run LLM models directly, but acts as an interface between G
 
 Before reviewing the available features, you need to understand there are *two main workflows*:
 
-|                     | Tools 🚀 (do many things)                         | Quick Prompts 🪓 (coding only)  |
-|---------------------|---------------------------------------------------|---------------------------------|
-| **Example request** | *"Make a new enemy that chases the player"*       | *"Complete code marked with #CODE_HERE#"* |
-| Pros                | Much more capabilities + multi‑step tasks         | Reliable with less powerful models    |
-| Cons                | Risk of mistakes when using tools (you can undo)  | Requires user to manually select code |
-| Scope               | Assistants decide how to edit code and scenes     | Targeted code edits only        |
-| Model requirement   | Models with tooling capabilities                  | Works with any model            |
-| Workflow            | Auto tool selection, dynamic                      | Manual code‑block selection     |
-| Required setup      | More prompt tuning, define tools access           | Rigid prompt design using keywords |
+|                     | Tools 🚀 (do many things)                         | Quick Prompts 🪓 (coding only)             |
+| ------------------- | ------------------------------------------------ | ----------------------------------------- |
+| **Example request** | *"Make a new enemy that chases the player"*      | *"Complete code marked with #CODE_HERE#"* |
+| Pros                | Much more capabilities + multi‑step tasks        | Reliable with less powerful models        |
+| Cons                | Risk of mistakes when using tools (you can undo) | Requires user to manually select code     |
+| Scope               | Assistants decide how to edit code and scenes    | Targeted code edits only                  |
+| Model requirement   | Models with tooling capabilities                 | Works with any model                      |
+| Workflow            | Auto tool selection, dynamic                     | Manual code‑block selection               |
+| Required setup      | More prompt tuning, define tools access          | Rigid prompt design using keywords        |
 
 <sub>⚠️ *Quick Prompts* can be used in combination with tools as well for other things.</sub>
 
@@ -56,36 +56,36 @@ Before reviewing the available features, you need to understand there are *two m
 
 When using tools, the assistants can perform any of these actions. You have the control on what they can or cannot do.
 
-| Category | Tool | Introduced in Version | Last Update |
-|----------|------|-----------------------|-------------|
-| **Code** | Create Script | 2.0.0 | 2.0.0 |
-| | Append Code | 2.0.0 | 2.0.0 |
-| | Replace Code | 2.0.0 | 2.0.0 |
-| | Delete Code | 2.0.0 | 2.0.0 |
-| | Show Code | 2.0.0 | 2.0.0 |
-| **Scene** | Create Scene | 2.0.0 | 2.0.0 |
-| | Add Node From Class | 2.0.0 | 2.0.0 |
-| | Add Node From Scene | 2.0.0 | 2.0.0 |
-| | Delete Node | 2.0.0 | 2.0.0 |
-| | Edit Node Groups | 2.0.0 | 2.0.0 |
-| | Edit Node Properties | 2.0.0 | 2.0.0 |
-| | Edit Node Signals | 2.0.0 | 2.0.0 |
-| | Get Node Groups | 2.0.0 | 2.0.0 |
-| | Get Node Properties | 2.0.0 | 2.0.0 |
-| | Get Node Signals | 2.0.0 | 2.0.0 |
-| | Scan Scene Node Tree | 2.0.0 | 2.0.0 |
-| | Show Scene Node | 2.0.0 | 2.0.0 |
-| **Resource** | Create External Resource | 2.0.0 | 2.0.0 |
-| | Edit Resource Properties | 2.0.0 | 2.0.0 |
-| | Get Resource Properties | 2.0.0 | 2.0.0 |
-| **File** | Read File | 2.0.0 | 2.0.0 |
-| | Create Text File | 2.0.0 | 2.0.0 |
-| | Scan Directory | 2.0.0 | 2.0.0 |
-| | Create Directory | 2.0.0 | 2.0.0 |
-| **Project** | List Global Groups | 2.0.0 | 2.0.0 |
-| | Manage Global Groups | 2.0.0 | 2.0.0 |
-| **General** | Save All | 2.0.0 | 2.0.0 |
-| | Undo | 2.0.0 | 2.0.0 |
+| Category     | Tool                     | Introduced in Version | Last Update |
+| ------------ | ------------------------ | --------------------- | ----------- |
+| **Code**     | Create Script            | 2.0.0                 | 2.0.0       |
+|              | Append Code              | 2.0.0                 | 2.0.0       |
+|              | Replace Code             | 2.0.0                 | 2.0.0       |
+|              | Delete Code              | 2.0.0                 | 2.0.0       |
+|              | Show Code                | 2.0.0                 | 2.0.0       |
+| **Scene**    | Create Scene             | 2.0.0                 | 2.0.0       |
+|              | Add Node From Class      | 2.0.0                 | 2.0.0       |
+|              | Add Node From Scene      | 2.0.0                 | 2.0.0       |
+|              | Delete Node              | 2.0.0                 | 2.0.0       |
+|              | Edit Node Groups         | 2.0.0                 | 2.0.0       |
+|              | Edit Node Properties     | 2.0.0                 | 2.0.0       |
+|              | Edit Node Signals        | 2.0.0                 | 2.0.0       |
+|              | Get Node Groups          | 2.0.0                 | 2.0.0       |
+|              | Get Node Properties      | 2.0.0                 | 2.0.0       |
+|              | Get Node Signals         | 2.0.0                 | 2.0.0       |
+|              | Scan Scene Node Tree     | 2.0.0                 | 2.0.0       |
+|              | Show Scene Node          | 2.0.0                 | 2.0.0       |
+| **Resource** | Create External Resource | 2.0.0                 | 2.0.0       |
+|              | Edit Resource Properties | 2.0.0                 | 2.0.0       |
+|              | Get Resource Properties  | 2.0.0                 | 2.0.0       |
+| **File**     | Read File                | 2.0.0                 | 2.0.0       |
+|              | Create Text File         | 2.0.0                 | 2.0.0       |
+|              | Scan Directory           | 2.0.0                 | 2.0.0       |
+|              | Create Directory         | 2.0.0                 | 2.0.0       |
+| **Project**  | List Global Groups       | 2.0.0                 | 2.0.0       |
+|              | Manage Global Groups     | 2.0.0                 | 2.0.0       |
+| **General**  | Save All                 | 2.0.0                 | 2.0.0       |
+|              | Undo                     | 2.0.0                 | 2.0.0       |
 
 ### Tools Permissions and Security
 Assistants can have three levels of tool access: **Allow, Ask, and Hide.**  
@@ -114,19 +114,19 @@ Use the table below to see what features are currently available.
 
 Missing features in LLM providers different to Ollama may be added by the community:
 
-| LLM Provider | Chat | Tools | Quick Prompts | Reasoning Levels | Context usage indicator | Set Context Length |
-| :----------- | :---: | :---: | :----------: | :--------------: | :---------------------: | :----------------: |
-| Ollama        | ✅   | ✅    | ✅           | ✅                | ✅                      | ✅                 |
-| llama.cpp llama-server | ✅ | ✅ | ✅ | ✅* | ✅ | ⚠️** |
-| Google Gemini | ✅   |       | ✅           |                   |                          |                    |
-| Jan           | ✅   |       | ✅           |                   |                          |                    |
-| Ollama Turbo  | ✅   |       | ✅           |                   |                          |                    |
-| OpenRouter    | ✅   |       | ✅           |                   |                          |                    |
-| OpenWebUI     | ✅   |       | ✅           |                   |                          |                    |
-| xAI           | ✅   |       | ✅           |                   |                          |                    |
+| LLM Provider  | Chat  | Tools | Quick Prompts | Reasoning Levels | Context usage indicator | Set Context Length |
+| :------------ | :---: | :---: | :-----------: | :--------------: | :---------------------: | :----------------: |
+| Ollama        |   ✅   |   ✅   |       ✅       |        ✅         |            ✅            |         ✅          |
+| llama.cpp     |   ✅   |   ✅   |       ✅       |        ✅*        |            ✅            |        ⚠️**         |
+| Google Gemini |   ✅   |       |       ✅       |                  |                         |                    |
+| Jan           |   ✅   |       |       ✅       |                  |                         |                    |
+| Ollama Turbo  |   ✅   |       |       ✅       |                  |                         |                    |
+| OpenRouter    |   ✅   |       |       ✅       |                  |                         |                    |
+| OpenWebUI     |   ✅   |       |       ✅       |                  |                         |                    |
+| xAI           |   ✅   |       |       ✅       |                  |                         |                    |
 
-**Reasoning note:** Levels require a compatible model, chat template, and recent llama.cpp build.
-**Context note:** Stock llama-server fixes the physical context at startup; AI Hub reads it from `/props` and uses the assistant setting as a lower warning threshold. See [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP.md).
+**llama.cpp Reasoning note:** Levels require a compatible model, chat template, and recent llama.cpp build.
+**llama.cpp Context note:** Stock llama-server fixes the physical context at startup; AI Hub reads it from `/props` and uses the assistant setting as a lower warning threshold. See [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP.md).
 
 This plugin was designed to be API agnostic and could be extended to support other LLM providers.
 
