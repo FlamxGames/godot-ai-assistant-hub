@@ -17,3 +17,7 @@ mono_crash.*.json
 test/
 addons/ai_assistant_hub/assistants/*.tres
 addons/ai_assistant_hub/quick_prompts/*.tres
+
+# Patch ignores
+*.patch
+godot-ai-assistant-hub-llamacpp-provider.patch
