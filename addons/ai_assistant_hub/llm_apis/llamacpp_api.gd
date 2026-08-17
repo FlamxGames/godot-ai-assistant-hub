@@ -2,13 +2,6 @@
 class_name LlamaCppAPI
 extends LLMInterface
 
-## First-class llama.cpp llama-server provider.
-##
-## llama-server exposes an OpenAI-compatible API, but the AI Assistant Hub's
-## conversation history is shaped around Ollama. This adapter normalizes the
-## model list, chat responses, tool calls, tool-result messages, reasoning, and
-## context metadata so the rest of the plugin can use the same workflows.
-
 const REASONING_BUDGET_LOW := 512
 const REASONING_BUDGET_MEDIUM := 2048
 const REASONING_BUDGET_HIGH := 8192
@@ -56,7 +49,7 @@ func send_chat_request(http_request: HTTPRequest, content: Array) -> bool:
 
 	var body_dict := {
 		"model": model,
-		"messages": _normalize_messages_for_openai(content),
+		"messages": content, # FOREST _normalize_messages_for_openai(content),
 		"stream": false,
 		# Reuse the shared prompt prefix between turns when llama-server can.
 		"cache_prompt": true
@@ -119,13 +112,15 @@ func read_response(body: PackedByteArray) -> AIAssistantResponse:
 
 	var tool_calls_raw: Array = []
 	if message.has("tool_calls") and message.tool_calls is Array:
-		tool_calls_raw = _normalize_tool_calls(message.tool_calls)
+		tool_calls_raw = message.tool_calls # FOREST _normalize_tool_calls(message.tool_calls)
+		# Commented because the idea of tool_calls_raw is to store the raw input so when responding later
+		# the input is exactly in the format the LLM API expects
 	if tool_calls_raw.is_empty() and not response.text_content.is_empty():
 		tool_calls_raw = _try_to_find_tools(response.text_content)
 
 	if not tool_calls_raw.is_empty():
 		response.tool_calls_raw = tool_calls_raw
-		response.tool_calls = _parse_tool_calls(tool_calls_raw)
+		response.tool_calls = _parse_tool_calls(_normalize_tool_calls(tool_calls_raw)) # FOREST _parse_tool_calls(tool_calls_raw)
 
 	var reasoning_content = message.get("reasoning_content", message.get("thinking", ""))
 	if reasoning_content is String:
@@ -243,50 +238,69 @@ func _set_reasoning_budget(body_dict: Dictionary, budget: int) -> void:
 	body_dict["thinking_budget_tokens"] = budget
 
 
-func _normalize_messages_for_openai(content: Array) -> Array:
-	var normalized_messages: Array = []
-	var pending_calls: Array[Dictionary] = []
+#FOREST
+#func _normalize_messages_for_openai(content: Array) -> Array:
+	#var normalized_messages: Array = []
+	#var pending_calls: Array[Dictionary] = []
+#
+	#for message_value in content:
+		#if not (message_value is Dictionary):
+			#normalized_messages.append(message_value)
+			#continue
+#
+		#var message: Dictionary = message_value.duplicate(true)
+		#var role := str(message.get("role", ""))
+#
+		#if role == "assistant" and message.has("tool_calls") and message.tool_calls is Array:
+			#var normalized_calls := _normalize_tool_calls(message.get("tool_calls", []))
+			#message["tool_calls"] = normalized_calls
+			#for call_value in normalized_calls:
+				#if call_value is Dictionary and call_value.get("function", {}) is Dictionary:
+					#pending_calls.append({
+						#"id": str(call_value.get("id", "")),
+						#"name": str(call_value.function.get("name", ""))
+					#})
+#
+		#elif role == "tool":
+			#var existing_call_id := str(message.get("tool_call_id", ""))
+			#if existing_call_id.is_empty() and not pending_calls.is_empty():
+				#var pending_call: Dictionary = pending_calls.pop_front()
+				#message["tool_call_id"] = pending_call.id
+				#if not str(pending_call.name).is_empty():
+					#message["name"] = pending_call.name
+			#elif not existing_call_id.is_empty():
+				#_remove_pending_call(pending_calls, existing_call_id)
+#
+		#normalized_messages.append(message)
+#
+	#return normalized_messages
 
-	for message_value in content:
-		if not (message_value is Dictionary):
-			normalized_messages.append(message_value)
-			continue
-
-		var message: Dictionary = message_value.duplicate(true)
-		var role := str(message.get("role", ""))
-
-		if role == "assistant" and message.has("tool_calls") and message.tool_calls is Array:
-			var normalized_calls := _normalize_tool_calls(message.get("tool_calls", []))
-			message["tool_calls"] = normalized_calls
-			for call_value in normalized_calls:
-				if call_value is Dictionary and call_value.get("function", {}) is Dictionary:
-					pending_calls.append({
-						"id": str(call_value.get("id", "")),
-						"name": str(call_value.function.get("name", ""))
-					})
-
-		elif role == "tool":
-			var existing_call_id := str(message.get("tool_call_id", ""))
-			if existing_call_id.is_empty() and not pending_calls.is_empty():
-				var pending_call: Dictionary = pending_calls.pop_front()
-				message["tool_call_id"] = pending_call.id
-				if not str(pending_call.name).is_empty():
-					message["name"] = pending_call.name
-			elif not existing_call_id.is_empty():
-				_remove_pending_call(pending_calls, existing_call_id)
-
-		normalized_messages.append(message)
-
-	return normalized_messages
+#FOREST
+#func _remove_pending_call(pending_calls: Array[Dictionary], call_id: String) -> void:
+	#for index in range(pending_calls.size()):
+		#if str(pending_calls[index].get("id", "")) == call_id:
+			#pending_calls.remove_at(index)
+			#return
 
 
-func _remove_pending_call(pending_calls: Array[Dictionary], call_id: String) -> void:
-	for index in range(pending_calls.size()):
-		if str(pending_calls[index].get("id", "")) == call_id:
-			pending_calls.remove_at(index)
-			return
-
-
+## Convert old llama.cpp payload format to the expected format:
+## {
+##   "id": "call_1",
+##   "type": "function",
+##   "function": {
+##     "name": "read_file",
+##     "arguments": "{\"path\":\"player.gd\"}"
+##   }
+## }
+##
+## Older format could look like:
+## {
+##   "id": "call_1",
+##   "name": "read_file",
+##   "arguments": {
+##     "path": "player.gd"
+##   }
+## }
 func _normalize_tool_calls(tool_calls_payload: Array) -> Array:
 	var normalized_calls: Array = []
 	for index in range(tool_calls_payload.size()):
@@ -312,10 +326,13 @@ func _normalize_tool_calls(tool_calls_payload: Array) -> Array:
 			continue
 
 		var legacy_function_id := str(function_data.get("id", ""))
-		var arguments_dict := _parse_tool_arguments(function_data.get("arguments", {}), tool_name)
+		
+		#FOREST - this step was converting JSON to dict, then dict to JSON, so it is likely not required
+		#var arguments_dict := _parse_tool_arguments(function_data.get("arguments", {}), tool_name)
 		# OpenAI-compatible assistant history expects function arguments as a
 		# JSON string. _parse_tool_calls converts it back for Godot tools.
-		function_data["arguments"] = JSON.stringify(arguments_dict)
+		#function_data["arguments"] = JSON.stringify(arguments_dict)
+		
 		function_data.erase("id")
 
 		var call_id := str(raw_call.get("id", legacy_function_id))

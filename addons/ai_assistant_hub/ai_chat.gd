@@ -516,11 +516,11 @@ func _submit_prompt(prompt:String, quick_prompt:AIQuickPromptResource = null) ->
 		_add_to_chat("Something went wrong. Review the details in Godot's Output tab.", Caller.System)
 
 
-func _send_tool_feedback(feedback:String) -> void:
+func _send_tool_feedback(tool_call:AIToolCall, feedback:String) -> void:
 	if bot_portrait.is_thinking:
 		_abandon_request()
 	bot_portrait.is_thinking = true
-	_conversation.add_tool_feedback(feedback)
+	_conversation.add_tool_feedback(tool_call, feedback)
 	var success := _llm.send_chat_request(http_request, _conversation.build())
 	if not success:
 		_add_to_chat("Something went wrong. Review the details in Godot's Output tab.", Caller.System)
@@ -614,7 +614,7 @@ func _execute_tool(tool:AITool) -> void:
 	var success:bool = await tool.execute()
 	if success and tool.get_errors().size() == 0:
 		_add_to_chat("Tool %s executed." % tool.get_function_name(), Caller.Tool)
-		_send_tool_feedback(tool.get_success_message())
+		_send_tool_feedback(call, tool.get_success_message())
 	else:
 		_notify_tool_error(call, "Tool %s execution errors:\n%s" % [ tool.get_function_name(), "\n".join(tool.get_errors())] )		
 
@@ -624,7 +624,7 @@ func _notify_tool_error(call:AIToolCall, error_message:String) -> void:
 	_tool_call_queue.clear()
 	if not call.call_id.is_empty():
 		error_message += "\nTool call ID: %s" % call.call_id
-	_send_tool_feedback(error_message)
+	_send_tool_feedback(call, error_message)
 
 
 func _on_http_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -880,8 +880,9 @@ func _on_retry_read_model_btn_pressed() -> void:
 
 
 func _on_tool_cancel_btn_pressed() -> void:
+	var call:AIToolCall = _tool_call_queue.pop_front()
 	_tool_call_queue.clear()
-	_conversation.add_tool_feedback("The user cancelled the execution.")
+	_conversation.add_tool_feedback(call, "The user cancelled the execution.")
 	var fake_assistant_response:= AIAssistantResponse.new()
 	fake_assistant_response.text_content = ""
 	_conversation.add_assistant_response(fake_assistant_response)

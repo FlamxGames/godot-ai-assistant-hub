@@ -49,10 +49,12 @@ func add_user_prompt(prompt:String) -> void:
 	chat_appended.emit(entry)
 
 
-func add_tool_feedback(feedback:String) -> void:
+func add_tool_feedback(tool_call:AIToolCall, feedback:String) -> void:
 	var entry := {
 		"role": _tool_role_name,
-		"content": feedback
+		"content": feedback,
+		"tool_call_id": tool_call.call_id,
+		"name": tool_call.tool_id
 	}
 	_chat_history.append(entry)
 	chat_appended.emit(entry)

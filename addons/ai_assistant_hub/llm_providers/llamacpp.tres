@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_llamacpp")
 api_id = "llamacpp_api"
-name = "llama.cpp (llama-server)"
+name = "Llama.cpp"
 description = "Run local GGUF models through llama.cpp llama-server. Supports chat, tools, reasoning controls, context usage, Quick Prompts, custom URLs, and optional API keys."
 reasoning_levels = Array[String](["Default | Use the model and llama-server defaults", "Disabled | Disable thinking for supported models", "Enabled | Enable thinking using the llama-server default budget", "Low | Limit thinking to approximately 512 tokens", "Medium | Limit thinking to approximately 2048 tokens", "High | Limit thinking to approximately 8192 tokens"])
 supports_context_size_override = true
