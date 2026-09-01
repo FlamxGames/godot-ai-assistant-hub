@@ -1,7 +1,7 @@
 **Godot AI Assistant Hub**
 <img src="https://github.com/FlamxGames/godot-ai-assistant-hub/blob/main/logo.png" width="50px">
 ==========================
-**Latest version: 2.0.0**
+**Latest version: 2.1.0**
 <sub>([What's new?](#whats-new-in-the-latest-version))</sub>
 <sub>([Upgrading to a newer version](#upgrading-to-a-newer-version))</sub>
 
@@ -117,7 +117,7 @@ Missing features in LLM providers different to Ollama may be added by the commun
 | LLM Provider  | Chat  | Tools | Quick Prompts | Reasoning Levels | Context usage indicator | Set Context Length |
 | :------------ | :---: | :---: | :-----------: | :--------------: | :---------------------: | :----------------: |
 | Ollama        |   ✅   |   ✅   |       ✅       |        ✅         |            ✅            |         ✅          |
-| llama.cpp     |   ✅   |   ✅   |       ✅       |        ✅*        |            ✅            |        ⚠️**         |
+| llama.cpp     |   ✅   |   ✅   |       ✅       |        ✅*        |            ✅            |        ⚠️*         |
 | Google Gemini |   ✅   |       |       ✅       |                  |                         |                    |
 | Jan           |   ✅   |       |       ✅       |                  |                         |                    |
 | Ollama Turbo  |   ✅   |       |       ✅       |                  |                         |                    |
@@ -125,9 +125,7 @@ Missing features in LLM providers different to Ollama may be added by the commun
 | OpenWebUI     |   ✅   |       |       ✅       |                  |                         |                    |
 | xAI           |   ✅   |       |       ✅       |                  |                         |                    |
 
-**\* llama.cpp Reasoning note:** Levels require a compatible model, chat template, and recent llama.cpp build.
-
-**\*\* llama.cpp Context note:** Stock llama-server fixes the physical context at startup; AI Hub reads it from `/props` and uses the assistant setting as a lower warning threshold. See [LLAMA_CPP_SETUP.md](LLAMA_CPP_SETUP.md).
+*See [guides/LLAMA_CPP_SETUP.md](guides/LLAMA_CPP_SETUP.md) for notes on llama.cpp.
 
 This plugin was designed to be API agnostic and could be extended to support other LLM providers.
 
@@ -226,12 +224,8 @@ The rule of thumb I follow is to check the output speed by chatting with it. If 
 
 What's new in the latest version
 -----------------------
-**2.0.0**
-* Tools support (Ollama).
-* Context usage indicator (Ollama).
-* Set context length (Ollama).
-* Editing assistants definition propagates to existing chats.
-* Configure icon and Quick Prompts from the assistant editor itself (no need to edit the resource manually anymore).
+**2.1.0**
+* llama.cpp support
 
 [Full version history](versions.md)
 

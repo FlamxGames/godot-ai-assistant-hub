@@ -1,6 +1,13 @@
-# llama.cpp `llama-server` Provider
+# llama.cpp Provider Setup
 
-This patch adds a first-class `llama.cpp (llama-server)` provider to Godot AI Assistant Hub.
+This guide is a contribution from badgids whom added the llama.cpp API to the plugin.
+
+Notes on features table from the main page:
+
+**Reasoning Levels:** Levels require a compatible model, chat template, and recent llama.cpp build.
+
+**Set Context Length:** Stock llama-server fixes the physical context at startup; AI Hub reads it from `/props` and uses the assistant setting as a lower warning threshold. 
+
 
 ## Supported AI Hub features
 
@@ -61,17 +68,6 @@ Per-request thinking budgets require a recent llama.cpp build and a template wit
 Unlike Ollama, stock `llama-server` cannot resize its physical context window per request. Set the real context with `--ctx-size` when starting the server. AI Hub reads the running value from `/props`.
 
 The assistant's context-length field remains available as a lower client-side warning threshold. It cannot raise the server above its startup context. For exact behavior, use the same value in the assistant and in `--ctx-size`.
-
-## Tool-call compatibility
-
-AI Assistant Hub historically stores tool feedback as an Ollama-style `{role: "tool", content: ...}` message. OpenAI-compatible servers require the tool result to identify the preceding call. The provider normalizes conversation history before each request by:
-
-1. Preserving or generating a unique tool-call ID.
-2. Converting tool arguments to the OpenAI-compatible JSON-string form.
-3. Pairing each tool feedback message with `tool_call_id` and the function name.
-4. Converting arguments back to a dictionary before executing the Godot tool.
-
-This keeps existing saved chats and the current tool approval/execution pipeline compatible without changing the shared conversation classes.
 
 ## Smoke tests
 
