@@ -1,6 +1,9 @@
 **Version history**
 --------------------
 
+**2.1.0**
+* llama.cpp support
+
 **2.0.0**
 * Tools support (Ollama).
 * Context usage indicator (Ollama).

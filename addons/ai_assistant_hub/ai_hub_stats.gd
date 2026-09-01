@@ -5,8 +5,8 @@ extends HTTPRequest
 const STATS_URL:= "https://abacus.jasoncameron.dev/hit/godotaihub/"
 
 # If you are extending this plugin adding a new LLM provider API, you DON'T need to extend this
-var _api_list = [ "ollama_api", "gemini_api", "jan_api", "ollamaturbo_api", "openrouter_api", "openwebui_api", "xai_api"]
-var _versions_list = [ "1.8.3", "2.0.0" ]
+var _api_list = [ "ollama_api", "gemini_api", "jan_api", "ollamaturbo_api", "openrouter_api", "openwebui_api", "xai_api", "llamacpp_api"]
+var _versions_list = [ "1.8.3", "2.0.0", "2.1.0" ]
 
 
 func gather(apis_used:Dictionary) -> void:
