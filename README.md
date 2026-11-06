@@ -27,6 +27,7 @@ This plugin does not run LLM models directly, but acts as an interface between G
 
 * [Ollama](https://ollama.com/)*
 * [llama.cpp](https://github.com/ggml-org/llama.cpp)
+* Cheaper Inference
 * Google Gemini
 * Jan
 * Ollama Turbo
@@ -118,6 +119,7 @@ Missing features in LLM providers different to Ollama may be added by the commun
 | :------------ | :---: | :---: | :-----------: | :--------------: | :---------------------: | :----------------: |
 | Ollama        |   ✅   |   ✅   |       ✅       |        ✅         |            ✅            |         ✅          |
 | llama.cpp     |   ✅   |   ✅   |       ✅       |        ✅*        |            ✅            |        ⚠️*         |
+| Cheaper Inference |   ✅   |       |       ✅       |                  |                         |                    |
 | Google Gemini |   ✅   |       |       ✅       |                  |                         |                    |
 | Jan           |   ✅   |       |       ✅       |                  |                         |                    |
 | Ollama Turbo  |   ✅   |       |       ✅       |                  |                         |                    |
