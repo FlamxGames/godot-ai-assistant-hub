@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="LLMProviderResource" load_steps=2 format=3 uid="uid://c7ql2k5vh3nxe"]
+
+[ext_resource type="Script" path="res://addons/ai_assistant_hub/llm_providers/llm_provider_resource.gd" id="1_k4c2p"]
+
+[resource]
+script = ExtResource("1_k4c2p")
+api_id = "cheaperinference_api"
+name = "Cheaper Inference"
+description = "OpenAI-compatible gateway to models from several labs"
+reasoning_levels = Array[String](["Default"])
+supports_context_size_override = false
+requires_key = true
+get_key_url = "https://cheaperinference.com"
+fix_url = "https://api.cheaperinference.com/v1"
+default_url = ""
+models_url_postfix = "/models"
+chat_url_postfix = "/chat/completions"
+max_context_url_postfix = ""
+capabilities_url_postfix = ""
+system_role_name = "system"
+user_role_name = "user"
+assistant_role_name = "assistant"
+tool_role_name = "tool"
+tool_payload_template = ""
+tool_param_payload_template = ""
+tool_param_type_int = ""
+tool_param_type_float = ""
+tool_param_type_boolean = ""
+tool_param_type_string = ""
+tool_param_type_array = ""
